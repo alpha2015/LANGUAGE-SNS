@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">LanguageExchange</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="login_email">이메일</string>
+    <string name="login_password">비밀번호</string>
+    <string name="login_button">로그인</string>
+    <string name="sign_up">sign up</string>
+
+
+</resources>
