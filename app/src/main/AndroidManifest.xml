@@ -1,23 +1,128 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.nhnnext.android.languageexchange" >
+    package="com.nhnnext.android.languageexchange"
+    android:versionCode="1"
+    android:versionName="0.0.1">
 
-    <uses-sdk android:minSdkVersion="14" />
+    <uses-sdk
+        android:minSdkVersion="16"
+        android:targetSdkVersion="22" />
+
+    <!-- 서버 접속 -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- 프로필 사진 추가 기능으로 인한 카메라 사용 권한 -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <!-- 프로필 사진 등록을 위한 갤러리 접근 권한 -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <!-- supports-screens 어떤 스크린에 대응해야할지 아직 감이 없어서 적질 못했습니다. -->
 
     <application
-        android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
+
+        <!-- 로그인 Activity -->
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:allowTaskReparenting="false"
+            android:alwaysRetainTaskState="false"
+            android:clearTaskOnLaunch="false"
+            android:enabled="true"
+            android:excludeFromRecents="false"
+            android:exported="false"
+            android:finishOnTaskLaunch="false"
+            android:hardwareAccelerated="false"
+            android:launchMode="standard"
+            android:noHistory="true"
+            android:screenOrientation="unspecified"
+            android:stateNotNeeded="false"
+            android:uiOptions="none"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- 회원가입 Activity -->
+        <!-- 회원정보를 한번에 입력하는것이 아닌 각각의 정보를 개별 Fragment로 나눠서 입력 -->
+        <!-- 입력 정보 이메일, 이름, 비밀번호, 성별, 생년월일 -->
+        <!-- 회원가입은 noHistory true, main으로 돌아가는 버튼 있고 로그인페이지로 돌아갈시 로그인페이지만 띄워져 있어야 하므로-->
+        <activity
+            android:name=".user.SignUpActivity"
+            android:allowTaskReparenting="false"
+            android:alwaysRetainTaskState="false"
+            android:clearTaskOnLaunch="false"
+            android:enabled="true"
+            android:excludeFromRecents="false"
+            android:exported="false"
+            android:finishOnTaskLaunch="false"
+            android:hardwareAccelerated="false"
+            android:launchMode="standard"
+            android:noHistory="true"
+            android:screenOrientation="unspecified"
+            android:stateNotNeeded="false"
+            android:uiOptions="none"
+            >
+            <intent-filter>
+                <action android:name="com.nhnnext.android.action.SIGNUP" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <!-- 원하는 사용자 찾아서 매칭 Activity -->
+        <!-- native / practicing language 설정 Fragment 1 -->
+        <!-- 매칭 시작 버튼 Fragment 2 -->
+        <!-- 회원정보 수정 Fragment 3 - 기존 회원정보에서 프로필 사진과 native language를 추가로 입력 가능 -->
+        <activity
+            android:name=".match.MatchingActivity"
+            android:allowTaskReparenting="false"
+            android:alwaysRetainTaskState="false"
+            android:clearTaskOnLaunch="false"
+            android:enabled="true"
+            android:excludeFromRecents="false"
+            android:exported="false"
+            android:finishOnTaskLaunch="false"
+            android:hardwareAccelerated="false"
+            android:launchMode="standard"
+            android:noHistory="false"
+            android:screenOrientation="unspecified"
+            android:stateNotNeeded="false"
+            android:uiOptions="none"
+            >
+            <intent-filter>
+                <action android:name="com.nhnnext.android.action.MATCH" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <!-- 매칭 결과 Activity -->
+        <!-- 매칭된 유저 리스트 보여주기 Fragment 1 -->
+        <!-- 특정 유저 선택시 상세 정보 Fragment 2 -->
+        <activity
+            android:name=".result.ShowResultActivity"
+            android:allowTaskReparenting="false"
+            android:alwaysRetainTaskState="false"
+            android:clearTaskOnLaunch="false"
+            android:enabled="true"
+            android:excludeFromRecents="false"
+            android:exported="false"
+            android:finishOnTaskLaunch="false"
+            android:hardwareAccelerated="false"
+            android:launchMode="standard"
+            android:noHistory="false"
+            android:screenOrientation="unspecified"
+            android:stateNotNeeded="false"
+            android:uiOptions="none"
+            >
+            <intent-filter>
+                <action android:name="com.nhnnext.android.action.RESULT" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
     </application>
 
 </manifest>

@@ -7,6 +7,10 @@
     <string name="login_password">비밀번호</string>
     <string name="login_button">로그인</string>
     <string name="sign_up">sign up</string>
+    <string name="sign_up_continue">계속</string>
+    <string name="back_login_page">이미 계정을 갖고 계신가요?</string>
+    <string name="title_activity_main2">Main2Activity</string>
+
 
 
 </resources>
