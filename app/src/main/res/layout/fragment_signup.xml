@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!-- 이메일, 이름, 비밀번호, 생년월일, 성별 -->
+
+    <EditText
+        android:id="@+id/sign_up_email"
+        android:layout_width="260dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/sign_up_email"
+        android:layout_gravity="center"
+        android:padding="10dp"
+        />
+
+    <EditText
+        android:id="@+id/sign_up_name"
+        android:layout_width="260dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/sign_up_name"
+        android:layout_gravity="center"
+        android:padding="10dp"
+        android:visibility="gone"
+        />
+
+    <EditText
+        android:id="@+id/sign_up_password"
+        android:layout_width="260dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/sign_up_password"
+        android:layout_gravity="center"
+        android:password="true"
+        android:padding="10dp"
+        android:visibility="gone"
+        />
+
+    <EditText
+        android:id="@+id/sign_up_birth"
+        android:layout_width="260dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/sign_up_birth"
+        android:layout_gravity="center"
+        android:padding="10dp"
+        android:visibility="gone"
+        />
+
+    <EditText
+        android:id="@+id/sign_up_gender"
+        android:layout_width="260dp"
+        android:layout_height="wrap_content"
+        android:hint="@string/sign_up_gender"
+        android:layout_gravity="center"
+        android:padding="10dp"
+        android:visibility="gone"
+        />
+
+    <Button
+        android:id="@+id/sign_up_continue_btn"
+        android:layout_width="260dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/sign_up_continue" />
+
+    <Button
+        android:id="@+id/sign_up_request_btn"
+        android:layout_width="260dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/sign_up_request"
+        android:layout_margin="50dp"
+        android:visibility="gone"/>
+
+</LinearLayout>

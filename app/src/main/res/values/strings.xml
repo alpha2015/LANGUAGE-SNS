@@ -10,7 +10,10 @@
     <string name="sign_up_continue">계속</string>
     <string name="back_login_page">이미 계정을 갖고 계신가요?</string>
     <string name="title_activity_main2">Main2Activity</string>
-
-
-
+    <string name="sign_up_email">이메일</string>
+    <string name="sign_up_name">이름</string>
+    <string name="sign_up_password">비밀번호</string>
+    <string name="sign_up_birth">생년월일</string>
+    <string name="sign_up_gender">성별</string>
+    <string name="sign_up_request">가입요청</string>
 </resources>

@@ -4,11 +4,14 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
+import android.widget.TextView;
 
+import com.nhnnext.android.languageexchange.MainActivity;
 import com.nhnnext.android.languageexchange.R;
 
 /**
@@ -16,12 +19,26 @@ import com.nhnnext.android.languageexchange.R;
  */
 public class SignUpActivity extends FragmentActivity implements View.OnClickListener {
     //TODO fragment에서 입력한 회원정보 저장
+    TextView backLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_signup);
         //TODO 회원정보 입력 fragment 연결
         //TODO 로그인 Activity 돌아가기 이벤트 등록
+        backLogin = (TextView)findViewById(R.id.back_login_page);
+        backLogin.setOnClickListener(this);
+
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();//getFragmentManager().beginTransaction();
+
+        Fragment fragment1 = new Fragment_UserInfoForSignUp();
+
+        transaction.add(R.id.fragment_container1, fragment1);
+
+        transaction.commit();
+
+
     }
 
     @Override
@@ -52,6 +69,8 @@ public class SignUpActivity extends FragmentActivity implements View.OnClickList
     @Override
     public void onClick(View v) {
         //TODO 로그인 Activity로 돌아가기
+        Intent intent = new Intent(this, MainActivity.class);
+        startActivity(intent);
     }
 
     private class SignUpAsyncTask extends AsyncTask<String, Void, Boolean> {

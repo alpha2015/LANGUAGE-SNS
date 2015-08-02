@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.nhnnext.android.languageexchange"
-    android:versionCode="3"
-    android:versionName="0.0.3">
+    android:versionCode="4"
+    android:versionName="0.0.4">
 
     <uses-sdk
         android:minSdkVersion="16"
@@ -35,8 +35,9 @@
         <!-- 로그인 Activity -->
         <!-- android:exported="false" 인데 intent filter 가 정의 되어 있네요..검토 필요해보여요-->
         <!-- 재희님 리뷰사항 반영완료(7.23) -->
-        <!--intent-filter 정의 되었더라도 app 매인 activity인 로그인을 제외하고 다른 app에서 lunch되면 안되기때문에-->
-        <!--main activity exported="true" / 나머지 activity export="false" 설정-->
+        <!-- intent-filter 정의 되었더라도 app 매인 activity인 로그인을 제외하고 다른 app에서 lunch되면 안되기때문에-->
+        <!-- main activity exported="true" / 나머지 activity export="false" 설정-->
+        <!-- mainActivity lunchMode singTask로 변경 로그아웃, 회원가입에서 로그인 돌아가기시 task 중복 해결 -->
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
@@ -45,11 +46,11 @@
             android:clearTaskOnLaunch="false"
             android:enabled="true"
             android:excludeFromRecents="false"
-            android:exported="false"
+            android:exported="true"
             android:finishOnTaskLaunch="false"
             android:hardwareAccelerated="false"
-            android:launchMode="standard"
-            android:noHistory="true"
+            android:launchMode="singleTask"
+            android:noHistory="false"
             android:screenOrientation="unspecified"
             android:stateNotNeeded="false"
             android:uiOptions="none"
