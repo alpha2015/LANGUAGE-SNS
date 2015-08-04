@@ -2,7 +2,13 @@ package com.nhnnext.android.languageexchange.match;
 
 import android.app.Fragment;
 import android.os.AsyncTask;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+
+import com.nhnnext.android.languageexchange.R;
 
 import java.util.ArrayList;
 
@@ -12,6 +18,13 @@ import java.util.ArrayList;
 public class Fragment_StartMatch extends Fragment implements View.OnClickListener{
     //TODO native, practicing 언어로 서버에서 해당 유저리스트 받아오기
     //TODO DownloadTargetUserListTask().execute(targetUrl);
+
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_template2, container, false);
+    }
 
     @Override
     public void onClick(View v) {

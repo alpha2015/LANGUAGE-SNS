@@ -6,70 +6,192 @@
 
     <!-- 이메일, 이름, 비밀번호, 생년월일, 성별 -->
 
-    <EditText
-        android:id="@+id/sign_up_email"
-        android:layout_width="260dp"
+    <LinearLayout
+        android:id="@+id/sign_up_email_layout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/sign_up_email"
-        android:layout_gravity="center"
-        android:padding="10dp"
-        />
+        android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/sign_up_name"
-        android:layout_width="260dp"
-        android:layout_height="wrap_content"
-        android:hint="@string/sign_up_name"
-        android:layout_gravity="center"
-        android:padding="10dp"
-        android:visibility="gone"
-        />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/sign_up_email_top_message"
+            android:textSize="30sp"
+            android:textColor="#0100FF"
+            android:textStyle="bold"
+            />
 
-    <EditText
-        android:id="@+id/sign_up_password"
-        android:layout_width="260dp"
-        android:layout_height="wrap_content"
-        android:hint="@string/sign_up_password"
-        android:layout_gravity="center"
-        android:password="true"
-        android:padding="10dp"
-        android:visibility="gone"
-        />
+        <EditText
+            android:id="@+id/sign_up_email"
+            android:layout_width="260dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:hint="@string/sign_up_email"
+            android:inputType="textEmailAddress"
+            android:padding="10dp" />
 
-    <EditText
-        android:id="@+id/sign_up_birth"
-        android:layout_width="260dp"
-        android:layout_height="wrap_content"
-        android:hint="@string/sign_up_birth"
-        android:layout_gravity="center"
-        android:padding="10dp"
-        android:visibility="gone"
-        />
+        <TextView
+            android:layout_width="260dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:textColor="#2B2B2B"
+            android:text="@string/sign_up_email_bottom_message"
+            android:layout_marginBottom="20dp"/>
+    </LinearLayout>
 
-    <EditText
-        android:id="@+id/sign_up_gender"
-        android:layout_width="260dp"
+    <LinearLayout
+        android:id="@+id/sign_up_name_layout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/sign_up_gender"
-        android:layout_gravity="center"
-        android:padding="10dp"
-        android:visibility="gone"
-        />
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/sign_up_name_top_message"
+            android:textSize="30sp"
+            android:textColor="#0100FF"
+            android:textStyle="bold"/>
+
+        <EditText
+            android:id="@+id/sign_up_name"
+            android:layout_width="260dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:hint="@string/sign_up_name"
+            android:inputType="textPersonName"
+            android:padding="10dp" />
+
+        <TextView
+            android:layout_width="260dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:textColor="#2B2B2B"
+            android:text="@string/sign_up_name_bottom_message"
+            android:layout_marginBottom="20dp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/sign_up_password_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/sign_up_password_top_message"
+            android:textSize="30sp"
+            android:textColor="#0100FF"
+            android:textStyle="bold"/>
+
+        <EditText
+            android:id="@+id/sign_up_password"
+            android:layout_width="260dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:hint="@string/sign_up_password"
+            android:padding="10dp"
+            android:password="true" />
+
+        <TextView
+            android:layout_width="260dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:textColor="#2B2B2B"
+            android:text="@string/sign_up_password_bottom_message"
+            android:layout_marginBottom="20dp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/sign_up_age_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/sign_up_age_top_message"
+            android:textSize="30sp"
+            android:textColor="#0100FF"
+            android:textStyle="bold"/>
+
+        <NumberPicker
+            android:id="@+id/sign_up_age"
+            android:layout_width="wrap_content"
+            android:layout_height="110dp"
+            android:layout_gravity="center"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/sign_up_gender_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/sign_up_gender_top_message"
+            android:textSize="30sp"
+            android:textColor="#0100FF"
+            android:textStyle="bold"/>
+
+        <RadioGroup
+            android:id="@+id/sign_up_gender"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <RadioButton
+                android:id="@+id/gender_male"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/male" />
+
+            <RadioButton
+                android:id="@+id/gender_female"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/female"
+                />
+        </RadioGroup>
+
+        <TextView
+            android:layout_width="260dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:textColor="#2B2B2B"
+            android:text="@string/sign_up_gender_bottom_message"
+            android:layout_marginBottom="20dp"/>
+    </LinearLayout>
 
     <Button
         android:id="@+id/sign_up_continue_btn"
         android:layout_width="260dp"
-        android:layout_height="wrap_content"
+        android:layout_height="35dp"
         android:layout_gravity="center"
-        android:text="@string/sign_up_continue" />
-
-    <Button
-        android:id="@+id/sign_up_request_btn"
-        android:layout_width="260dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/sign_up_request"
-        android:layout_margin="50dp"
-        android:visibility="gone"/>
-
+        android:text="@string/sign_up_continue"
+        android:visibility="gone"
+        android:background="#4285F4"
+        android:textColor="#FFFFFF"/>
 </LinearLayout>

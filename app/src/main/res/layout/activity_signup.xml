@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#00BA3B"
+    android:background="#E8ECF0"
     android:orientation="vertical">
 
     <LinearLayout
@@ -12,20 +12,23 @@
         >
 
         <FrameLayout
-            android:id="@+id/fragment_container1"
+            android:id="@+id/fragment_container_signup"
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:layout_marginTop="100dp"
-            android:background="#33000000"
+            android:background="#15000000"
             />
 
-        <!--<Button-->
-            <!--android:id="@+id/continue_btn"-->
-            <!--android:layout_width="260dp"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_gravity="center"-->
-            <!--android:padding="10dp"-->
-            <!--android:text="@string/sign_up_continue" />-->
+        <Button
+            android:id="@+id/sign_up_request_btn"
+            android:layout_width="260dp"
+            android:layout_height="35dp"
+            android:layout_gravity="center"
+            android:layout_margin="20dp"
+            android:text="@string/sign_up_request"
+            android:visibility="gone"
+            android:background="#4285F4"
+            android:textColor="#FFFFFF"/>
 
     </LinearLayout>
 
@@ -34,13 +37,19 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center">
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#2CBB06"
+            android:layout_alignTop="@+id/back_login_page"/>
         <TextView
             android:id="@+id/back_login_page"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="15dp"
             android:gravity="center"
             android:layout_alignParentBottom="true"
-            android:text="@string/back_login_page"/>
+            android:text="@string/back_login_page" />
 
     </RelativeLayout>
 

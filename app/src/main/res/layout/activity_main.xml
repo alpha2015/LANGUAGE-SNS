@@ -11,9 +11,14 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_gravity="center"
-        android:layout_marginTop="130dp"
+        android:layout_marginTop="60dp"
         >
-
+        <ImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="20dp"
+            android:src="@drawable/ic_forum_black_36dp"/>
         <EditText
             android:id="@+id/login_email_text"
             android:layout_width="match_parent"
@@ -38,7 +43,6 @@
             android:id="@+id/login_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="10dp"
             android:text="@string/login_button"
             android:enabled="false"/>
 

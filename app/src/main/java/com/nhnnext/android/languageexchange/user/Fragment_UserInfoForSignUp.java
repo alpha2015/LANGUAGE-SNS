@@ -1,99 +1,137 @@
 package com.nhnnext.android.languageexchange.user;
 
 import android.app.Fragment;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.NumberPicker;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
 import com.nhnnext.android.languageexchange.R;
 
 /**
  * Created by Alpha on 2015. 7. 23..
  */
-public class Fragment_UserInfoForSignUp extends Fragment{
+public class Fragment_UserInfoForSignUp extends Fragment {
     //TODO 이메일의 경우 네트워크 통신을 하여 서버 DB에 존재 여부 확인
     //TODO 단계별 회원정보 입력 EditText view 보여지도록 처리
     //TODO 해당 단계 회원정보 입력중 입력내용 유무에 따른 다음단계 버튼 활성/비활성 처리
     //TODO 각 입력 단계별 회원정보 유효성 체크
-    EditText emailEditText;
-    EditText nameEditText;
-    EditText passwordEditText;
-    EditText birthEditText;
-    EditText genderEditText;
-    Button continueButton;
-    Button requestButton;
-    enum SignUpStep{EMAIL, NAME, PASSWORD, BIRTH, GENDER};
-    SignUpStep signUpStep;
-    User user;
+    private enum SignUpStep {
+        EMAIL, NAME, PASSWORD, AGE, GENDER
+    }
+
+    private LinearLayout emailLayout;
+    private LinearLayout nameLayout;
+    private LinearLayout passwordLayout;
+    private LinearLayout ageLayout;
+
+    private LinearLayout genderLayout;
+    private EditText emailEditText;
+    private EditText nameEditText;
+    private EditText passwordEditText;
+    private NumberPicker agePicker;
+    private RadioGroup genderRadioGroup;
+    private RadioButton maleRadioButton;
+    private RadioButton femaleRadioButton;
+
+    private Button continueButton;
+
+    private SignUpStep signUpStep;
+    private User userForSignUp;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-//        return super.onCreateView(inflater, container, savedInstanceState);
         signUpStep = SignUpStep.EMAIL;
-        user = new User();
+        userForSignUp = new User();
         View view = inflater.inflate(R.layout.fragment_signup, container, false);
-        emailEditText = (EditText)view.findViewById(R.id.sign_up_email);
-        nameEditText = (EditText)view.findViewById(R.id.sign_up_name);
-        passwordEditText = (EditText)view.findViewById(R.id.sign_up_password);
-        birthEditText = (EditText)view.findViewById(R.id.sign_up_birth);
-        genderEditText = (EditText)view.findViewById(R.id.sign_up_gender);
+        emailLayout = (LinearLayout) view.findViewById(R.id.sign_up_email_layout);
+        nameLayout = (LinearLayout) view.findViewById(R.id.sign_up_name_layout);
+        passwordLayout = (LinearLayout) view.findViewById(R.id.sign_up_password_layout);
+        ageLayout = (LinearLayout) view.findViewById(R.id.sign_up_age_layout);
+        genderLayout = (LinearLayout) view.findViewById(R.id.sign_up_gender_layout);
 
-        continueButton = (Button)view.findViewById(R.id.sign_up_continue_btn);
-        requestButton = (Button)view.findViewById(R.id.sign_up_request_btn);
-        requestButton.setOnClickListener(new View.OnClickListener() {
+        emailEditText = (EditText) view.findViewById(R.id.sign_up_email);
+        nameEditText = (EditText) view.findViewById(R.id.sign_up_name);
+        passwordEditText = (EditText) view.findViewById(R.id.sign_up_password);
+        agePicker = (NumberPicker) view.findViewById(R.id.sign_up_age);
+        genderRadioGroup = (RadioGroup) view.findViewById(R.id.sign_up_gender);
+        maleRadioButton = (RadioButton) view.findViewById(R.id.gender_male);
+        femaleRadioButton = (RadioButton) view.findViewById(R.id.gender_female);
+
+        genderRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {
-                //TODO 서버 DB에 login 요청
-                //TODO 1) 실패시 실패 사유 메시지 TOAST
-                //TODO 2) 성공시 MatchingActivity 호출
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                continueButton.setVisibility(View.VISIBLE);
             }
         });
+
+        emailEditText.addTextChangedListener(textBarWatcher);
+        nameEditText.addTextChangedListener(textBarWatcher);
+        passwordEditText.addTextChangedListener(textBarWatcher);
+
+        continueButton = (Button) view.findViewById(R.id.sign_up_continue_btn);
         continueButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
 
-                switch(signUpStep) {
+                switch (signUpStep) {
 
                     case EMAIL:
-                        user.setEmail(emailEditText.getText().toString());
-                        emailEditText.setVisibility(View.GONE);
-                        nameEditText.setVisibility(View.VISIBLE);
+                        userForSignUp.setEmail(emailEditText.getText().toString());
+                        emailLayout.setVisibility(View.GONE);
+                        nameLayout.setVisibility(View.VISIBLE);
                         signUpStep = SignUpStep.NAME;
+                        continueButton.setVisibility(View.GONE);
                         break;
 
                     case NAME:
-                        nameEditText.setVisibility(View.GONE);
-                        passwordEditText.setVisibility(View.VISIBLE);
-                        user.setName(nameEditText.getText().toString());
+                        nameLayout.setVisibility(View.GONE);
+                        passwordLayout.setVisibility(View.VISIBLE);
+                        userForSignUp.setName(nameEditText.getText().toString());
                         signUpStep = SignUpStep.PASSWORD;
+                        continueButton.setVisibility(View.GONE);
                         break;
 
                     case PASSWORD:
-                        passwordEditText.setVisibility(View.GONE);
-                        birthEditText.setVisibility(View.VISIBLE);
-                        user.setPassword(passwordEditText.getText().toString());
-                        signUpStep = SignUpStep.BIRTH;
+                        passwordLayout.setVisibility(View.GONE);
+                        ageLayout.setVisibility(View.VISIBLE);
+                        agePicker.setWrapSelectorWheel(false);
+                        agePicker.setMinValue(0);
+                        agePicker.setMaxValue(99);
+                        agePicker.setValue(20);
+                        userForSignUp.setPassword(passwordEditText.getText().toString());
+                        signUpStep = SignUpStep.AGE;
                         break;
 
-                    case BIRTH:
-                        birthEditText.setVisibility(View.GONE);
-                        genderEditText.setVisibility(View.VISIBLE);
-                        user.setBirth(birthEditText.getText().toString());
+                    case AGE:
+                        ageLayout.setVisibility(View.GONE);
+                        genderLayout.setVisibility(View.VISIBLE);
+                        userForSignUp.setAge(agePicker.getValue());
                         signUpStep = SignUpStep.GENDER;
+                        continueButton.setVisibility(View.GONE);
                         break;
 
                     case GENDER:
-                        user.setGender(genderEditText.getText().toString());
-                        genderEditText.setVisibility(View.GONE);
-                        enableSignUpBtn();
+                        if (maleRadioButton.isChecked())
+                            userForSignUp.setGender('M');
+                        else    //femaleRadioButton is checked
+                            userForSignUp.setGender('F');
+                        genderLayout.setVisibility(View.GONE);
+                        continueButton.setVisibility(View.GONE);
+                        requestEnableSignUpBtn();
                         break;
                 }
 
@@ -103,9 +141,51 @@ public class Fragment_UserInfoForSignUp extends Fragment{
         return view;
     }
 
-    private void enableSignUpBtn() {
-        //TODO 회원정보 전부 입력시 회원가입 버튼 활성화
-        continueButton.setVisibility(View.GONE);
-        requestButton.setVisibility(View.VISIBLE);
+    private void requestEnableSignUpBtn() { //TODO 메소드명 변경
+        //TODO 회원정보 전부 입력시 회원가입요청 버튼 활성화 요청
+        Log.d("storedUserInfo", String.valueOf(userForSignUp));
+        SignUpActivity signUpActivity = (SignUpActivity) getActivity();
+        signUpActivity.enableSignUp(userForSignUp);
     }
+
+    /*
+        Email/Name/Password EditText에 대해 입력값 없을 경우 '계속' 버튼 Visibility = GONE 처리
+     */
+    private TextWatcher textBarWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            switch (signUpStep) {
+
+                case EMAIL:
+                    if (emailEditText.length() > 0)
+                        continueButton.setVisibility(View.VISIBLE);
+                    else
+                        continueButton.setVisibility(View.GONE);
+                    break;
+                case NAME:
+                    if (nameEditText.length() > 0)
+                        continueButton.setVisibility(View.VISIBLE);
+                    else
+                        continueButton.setVisibility(View.GONE);
+                    break;
+                case PASSWORD:
+                    if (passwordEditText.length() > 0)
+                        continueButton.setVisibility(View.VISIBLE);
+                    else
+                        continueButton.setVisibility(View.GONE);
+                    break;
+            }
+
+        }
+    };
 }

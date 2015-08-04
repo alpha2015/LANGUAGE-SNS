@@ -7,59 +7,59 @@ public class User {
     private String email;
     private String name;
     private String password;
-    private String birth;
-    private String gender;
+    private int age;
+    private char gender;
 
     public User() {
-        this(null, null, null, null, null);
+        this(null, null, null, 0, 'N');
     }
 
-    public User(String birth, String email, String gender, String name, String password) {
-        this.birth = birth;
+    public User(String email, String name, String password, int age, char gender) {
         this.email = email;
-        this.gender = gender;
         this.name = name;
         this.password = password;
-    }
-
-    public String getBirth() {
-        return birth;
-    }
-
-    public void setBirth(String birth) {
-        this.birth = birth;
+        this.age = age;
+        this.gender = gender;
     }
 
     public String getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getGender() {
-        return gender;
-    }
-
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getPassword() {
         return password;
     }
 
+    public int getAge() {
+        return age;
+    }
+
+    public char getGender() {
+        return gender;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public void setGender(char gender) {
+        this.gender = gender;
     }
 
     @Override
@@ -69,12 +69,11 @@ public class User {
 
         User user = (User) o;
 
+        if (age != user.age) return false;
+        if (gender != user.gender) return false;
         if (email != null ? !email.equals(user.email) : user.email != null) return false;
         if (name != null ? !name.equals(user.name) : user.name != null) return false;
-        if (password != null ? !password.equals(user.password) : user.password != null)
-            return false;
-        if (birth != null ? !birth.equals(user.birth) : user.birth != null) return false;
-        return !(gender != null ? !gender.equals(user.gender) : user.gender != null);
+        return !(password != null ? !password.equals(user.password) : user.password != null);
 
     }
 
@@ -83,19 +82,19 @@ public class User {
         int result = email != null ? email.hashCode() : 0;
         result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (password != null ? password.hashCode() : 0);
-        result = 31 * result + (birth != null ? birth.hashCode() : 0);
-        result = 31 * result + (gender != null ? gender.hashCode() : 0);
+        result = 31 * result + age;
+        result = 31 * result + (int) gender;
         return result;
     }
 
     @Override
     public String toString() {
         return "User{" +
-                "birth='" + birth + '\'' +
-                ", email='" + email + '\'' +
+                "email='" + email + '\'' +
                 ", name='" + name + '\'' +
                 ", password='" + password + '\'' +
-                ", gender='" + gender + '\'' +
+                ", age=" + age +
+                ", gender=" + gender +
                 '}';
     }
 }
