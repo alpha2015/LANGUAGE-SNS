@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 import com.nhnnext.android.languageexchange.R;
 
@@ -17,8 +18,11 @@ public class MatchingActivity extends FragmentActivity implements View.OnClickLi
     private FragmentManager fm;
 
     private Button selectLanButton;
-    private Button startMatchButton;
-    private Button updateInfoButton;
+    private ImageButton startMatchButton;
+    private ImageButton updateInfoButton;
+    private Fragment_SelectLanguage fragment_SelectLanguage;
+    private Fragment_StartMatch fragment_StartMatch;
+    private Fragment_UpdateUserInfo fragment_UpdateUserInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,21 +30,21 @@ public class MatchingActivity extends FragmentActivity implements View.OnClickLi
         setContentView(R.layout.activity_match);
         //TODO Fragment 전환을 위한 버튼(언어선택, 매칭시작, 회원정보 변경) 이벤트 등록
         //TODO 언어 설정 Fragment 연결
-        selectLanButton = (Button) findViewById(R.id.select_language);
-        startMatchButton = (Button) findViewById(R.id.start_match);
-        updateInfoButton = (Button) findViewById(R.id.update_info);
+        fragment_SelectLanguage = new Fragment_SelectLanguage();
+        fragment_StartMatch = new Fragment_StartMatch();
+        fragment_UpdateUserInfo = new Fragment_UpdateUserInfo();
+
+        selectLanButton = (Button) findViewById(R.id.menu_select_language);
+        startMatchButton = (ImageButton) findViewById(R.id.menu_start_match);
+        updateInfoButton = (ImageButton) findViewById(R.id.menu_update_info);
 
         selectLanButton.setOnClickListener(this);
         startMatchButton.setOnClickListener(this);
         updateInfoButton.setOnClickListener(this);
 
-        fm = getFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
 
-        Fragment frag = new Fragment_SelectLanguage();
-
-        ft.add(R.id.fragment_container_match, frag);
-
+        ft.add(R.id.fragment_container_match, fragment_SelectLanguage);
         ft.commit();
 
     }
@@ -75,22 +79,18 @@ public class MatchingActivity extends FragmentActivity implements View.OnClickLi
     @Override
     public void onClick(View v) {
         //TODO 버튼 클릭에 따른 Fragment 동적 전환
-        FragmentTransaction ft = fm.beginTransaction();
-        Fragment frag;
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
         int id = v.getId();
 
-        switch(id){
-            case R.id.select_language :
-                frag = new Fragment_SelectLanguage();
-                ft.replace(R.id.fragment_container_match, frag);
+        switch (id) {
+            case R.id.menu_select_language:
+                ft.replace(R.id.fragment_container_match, fragment_SelectLanguage);
                 break;
-            case R.id.start_match :
-                frag = new Fragment_StartMatch();
-                ft.replace(R.id.fragment_container_match, frag);
+            case R.id.menu_start_match:
+                ft.replace(R.id.fragment_container_match, fragment_StartMatch);
                 break;
-            case R.id.update_info :
-                frag = new Fragment_UpdateUserInfo();
-                ft.replace(R.id.fragment_container_match, frag);
+            case R.id.menu_update_info:
+                ft.replace(R.id.fragment_container_match, fragment_UpdateUserInfo);
                 break;
         }
         ft.commit();

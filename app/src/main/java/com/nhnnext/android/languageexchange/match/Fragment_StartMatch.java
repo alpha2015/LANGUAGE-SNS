@@ -1,14 +1,18 @@
 package com.nhnnext.android.languageexchange.match;
 
 import android.app.Fragment;
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.nhnnext.android.languageexchange.R;
+import com.nhnnext.android.languageexchange.user.User;
 
 import java.util.ArrayList;
 
@@ -18,37 +22,62 @@ import java.util.ArrayList;
 public class Fragment_StartMatch extends Fragment implements View.OnClickListener{
     //TODO native, practicing 언어로 서버에서 해당 유저리스트 받아오기
     //TODO DownloadTargetUserListTask().execute(targetUrl);
+    Button matchButton;
 
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_template2, container, false);
+        View view = inflater.inflate(R.layout.fragment_start_match, container, false);
+        matchButton = (Button)view.findViewById(R.id.start_match_button);
+        matchButton.setOnClickListener(this);
+        return view;
     }
 
     @Override
     public void onClick(View v) {
         //TODO 매칭 시작 버튼 클릭시 서버 DB 접근 유저리스트 가져오기
+        int id = v.getId();
+        switch(id){
+            case R.id.start_match_button :
+                new MatchAsyncTask().execute("target url");
+                break;
+        }
+
     }
 
-    private class DownloadTargetUserListTask<T> extends AsyncTask<String, Void, ArrayList<T>> {
+    private class MatchAsyncTask extends AsyncTask<String, Void, ArrayList<User>> {
+        ProgressDialog progressDialog;
         @Override
         protected void onPreExecute() {
+            //progressBar 표시
+            progressDialog = new ProgressDialog(getActivity());
+            progressDialog.setMessage("회원매칭 중");
+            progressDialog.show();
             super.onPreExecute();
-            //TODO progressBar 표시
         }
 
         @Override
-        protected ArrayList<T> doInBackground(String... params) {
+        protected ArrayList<User> doInBackground(String... params) {
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             return null;
+
             //TODO HttpConnection 구현체 호출, 해당 유저리스트 가져오기 url을 통해 요청
             //TODO 유저리스트 결과값 parsing
         }
 
         @Override
-        protected void onPostExecute(ArrayList<T> result) {
+        protected void onPostExecute(ArrayList<User> result) {
             super.onPostExecute(result);
-            //TODO progressBar 숨기기
+            //progressBar 숨기기
+            progressDialog.dismiss();
+            Intent intent = new Intent();
+            intent.setAction("com.nhnnext.android.action.RESULT");
+            startActivity(intent);
             //TODO 실패시 실패 사유 표시
             //TODO 성공시 App DB에 parsing 결과 리스트 저장(필요한건지 추후 검토, 필요하다면 DB에 저장된 기존 매칭유저리스트 삭제)
             //TODO 결과보기 버튼 활성화

@@ -94,7 +94,7 @@ public class SignUpActivity extends FragmentActivity implements View.OnClickList
         protected void onPreExecute() {
             //progressBar 표시
             progressDialog = new ProgressDialog(SignUpActivity.this);
-            progressDialog.setMessage("로그인 중");
+            progressDialog.setMessage("회원가입 중");
             progressDialog.show();
             super.onPreExecute();
         }

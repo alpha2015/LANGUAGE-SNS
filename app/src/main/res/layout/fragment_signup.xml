@@ -194,4 +194,101 @@
         android:visibility="gone"
         android:background="#4285F4"
         android:textColor="#FFFFFF"/>
+
+    <RelativeLayout
+        android:id="@+id/sign_up_complete_layout"
+        android:layout_width="260dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        >
+
+        <TextView
+            android:id="@+id/userinfo_complete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_centerHorizontal="true"
+            android:text="다시 한번 확인하세요"
+            android:textSize="20sp"
+            android:textColor="#0100FF"
+            android:textStyle="bold"
+            />
+
+        <TextView
+            android:id="@+id/email"
+            android:layout_width="120dp"
+            android:layout_height="30dp"
+            android:layout_below="@id/userinfo_complete"
+            android:text="이메일"
+            android:background="@drawable/xml_black_stroke"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_toRightOf="@id/email"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/userinfo_complete"
+            android:text="test@gmail.com"
+            android:gravity="right"
+            android:background="@drawable/xml_black_stroke"
+            />
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="120dp"
+            android:layout_height="30dp"
+            android:layout_below="@id/email"
+            android:text="이름"
+            android:background="@drawable/xml_black_stroke"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_toRightOf="@id/name"
+            android:layout_below="@id/email"
+            android:layout_alignParentRight="true"
+            android:text="김아무개"
+            android:gravity="right"
+            android:background="@drawable/xml_black_stroke"
+            />
+
+        <TextView
+            android:id="@+id/age"
+            android:layout_width="120dp"
+            android:layout_height="30dp"
+            android:layout_below="@id/name"
+            android:text="나이"
+            android:background="@drawable/xml_black_stroke"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_toRightOf="@id/age"
+            android:layout_below="@id/name"
+            android:layout_alignParentRight="true"
+            android:text="30"
+            android:gravity="right"
+            android:background="@drawable/xml_black_stroke"
+            />
+
+        <TextView
+            android:id="@+id/gender"
+            android:layout_width="120dp"
+            android:layout_height="30dp"
+            android:layout_below="@id/age"
+            android:text="성별"
+            android:background="@drawable/xml_black_stroke"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_toRightOf="@id/gender"
+            android:layout_below="@id/age"
+            android:layout_alignParentRight="true"
+            android:text="남성"
+            android:gravity="right"
+            android:background="@drawable/xml_black_stroke"
+            />
+
+    </RelativeLayout>
 </LinearLayout>

@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 
 import com.nhnnext.android.languageexchange.R;
 
@@ -34,6 +35,7 @@ public class Fragment_UserInfoForSignUp extends Fragment {
     private LinearLayout nameLayout;
     private LinearLayout passwordLayout;
     private LinearLayout ageLayout;
+    private RelativeLayout completeLayout;
 
     private LinearLayout genderLayout;
     private EditText emailEditText;
@@ -61,6 +63,7 @@ public class Fragment_UserInfoForSignUp extends Fragment {
         passwordLayout = (LinearLayout) view.findViewById(R.id.sign_up_password_layout);
         ageLayout = (LinearLayout) view.findViewById(R.id.sign_up_age_layout);
         genderLayout = (LinearLayout) view.findViewById(R.id.sign_up_gender_layout);
+        completeLayout = (RelativeLayout) view.findViewById(R.id.sign_up_complete_layout);
 
         emailEditText = (EditText) view.findViewById(R.id.sign_up_email);
         nameEditText = (EditText) view.findViewById(R.id.sign_up_name);
@@ -120,8 +123,8 @@ public class Fragment_UserInfoForSignUp extends Fragment {
                         ageLayout.setVisibility(View.GONE);
                         genderLayout.setVisibility(View.VISIBLE);
                         userForSignUp.setAge(agePicker.getValue());
-                        signUpStep = SignUpStep.GENDER;
                         continueButton.setVisibility(View.GONE);
+                        signUpStep = SignUpStep.GENDER;
                         break;
 
                     case GENDER:
@@ -132,6 +135,7 @@ public class Fragment_UserInfoForSignUp extends Fragment {
                         genderLayout.setVisibility(View.GONE);
                         continueButton.setVisibility(View.GONE);
                         requestEnableSignUpBtn();
+                        completeLayout.setVisibility(View.VISIBLE);
                         break;
                 }
 

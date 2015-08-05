@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="100dp"
+        android:layout_marginTop="100dp"
+        android:orientation="horizontal"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:textSize="30sp"
+            android:background="#4285F4"
+            android:textColor="#FFFFFF"
+            android:text="native language"/>
+
+        <Spinner android:id="@+id/native_language"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:prompt="@string/native_language"
+            />
+
+    </LinearLayout>
+
+
+    <TextView
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textSize="25sp"
+        android:background="#4285F4"
+        android:textColor="#FFFFFF"
+        android:layout_margin="10dp"
+        android:text="practicing language"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="template1" />
+
+</LinearLayout>

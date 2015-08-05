@@ -33,4 +33,8 @@
 
     <string name="male">남</string>
     <string name="female">여</string>
+
+    <string name="native_language">Native Langueage</string>
+
+    <string name="profile_update">프로필 수정</string>
 </resources>

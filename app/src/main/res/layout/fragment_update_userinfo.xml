@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="49dp"
+        android:layout_marginLeft="22.5dp"
+        android:layout_marginRight="22.5dp"
+        android:gravity="center"
+        android:text="@string/profile_update"
+        android:textColor="#000000"
+        android:textSize="18sp" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingLeft="22.5dp"
+        android:paddingRight="22.5dp">
+
+        <ImageView
+            android:id="@+id/imageView01"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/square_profile_default" />
+
+        <ImageView
+            android:id="@+id/imageView03"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@+id/imageView01"
+            android:src="@drawable/square_profile_delete" />
+
+
+    </RelativeLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        android:background="@drawable/shape_rectangle">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:inputType="textEmailAddress"
+            android:text="이메일"
+            android:textColor="#4c4c4c"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/setting_edit_email"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:inputType="textEmailAddress"
+            android:gravity="center_vertical|end" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        android:background="@drawable/shape_rectangle">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="이름"
+            android:textColor="#4c4c4c"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/setting_edit_name"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:gravity="center_vertical|end" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        android:background="@drawable/shape_rectangle">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="비밀번호"
+            android:textColor="#4c4c4c"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/setting_edit_password"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:gravity="center_vertical|end"
+            android:password="true" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        android:background="@drawable/shape_rectangle">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="나이"
+            android:textColor="#4c4c4c"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/setting_edit_age"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:gravity="center_vertical|end" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        android:background="@drawable/shape_rectangle">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="성별"
+            android:textColor="#4c4c4c"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/setting_edit_gender"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:gravity="center_vertical|end" />
+    </LinearLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        android:background="#f4f5f7"
+        android:orientation="vertical">
+        <Button
+            android:id="@+id/setting_save"
+            android:layout_width="260dp"
+            android:layout_height="35dp"
+            android:layout_centerInParent="true"
+            android:text="저장하기"
+            android:background="#4285F4"
+            android:textColor="#FFFFFF"/>
+    </RelativeLayout>
+
+</LinearLayout>

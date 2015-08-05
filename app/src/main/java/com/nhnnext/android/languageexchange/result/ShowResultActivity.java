@@ -5,6 +5,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 
+import com.nhnnext.android.languageexchange.R;
+
 import java.util.ArrayList;
 
 /**
@@ -15,7 +17,7 @@ public class ShowResultActivity extends FragmentActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        setContentView(R.layout.activity_result);
         //TODO (Fragment 구현부에서 해야하는지 Fragment 스터디 후에 결정)
         //TODO (Fragment1)매칭된유저 리스트 보여주기 - Adapter, list 연결 구현(Parcel or DB)
         //TODO (Fragment1)한 페이지보다 많은 리스트일 경우 더보기 버튼 보여주기 및 클릭 이벤트 설정
