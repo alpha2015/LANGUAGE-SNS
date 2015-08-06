@@ -131,7 +131,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
             //TODO HttpConnection 구현체 호출, 로그인 url을 통해 요청
             //TODO 결과값(성공여부, 회원정보) parsing
             try {
-                Thread.sleep(2000); //로그인 가상 테스트용 sleep
+                Thread.sleep(500); //로그인 가상 테스트용 sleep
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

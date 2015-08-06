@@ -15,8 +15,6 @@ import com.nhnnext.android.languageexchange.R;
  * Created by Alpha on 2015. 7. 22..
  */
 public class MatchingActivity extends FragmentActivity implements View.OnClickListener {
-    private FragmentManager fm;
-
     private Button selectLanButton;
     private ImageButton startMatchButton;
     private ImageButton updateInfoButton;

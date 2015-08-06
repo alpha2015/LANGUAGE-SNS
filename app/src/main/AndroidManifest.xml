@@ -137,6 +137,28 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".result.UserDetailActivity"
+            android:allowTaskReparenting="false"
+            android:alwaysRetainTaskState="false"
+            android:clearTaskOnLaunch="false"
+            android:enabled="true"
+            android:excludeFromRecents="false"
+            android:exported="false"
+            android:finishOnTaskLaunch="false"
+            android:hardwareAccelerated="false"
+            android:launchMode="standard"
+            android:noHistory="false"
+            android:screenOrientation="unspecified"
+            android:stateNotNeeded="false"
+            android:uiOptions="none"
+            >
+            <intent-filter>
+                <action android:name="com.nhnnext.android.action.DETAIL" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
     </application>
 
 </manifest>

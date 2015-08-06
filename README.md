@@ -10,3 +10,12 @@
   * 변경전 : 회원정보 한 항목당 fragment가 존재하여 다음버튼 클릭시 fragment들이 전환
   * 변경후 : 회원정보 항목들 모두 하나의 fragment에서 관리하며 view 숨김/보임 전환으로 회원정보 입력
   * 변경사유 : 불필요한 fragment들 추가로 코드 중복 발생 예상(하나의 fragment로 view visible/gone 조작)
+
+
+### 8.6 일자
+* 매칭결과 Activity
+  * 변경전 : 1) 매칭결과 Activity에서 유저리스트 fragment와 유저 상세보기 fragment가 존재
+           2) 리스트 중 유저 선택시 유저 상세보기 fragment로 교체되며 유저 상세보기 페이지 전환
+  * 변경후 : 매칭결과 Activity에서 유저리스트 바로 뿌려주고 유저 선택시 상세보기 Activity 호출
+  * 변경사유 : 1) 유저를 선택했을때 페이지 전환으로 완전히 다른 화면으로 변하는게 자연스럽다고 판단
+             2) 매칭결과 Activity에서 fragment교체를 제외하고 기능이 없음

@@ -37,4 +37,7 @@
     <string name="native_language">Native Langueage</string>
 
     <string name="profile_update">프로필 수정</string>
+
+    <string name="request_send_email">이메일 보내기</string>
+    <string name="request_friend">친구요청</string>
 </resources>
