@@ -10,31 +10,32 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="50dp"
-        android:src="@drawable/sample_image_1" />
+        />
 
     <TextView
+        android:id="@+id/mached_user_name_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="10dp"
-        android:text="Cindy"
         />
 
     <TextView
+        android:id="@+id/mached_user_gender_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="@string/male"
         />
 
     <TextView
+        android:id="@+id/mached_user_age_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="29"
         />
 
     <Button
+        android:id="@+id/request_send_email_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -42,6 +43,7 @@
         android:text="@string/request_send_email"/>
 
     <Button
+        android:id="@+id/request_friend_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

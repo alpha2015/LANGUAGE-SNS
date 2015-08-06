@@ -39,7 +39,7 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
     private static TextView editGender;
     private Button saveButton;
 
-    private static User user = new User("test@naver.com", "김아무개", "1234", 30, 'M');
+    private static User user = new User(null, "test@naver.com", "김아무개", "1234", 30, 'M');
 
     @Nullable
     @Override

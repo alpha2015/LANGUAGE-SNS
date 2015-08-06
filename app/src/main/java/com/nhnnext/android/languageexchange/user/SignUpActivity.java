@@ -37,7 +37,7 @@ public class SignUpActivity extends FragmentActivity implements View.OnClickList
         backLogin.setOnClickListener(this);
         requestButton.setOnClickListener(this);
 
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();//getFragmentManager().beginTransaction();
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
         Fragment fragment = new Fragment_UserInfoForSignUp();
         transaction.add(R.id.fragment_container_signup, fragment);
         transaction.commit();

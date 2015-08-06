@@ -1,68 +1,57 @@
 package com.nhnnext.android.languageexchange.common;
 
 import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.GridView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.nhnnext.android.languageexchange.R;
+import com.nhnnext.android.languageexchange.user.User;
+
+import java.util.List;
 
 /**
  * Created by Alpha on 2015. 8. 6..
  */
-public class UserItemAdapter extends BaseAdapter {
-    private Context mContext;
-    // references to our images
-    private Integer[] mThumbIds = {
-            R.drawable.sample_image_1, R.drawable.sample_image_2,
-            R.drawable.sample_image_3, R.drawable.sample_image_4,
-            R.drawable.sample_image_5, R.drawable.sample_image_6,
-            R.drawable.sample_image_7, R.drawable.sample_image_8,
-            R.drawable.sample_image_9, R.drawable.sample_image_10,
-            R.drawable.sample_image_11, R.drawable.sample_image_12,
-            R.drawable.sample_image_13, R.drawable.sample_image_14,
-            R.drawable.sample_image_15, R.drawable.sample_image_16
-    };
+public class UserItemAdapter extends ArrayAdapter<User> {
+    private LayoutInflater mInflater;
 
-    public UserItemAdapter(Context c) {
-        mContext = c;
+    public UserItemAdapter(Context context, int resource, List<User> objects) {
+        super(context, resource, objects);
+        mInflater = LayoutInflater.from(context);
     }
 
-    public int getCount() {
-        return mThumbIds.length;
-    }
-
-    public Object getItem(int position) {
-        return null;
-    }
-
-    public long getItemId(int position) {
-        return 0;
-    }
-
-    // create a new ImageView for each item referenced by the Adapter
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ImageView imageView;
+        ViewHolder holder;
         if (convertView == null) {
             // if it's not recycled, initialize some attributes
-            imageView = new ImageView(mContext);
-            imageView.setLayoutParams(new GridView.LayoutParams(85, 85));
-            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            imageView.setPadding(8, 8, 8, 8);
+            holder = new ViewHolder();
+            convertView = mInflater.inflate(R.layout.user_list_item, parent, false);
+            holder.image = (ImageView) convertView.findViewById(R.id.item_user_image);
+            holder.name = (TextView) convertView.findViewById(R.id.item_user_name);
+            holder.gender = (TextView) convertView.findViewById(R.id.item_user_gender);
+            holder.age = (TextView) convertView.findViewById(R.id.item_user_age);
+
+            convertView.setTag(holder);
         } else {
-            imageView = (ImageView) convertView;
+            holder = (ViewHolder) convertView.getTag();
         }
-
-        imageView.setImageResource(mThumbIds[position]);
-        return imageView;
+        holder.image.setImageBitmap(getItem(position).getImage());
+        holder.name.setText("" + getItem(position).getName());
+        holder.gender.setText("" + getItem(position).getGender());
+        holder.age.setText(Integer.toString(getItem(position).getAge()));
+        return convertView;
     }
 
-    public Integer getThumbIds(int position){
-        return mThumbIds[position];
+    private static class ViewHolder {
+        ImageView image;
+        TextView name;
+        TextView gender;
+        TextView age;
     }
-
 
 }

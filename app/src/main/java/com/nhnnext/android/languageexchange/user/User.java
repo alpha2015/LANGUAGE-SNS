@@ -1,9 +1,12 @@
 package com.nhnnext.android.languageexchange.user;
 
+import android.graphics.Bitmap;
+
 /**
  * Created by Alpha on 2015. 8. 3..
  */
 public class User {
+    private Bitmap image;
     private String email;
     private String name;
     private String password;
@@ -11,15 +14,20 @@ public class User {
     private char gender;
 
     public User() {
-        this(null, null, null, 0, 'N');
+        this(null, null, null, null, 0, 'N');
     }
 
-    public User(String email, String name, String password, int age, char gender) {
+    public User(Bitmap image, String email, String name, String password, int age, char gender) {
+        this.image = image;
         this.email = email;
         this.name = name;
         this.password = password;
         this.age = age;
         this.gender = gender;
+    }
+
+    public Bitmap getImage() {
+        return image;
     }
 
     public String getEmail() {
@@ -40,6 +48,10 @@ public class User {
 
     public char getGender() {
         return gender;
+    }
+
+    public void setImage(Bitmap image) {
+        this.image = image;
     }
 
     public void setEmail(String email) {
@@ -71,6 +83,7 @@ public class User {
 
         if (age != user.age) return false;
         if (gender != user.gender) return false;
+        if (image != null ? !image.equals(user.image) : user.image != null) return false;
         if (email != null ? !email.equals(user.email) : user.email != null) return false;
         if (name != null ? !name.equals(user.name) : user.name != null) return false;
         return !(password != null ? !password.equals(user.password) : user.password != null);
@@ -79,7 +92,8 @@ public class User {
 
     @Override
     public int hashCode() {
-        int result = email != null ? email.hashCode() : 0;
+        int result = image != null ? image.hashCode() : 0;
+        result = 31 * result + (email != null ? email.hashCode() : 0);
         result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (password != null ? password.hashCode() : 0);
         result = 31 * result + age;
@@ -90,7 +104,8 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "email='" + email + '\'' +
+                "image=" + image +
+                ", email='" + email + '\'' +
                 ", name='" + name + '\'' +
                 ", password='" + password + '\'' +
                 ", age=" + age +

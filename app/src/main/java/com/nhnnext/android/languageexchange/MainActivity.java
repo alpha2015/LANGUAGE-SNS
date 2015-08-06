@@ -30,6 +30,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //레이아웃 view
         emailEditText = (EditText) findViewById(R.id.login_email_text);
         passwordEditText = (EditText) findViewById(R.id.login_password_text);
         loginButton = (Button) findViewById(R.id.login_btn);
@@ -50,7 +51,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         //TODO if 회원정보 존재하지 않을 경우) user = null; , 자동 로그인 수행 하지 않음
 //        user = null;
         //TODO else 회원정보 존재할 경우) 자동로그인 시도시 서버 api를 통해 로그인 시도 및 성공/실패 여부 반환 요청 AsyncTask 실행
-        user = new User("test@naver.com", "최성원", "1234", 29, 'M'); //test data
+        user = new User(null, "test@naver.com", "최성원", "1234", 29, 'M'); //test dummy data
         emailEditText.setText(user.getEmail());
 //        new LoginAsyncTask().execute("target url", user);
     }
