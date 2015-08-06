@@ -1,20 +1,16 @@
 package com.nhnnext.android.languageexchange.user;
 
-import android.app.Activity;
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.nhnnext.android.languageexchange.MainActivity;
 import com.nhnnext.android.languageexchange.R;
 
 /**
@@ -33,7 +29,7 @@ public class SignUpActivity extends FragmentActivity implements View.OnClickList
         //회원정보 입력 fragment 연결
         //로그인 Activity 돌아가기 이벤트 등록
         backLogin = (TextView) findViewById(R.id.back_login_page);
-        requestButton = (Button)findViewById(R.id.sign_up_request_btn);
+        requestButton = (Button) findViewById(R.id.sign_up_request_btn);
         backLogin.setOnClickListener(this);
         requestButton.setOnClickListener(this);
 
@@ -75,8 +71,7 @@ public class SignUpActivity extends FragmentActivity implements View.OnClickList
         switch (id) {
             case R.id.back_login_page:
                 //TODO 로그인 Activity로 돌아가기
-                Intent intentIntoMain = new Intent(this, MainActivity.class);
-                startActivity(intentIntoMain);
+                onBackPressed();
                 break;
             case R.id.sign_up_request_btn:
                 /*
@@ -142,3 +137,4 @@ public class SignUpActivity extends FragmentActivity implements View.OnClickList
         this.userForSignUp = userForSignUp;
     }
 }
+
