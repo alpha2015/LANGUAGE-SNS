@@ -12,18 +12,26 @@ public class User {
     private String password;
     private int age;
     private char gender;
+    private String nativeLanguage;
+    private String practicingLanguage;
 
     public User() {
-        this(null, null, null, null, 0, 'N');
+        this(null, null, null, null, 0, 'N', null, null);
     }
 
-    public User(Bitmap image, String email, String name, String password, int age, char gender) {
+    public User(String email, String name, String password, int age, char gender) {
+        this(null, email, name, password, age, gender, null, null);
+    }
+
+    public User(Bitmap image, String email, String name, String password, int age, char gender, String nativeLanguage, String practicingLanguage) {
         this.image = image;
         this.email = email;
         this.name = name;
         this.password = password;
         this.age = age;
         this.gender = gender;
+        this.nativeLanguage = nativeLanguage;
+        this.practicingLanguage = practicingLanguage;
     }
 
     public Bitmap getImage() {
@@ -50,6 +58,23 @@ public class User {
         return gender;
     }
 
+    public String getNativeLanguage() {
+        return nativeLanguage;
+    }
+
+    public String getPracticingLanguage() {
+        return practicingLanguage;
+    }
+
+    public String getGenderForKorean() {
+        if (gender == 'M')
+            return "남성";
+        else if (gender == 'F')
+            return "여성";
+        else
+            return null;
+    }
+
     public void setImage(Bitmap image) {
         this.image = image;
     }
@@ -74,6 +99,14 @@ public class User {
         this.gender = gender;
     }
 
+    public void setNativeLanguage(String nativeLanguage) {
+        this.nativeLanguage = nativeLanguage;
+    }
+
+    public void setPracticingLanguage(String practicingLanguage) {
+        this.practicingLanguage = practicingLanguage;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -86,7 +119,11 @@ public class User {
         if (image != null ? !image.equals(user.image) : user.image != null) return false;
         if (email != null ? !email.equals(user.email) : user.email != null) return false;
         if (name != null ? !name.equals(user.name) : user.name != null) return false;
-        return !(password != null ? !password.equals(user.password) : user.password != null);
+        if (password != null ? !password.equals(user.password) : user.password != null)
+            return false;
+        if (nativeLanguage != null ? !nativeLanguage.equals(user.nativeLanguage) : user.nativeLanguage != null)
+            return false;
+        return !(practicingLanguage != null ? !practicingLanguage.equals(user.practicingLanguage) : user.practicingLanguage != null);
 
     }
 
@@ -98,6 +135,8 @@ public class User {
         result = 31 * result + (password != null ? password.hashCode() : 0);
         result = 31 * result + age;
         result = 31 * result + (int) gender;
+        result = 31 * result + (nativeLanguage != null ? nativeLanguage.hashCode() : 0);
+        result = 31 * result + (practicingLanguage != null ? practicingLanguage.hashCode() : 0);
         return result;
     }
 
@@ -110,6 +149,8 @@ public class User {
                 ", password='" + password + '\'' +
                 ", age=" + age +
                 ", gender=" + gender +
+                ", nativeLanguage='" + nativeLanguage + '\'' +
+                ", practicingLanguage='" + practicingLanguage + '\'' +
                 '}';
     }
 }

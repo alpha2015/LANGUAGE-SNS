@@ -8,8 +8,7 @@
         android:id="@+id/fragment_container_match"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="7"
-        />
+        android:layout_weight="7" />
 
 
     <LinearLayout
@@ -17,30 +16,29 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:orientation="horizontal">
-
+        <!-- TODO 3개 버튼 비율 동일 설정 옵션 바꾸기(WARNING 제거)-->
         <Button
             android:id="@+id/menu_select_language"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="@string/select_language"
-            />
+            android:text="@string/select_language" />
 
         <ImageButton
             android:id="@+id/menu_start_match"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:src="@drawable/ic_search_black_36dp"
-            />
+            android:contentDescription="@string/matching_start_button"
+            android:src="@drawable/ic_search_black_36dp" />
 
         <ImageButton
             android:id="@+id/menu_update_info"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:src="@drawable/ic_settings_black_36dp"
-            />
+            android:contentDescription="@string/profile_update_button"
+            android:src="@drawable/ic_settings_black_36dp" />
     </LinearLayout>
 
 </LinearLayout>

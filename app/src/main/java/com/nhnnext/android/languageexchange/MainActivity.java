@@ -48,10 +48,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         super.onStart();
         //TODO 앱내 DB에 회원정보 가져오기
-        //TODO if 회원정보 존재하지 않을 경우) user = null; , 자동 로그인 수행 하지 않음
-//        user = null;
+        //TODO if 회원정보 존재하지 않을 경우) 자동 로그인 수행 하지 않음
+
         //TODO else 회원정보 존재할 경우) 자동로그인 시도시 서버 api를 통해 로그인 시도 및 성공/실패 여부 반환 요청 AsyncTask 실행
-        user = new User(null, "test@naver.com", "최성원", "1234", 29, 'M'); //test dummy data
+        user = new User("test@naver.com", "최성원", "1234", 29, 'M'); //test dummy data
         emailEditText.setText(user.getEmail());
 //        new LoginAsyncTask().execute("target url", user);
     }
@@ -131,11 +131,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
              */
             //TODO HttpConnection 구현체 호출, 로그인 url을 통해 요청
             //TODO 결과값(성공여부, 회원정보) parsing
-            try {
-                Thread.sleep(500); //로그인 가상 테스트용 sleep
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
             //TODO 성공시 TRUE, user정보 Pair instance return
             //TODO 실패시 FALSE, 실패 사유 Pair instance return
             return new Pair<>(true, "success");

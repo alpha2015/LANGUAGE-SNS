@@ -3,22 +3,18 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-    <string name="login_email">이메일</string>
-    <string name="login_password">비밀번호</string>
+    <string name="email">이메일</string>
+    <string name="password">비밀번호</string>
     <string name="login_button">로그인</string>
     <string name="sign_up">sign up</string>
     <string name="sign_up_continue">계속</string>
     <string name="back_login_page">이미 계정을 갖고 계신가요?</string>
-    <string name="title_activity_main2">Main2Activity</string>
-    <string name="sign_up_email">이메일</string>
-    <string name="sign_up_name">이름</string>
-    <string name="sign_up_password">비밀번호</string>
-    <string name="sign_up_birth">생년월일</string>
-    <string name="sign_up_gender">성별</string>
+    <string name="name">이름</string>
     <string name="sign_up_request">가입요청</string>
     <string name="select_language">ㄱㄴㄷ/abc</string>
     <string name="start_match">매칭시작</string>
     <string name="update_info">내정보</string>
+    <string name="age">나이</string>
 
     <string name="sign_up_email_top_message">시작하기</string>
     <string name="sign_up_email_bottom_message">로그인할 때 이 이메일 주소를 사용합니다.</string>
@@ -30,14 +26,27 @@
     <string name="sign_up_age_bottom_message">비슷한 또래의 친구들을 사귀어 보세요.</string>
     <string name="sign_up_gender_top_message">성별을 알려주세요</string>
     <string name="sign_up_gender_bottom_message">설정에서 나중에 변경할 수 있습니다.</string>
+    <string name="sign_up_alert_message">다시 한번 확인하세요.</string>
 
-    <string name="male">남</string>
-    <string name="female">여</string>
 
-    <string name="native_language">Native Langueage</string>
+    <string name="gender">성별</string>
+    <string name="male">남성</string>
+    <string name="female">여성</string>
+
+    <string name="native_language">Native Language</string>
+    <string name="practicing_language">Practicing Language</string>
+    <string name="state_save">저장하기</string>
 
     <string name="profile_update">프로필 수정</string>
 
     <string name="request_send_email">이메일 보내기</string>
     <string name="request_friend">친구요청</string>
+
+    <!-- contentDescription -->
+    <string name="matched_user_image">Matched user image</string>
+    <string name="profile_user_image">Profile user image</string>
+    <string name="profile_image_delete_button">Profile image delete button</string>
+    <string name="app_logo_icon">App logo icon</string>
+    <string name="profile_update_button">Profile update button</string>
+    <string name="matching_start_button">Matching start button</string>
 </resources>

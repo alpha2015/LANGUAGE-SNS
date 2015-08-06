@@ -3,29 +3,30 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#00BA3B"
-    android:orientation="vertical"
-    >
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="260dp"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:layout_gravity="center"
         android:layout_marginTop="60dp"
-        >
+        android:orientation="vertical">
+
         <ImageView
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_gravity="center"
             android:layout_marginBottom="20dp"
-            android:src="@drawable/ic_forum_black_36dp"/>
+            android:contentDescription="@string/app_logo_icon"
+            android:src="@drawable/ic_forum_black_36dp" />
+
         <EditText
             android:id="@+id/login_email_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="2dp"
             android:background="#FFFFFF"
-            android:hint="@string/login_email"
+            android:hint="@string/email"
             android:inputType="textEmailAddress"
             android:padding="10dp" />
 
@@ -36,16 +37,16 @@
             android:layout_gravity="center"
             android:layout_marginBottom="2dp"
             android:background="#FFFFFF"
-            android:hint="@string/login_password"
-            android:password="true"
+            android:hint="@string/password"
+            android:inputType="textPassword"
             android:padding="10dp" />
 
         <Button
             android:id="@+id/login_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/login_button"
-            android:enabled="false"/>
+            android:enabled="false"
+            android:text="@string/login_button" />
 
     </LinearLayout>
 
@@ -53,9 +54,8 @@
         android:layout_width="260dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:orientation="vertical"
         android:layout_marginTop="160dp"
-        >
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/signup_btn"
@@ -63,8 +63,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:padding="10dp"
-            android:text="@string/sign_up"
-            />
+            android:text="@string/sign_up" />
 
     </LinearLayout>
 

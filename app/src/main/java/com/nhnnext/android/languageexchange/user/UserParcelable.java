@@ -98,6 +98,15 @@ public class UserParcelable implements Parcelable {
         return gender;
     }
 
+    public String getGenderForKorean() {
+        if (gender == 'M')
+            return "남성";
+        else if (gender == 'F')
+            return "여성";
+        else
+            return null;
+    }
+
     @Override
     public String toString() {
         return "UserParcelable{" +

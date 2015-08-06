@@ -101,11 +101,6 @@ public class SignUpActivity extends FragmentActivity implements View.OnClickList
              */
             //TODO HttpConnection 구현체 호출, 회원가입 url을 통해 요청
             //TODO 결과값(성공여부) parsing
-            try {
-                Thread.sleep(500); //로그인 가상 테스트용 sleep
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
             //TODO 성공시 TRUE return
             //TODO 실패시 FALSE return
             return true;

@@ -30,37 +30,37 @@ public class ShowResultActivity extends Activity {
         userList = new ArrayList<>(); //유저리스트 저장을 위한 ArrayList
         //dummy user list item
         userList.add(new User(BitmapFactory.decodeResource(getResources(), R.drawable.sample_image_1), "sample1@naver.com",
-                "Rebecca", null, 21, 'F'));
+                "Rebecca", null, 21, 'F', null, null));
         userList.add(new User(BitmapFactory.decodeResource(getResources(), R.drawable.sample_image_2), "sample1@naver.com",
-                "TOM", null, 22, 'M'));
+                "TOM", null, 22, 'M', null, null));
         userList.add(new User(BitmapFactory.decodeResource(getResources(), R.drawable.sample_image_3), "sample1@naver.com",
-                "JUNG WOO", null, 23, 'M'));
+                "JUNG WOO", null, 23, 'M', null, null));
         userList.add(new User(BitmapFactory.decodeResource(getResources(), R.drawable.sample_image_4), "sample1@naver.com",
-                "Liu", null, 24, 'F'));
+                "Liu", null, 24, 'F', null, null));
         userList.add(new User(BitmapFactory.decodeResource(getResources(), R.drawable.sample_image_5), "sample1@naver.com",
-                "Emilia", null, 25, 'F'));
+                "Emilia", null, 25, 'F', null, null));
         userList.add(new User(BitmapFactory.decodeResource(getResources(), R.drawable.sample_image_6), "sample1@naver.com",
-                "Cindy", null, 26, 'F'));
+                "Cindy", null, 26, 'F', null, null));
         userList.add(new User(BitmapFactory.decodeResource(getResources(), R.drawable.sample_image_7), "sample1@naver.com",
-                "Ko-eun", null, 27, 'F'));
+                "Ko-eun", null, 27, 'F', null, null));
         userList.add(new User(BitmapFactory.decodeResource(getResources(), R.drawable.sample_image_8), "sample1@naver.com",
-                "천우희", null, 28, 'F'));
+                "천우희", null, 28, 'F', null, null));
         userList.add(new User(BitmapFactory.decodeResource(getResources(), R.drawable.sample_image_9), "sample1@naver.com",
-                "전지현", null, 29, 'F'));
+                "전지현", null, 29, 'F', null, null));
         userList.add(new User(BitmapFactory.decodeResource(getResources(), R.drawable.sample_image_10), "sample1@naver.com",
-                "Seydoux", null, 30, 'F'));
+                "Seydoux", null, 30, 'F', null, null));
         userList.add(new User(BitmapFactory.decodeResource(getResources(), R.drawable.sample_image_11), "sample1@naver.com",
-                "Jeremy", null, 31, 'M'));
+                "Jeremy", null, 31, 'M', null, null));
         userList.add(new User(BitmapFactory.decodeResource(getResources(), R.drawable.sample_image_12), "sample1@naver.com",
-                "Christopher", null, 32, 'M'));
+                "Christopher", null, 32, 'M', null, null));
         userList.add(new User(BitmapFactory.decodeResource(getResources(), R.drawable.sample_image_13), "sample1@naver.com",
-                "이정재", null, 33, 'M'));
+                "이정재", null, 33, 'M', null, null));
         userList.add(new User(BitmapFactory.decodeResource(getResources(), R.drawable.sample_image_14), "sample1@naver.com",
-                "황정민", null, 34, 'M'));
+                "황정민", null, 34, 'M', null, null));
         userList.add(new User(BitmapFactory.decodeResource(getResources(), R.drawable.sample_image_15), "sample1@naver.com",
-                "달수", null, 35, 'M'));
+                "달수", null, 35, 'M', null, null));
         userList.add(new User(BitmapFactory.decodeResource(getResources(), R.drawable.sample_image_16), "sample1@naver.com",
-                "임지연", null, 36, 'F'));
+                "임지연", null, 36, 'F', null, null));
 
         /*
             매칭된 유저 리스트 보여주기

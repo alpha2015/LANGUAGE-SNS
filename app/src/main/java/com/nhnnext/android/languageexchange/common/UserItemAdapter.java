@@ -42,7 +42,7 @@ public class UserItemAdapter extends ArrayAdapter<User> {
         }
         holder.image.setImageBitmap(getItem(position).getImage());
         holder.name.setText("" + getItem(position).getName());
-        holder.gender.setText("" + getItem(position).getGender());
+        holder.gender.setText(getItem(position).getGenderForKorean());
         holder.age.setText(Integer.toString(getItem(position).getAge()));
         return convertView;
     }

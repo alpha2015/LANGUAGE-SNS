@@ -25,13 +25,15 @@
             android:id="@+id/imageView01"
             android:layout_width="100dp"
             android:layout_height="100dp"
+            android:contentDescription="@string/profile_user_image"
             android:src="@drawable/square_profile_default" />
 
         <ImageView
             android:id="@+id/imageView03"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignRight="@+id/imageView01"
+            android:layout_alignRight="@id/imageView01"
+            android:contentDescription="@string/profile_image_delete_button"
             android:src="@drawable/square_profile_delete" />
 
 
@@ -48,8 +50,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center_vertical"
-            android:inputType="textEmailAddress"
-            android:text="이메일"
+            android:text="@string/email"
             android:textColor="#4c4c4c"
             android:textSize="16sp" />
 
@@ -58,8 +59,8 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="2"
-            android:inputType="textEmailAddress"
-            android:gravity="center_vertical|end" />
+            android:gravity="center_vertical|end"
+            android:inputType="textEmailAddress" />
     </LinearLayout>
 
     <LinearLayout
@@ -72,7 +73,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center_vertical"
-            android:text="이름"
+            android:text="@string/name"
             android:textColor="#4c4c4c"
             android:textSize="16sp" />
 
@@ -81,7 +82,8 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="2"
-            android:gravity="center_vertical|end" />
+            android:gravity="center_vertical|end"
+            android:inputType="textPersonName" />
     </LinearLayout>
 
     <LinearLayout
@@ -94,7 +96,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center_vertical"
-            android:text="비밀번호"
+            android:text="@string/password"
             android:textColor="#4c4c4c"
             android:textSize="16sp" />
 
@@ -104,7 +106,7 @@
             android:layout_height="match_parent"
             android:layout_weight="2"
             android:gravity="center_vertical|end"
-            android:password="true" />
+            android:inputType="textPassword" />
     </LinearLayout>
 
     <LinearLayout
@@ -117,7 +119,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center_vertical"
-            android:text="나이"
+            android:text="@string/age"
             android:textColor="#4c4c4c"
             android:textSize="16sp" />
 
@@ -139,7 +141,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center_vertical"
-            android:text="성별"
+            android:text="@string/gender"
             android:textColor="#4c4c4c"
             android:textSize="16sp" />
 
@@ -157,14 +159,15 @@
         android:layout_height="54dp"
         android:background="#f4f5f7"
         android:orientation="vertical">
+
         <Button
             android:id="@+id/setting_save"
             android:layout_width="260dp"
             android:layout_height="35dp"
             android:layout_centerInParent="true"
-            android:text="저장하기"
             android:background="#4285F4"
-            android:textColor="#FFFFFF"/>
+            android:text="@string/state_save"
+            android:textColor="#FFFFFF" />
     </RelativeLayout>
 
 </LinearLayout>

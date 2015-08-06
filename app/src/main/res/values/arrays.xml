@@ -3,6 +3,9 @@
     <string-array name="languages">
         <item>Korean</item>
         <item>English</item>
+        <item>Japanese</item>
+        <item>Chinese</item>
+        <item>German</item>
         <item>Others</item>
     </string-array>
 </resources>

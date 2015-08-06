@@ -16,6 +16,7 @@ import android.widget.NumberPicker;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.nhnnext.android.languageexchange.R;
 
@@ -41,6 +42,11 @@ public class Fragment_UserInfoForSignUp extends Fragment {
     private RadioGroup genderRadioGroup;
     private RadioButton maleRadioButton;
     private RadioButton femaleRadioButton;
+
+    private TextView writtenEmailEditText;
+    private TextView writtenNameEditText;
+    private TextView writtenAgeEditText;
+    private TextView writtenGenderEditText;
 
     private Button continueButton;
 
@@ -72,6 +78,11 @@ public class Fragment_UserInfoForSignUp extends Fragment {
         maleRadioButton = (RadioButton) view.findViewById(R.id.gender_male);
         femaleRadioButton = (RadioButton) view.findViewById(R.id.gender_female);
         continueButton = (Button) view.findViewById(R.id.sign_up_continue_btn);
+
+        writtenEmailEditText = (TextView)view.findViewById(R.id.sign_up_email_written);
+        writtenNameEditText = (TextView)view.findViewById(R.id.sign_up_name_written);
+        writtenAgeEditText = (TextView)view.findViewById(R.id.sign_up_age_written);
+        writtenGenderEditText = (TextView)view.findViewById(R.id.sign_up_gender_written);
 
         //성별 설정 radio group 이벤트 등록
         genderRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -144,6 +155,10 @@ public class Fragment_UserInfoForSignUp extends Fragment {
                         genderLayout.setVisibility(View.GONE);
                         continueButton.setVisibility(View.GONE);
                         requestEnableSignUpBtn();
+                        writtenEmailEditText.setText(userForSignUp.getEmail());
+                        writtenNameEditText.setText(userForSignUp.getName());
+                        writtenAgeEditText.setText(Integer.toString(userForSignUp.getAge()));
+                        writtenGenderEditText.setText(userForSignUp.getGenderForKorean());
                         completeLayout.setVisibility(View.VISIBLE);
                         break;
                 }

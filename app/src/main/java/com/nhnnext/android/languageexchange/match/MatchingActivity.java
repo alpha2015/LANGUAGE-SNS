@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 
 import com.nhnnext.android.languageexchange.R;
+import com.nhnnext.android.languageexchange.user.User;
 
 /**
  * Created by Alpha on 2015. 7. 22..
@@ -21,13 +22,16 @@ public class MatchingActivity extends FragmentActivity implements View.OnClickLi
     private Fragment_SelectLanguage fragment_SelectLanguage;
     private Fragment_StartMatch fragment_StartMatch;
     private Fragment_UpdateUserInfo fragment_UpdateUserInfo;
+    private User user = new User(null, "test@naver.com", "김아무개", "1234", 30, 'M', null, null); //dummy data
 
+    //TODO MatchingActivity, frangment들간 User instance 공유 - fragment 스터디후 구현방식 적용
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_match);
-        //TODO Fragment 전환을 위한 버튼(언어선택, 매칭시작, 회원정보 변경) 이벤트 등록
-        //TODO 언어 설정 Fragment 연결
+
+        //Fragment 초기화
+        //TODO 처음에 모두 초기화하는것이 맞는지 Fragment 스터디후 재검토
         fragment_SelectLanguage = new Fragment_SelectLanguage();
         fragment_StartMatch = new Fragment_StartMatch();
         fragment_UpdateUserInfo = new Fragment_UpdateUserInfo();
@@ -36,12 +40,13 @@ public class MatchingActivity extends FragmentActivity implements View.OnClickLi
         startMatchButton = (ImageButton) findViewById(R.id.menu_start_match);
         updateInfoButton = (ImageButton) findViewById(R.id.menu_update_info);
 
+        //Fragment 전환을 위한 버튼(언어선택, 매칭시작, 회원정보 변경) 이벤트 등록
         selectLanButton.setOnClickListener(this);
         startMatchButton.setOnClickListener(this);
         updateInfoButton.setOnClickListener(this);
 
+        //시작 화면으로 언어선택 Fragment 연결
         FragmentTransaction ft = getFragmentManager().beginTransaction();
-
         ft.add(R.id.fragment_container_match, fragment_SelectLanguage);
         ft.commit();
 
@@ -76,22 +81,24 @@ public class MatchingActivity extends FragmentActivity implements View.OnClickLi
 
     @Override
     public void onClick(View v) {
-        //TODO 버튼 클릭에 따른 Fragment 동적 전환
+        //버튼 클릭에 따른 Fragment 동적 전환
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         int id = v.getId();
 
         switch (id) {
+            //언어 선택 Fragment
             case R.id.menu_select_language:
                 ft.replace(R.id.fragment_container_match, fragment_SelectLanguage);
                 break;
+            //매칭 시작 Fragment
             case R.id.menu_start_match:
                 ft.replace(R.id.fragment_container_match, fragment_StartMatch);
                 break;
+            //개인정보 수정 Fragment
             case R.id.menu_update_info:
                 ft.replace(R.id.fragment_container_match, fragment_UpdateUserInfo);
                 break;
         }
         ft.commit();
     }
-
 }

@@ -4,44 +4,57 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="100dp"
-        android:layout_marginTop="100dp"
-        android:orientation="horizontal"
-        >
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:textSize="30sp"
-            android:background="#4285F4"
-            android:textColor="#FFFFFF"
-            android:text="native language"/>
-
-        <Spinner android:id="@+id/native_language"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:prompt="@string/native_language"
-            />
-
-    </LinearLayout>
-
-
-    <TextView
-        android:layout_width="250dp"
+    <GridLayout
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:textSize="25sp"
-        android:background="#4285F4"
-        android:textColor="#FFFFFF"
-        android:layout_margin="10dp"
-        android:text="practicing language"/>
+        android:layout_marginTop="100dp"
+        android:columnCount="2"
+        android:rowCount="2">
+
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_column="0"
+            android:layout_row="0"
+            android:gravity="center"
+            android:text="@string/native_language" />
+
+        <Spinner
+            android:id="@+id/native_language"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_column="1"
+            android:layout_gravity="center"
+            android:layout_row="0"
+            android:prompt="@string/native_language" />
+
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_column="0"
+            android:layout_marginTop="50dp"
+            android:layout_row="1"
+            android:gravity="center"
+            android:text="@string/practicing_language" />
+
+        <Spinner
+            android:id="@+id/practicing_language"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_column="1"
+            android:layout_marginTop="50dp"
+            android:layout_row="1"
+            android:prompt="@string/practicing_language" />
+
+    </GridLayout>
 
     <Button
+        android:id="@+id/selected_language_save_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="template1" />
+        android:layout_marginTop="50dp"
+        android:text="@string/state_save" />
 
 </LinearLayout>

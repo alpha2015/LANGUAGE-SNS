@@ -30,6 +30,7 @@ public class UserDetailActivity extends Activity implements View.OnClickListener
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_result_user_detail);
+
         //레이아웃 view
         userImage = (ImageView) findViewById(R.id.mached_user_image_view);
         userName = (TextView) findViewById(R.id.mached_user_name_view);
@@ -49,7 +50,7 @@ public class UserDetailActivity extends Activity implements View.OnClickListener
         user = getIntent().getExtras().getParcelable("user");
         userImage.setImageBitmap(user.getImage());
         userName.setText(user.getName());
-        userGender.setText("" + user.getGender());
+        userGender.setText(user.getGenderForKorean());
         userAge.setText(Integer.toString(user.getAge()));
 
     }

@@ -17,28 +17,27 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="@string/sign_up_email_top_message"
-            android:textSize="30sp"
             android:textColor="#0100FF"
-            android:textStyle="bold"
-            />
+            android:textSize="30sp"
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/sign_up_email"
             android:layout_width="260dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:hint="@string/sign_up_email"
+            android:hint="@string/email"
             android:inputType="textEmailAddress"
             android:padding="10dp" />
 
         <TextView
             android:layout_width="260dp"
             android:layout_height="wrap_content"
-            android:gravity="center"
             android:layout_gravity="center"
-            android:textColor="#2B2B2B"
+            android:layout_marginBottom="20dp"
+            android:gravity="center"
             android:text="@string/sign_up_email_bottom_message"
-            android:layout_marginBottom="20dp"/>
+            android:textColor="#2B2B2B" />
     </LinearLayout>
 
     <LinearLayout
@@ -53,27 +52,27 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="@string/sign_up_name_top_message"
-            android:textSize="30sp"
             android:textColor="#0100FF"
-            android:textStyle="bold"/>
+            android:textSize="30sp"
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/sign_up_name"
             android:layout_width="260dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:hint="@string/sign_up_name"
+            android:hint="@string/name"
             android:inputType="textPersonName"
             android:padding="10dp" />
 
         <TextView
             android:layout_width="260dp"
             android:layout_height="wrap_content"
-            android:gravity="center"
             android:layout_gravity="center"
-            android:textColor="#2B2B2B"
+            android:layout_marginBottom="20dp"
+            android:gravity="center"
             android:text="@string/sign_up_name_bottom_message"
-            android:layout_marginBottom="20dp"/>
+            android:textColor="#2B2B2B" />
     </LinearLayout>
 
     <LinearLayout
@@ -88,27 +87,27 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="@string/sign_up_password_top_message"
-            android:textSize="30sp"
             android:textColor="#0100FF"
-            android:textStyle="bold"/>
+            android:textSize="30sp"
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/sign_up_password"
             android:layout_width="260dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:hint="@string/sign_up_password"
+            android:hint="@string/password"
             android:padding="10dp"
-            android:password="true" />
+            android:inputType="textPassword" />
 
         <TextView
             android:layout_width="260dp"
             android:layout_height="wrap_content"
-            android:gravity="center"
             android:layout_gravity="center"
-            android:textColor="#2B2B2B"
+            android:layout_marginBottom="20dp"
+            android:gravity="center"
             android:text="@string/sign_up_password_bottom_message"
-            android:layout_marginBottom="20dp"/>
+            android:textColor="#2B2B2B" />
 
     </LinearLayout>
 
@@ -124,16 +123,15 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="@string/sign_up_age_top_message"
-            android:textSize="30sp"
             android:textColor="#0100FF"
-            android:textStyle="bold"/>
+            android:textSize="30sp"
+            android:textStyle="bold" />
 
         <NumberPicker
             android:id="@+id/sign_up_age"
             android:layout_width="wrap_content"
             android:layout_height="110dp"
-            android:layout_gravity="center"
-            />
+            android:layout_gravity="center" />
 
     </LinearLayout>
 
@@ -149,9 +147,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="@string/sign_up_gender_top_message"
-            android:textSize="30sp"
             android:textColor="#0100FF"
-            android:textStyle="bold"/>
+            android:textSize="30sp"
+            android:textStyle="bold" />
 
         <RadioGroup
             android:id="@+id/sign_up_gender"
@@ -171,18 +169,17 @@
                 android:id="@+id/gender_female"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/female"
-                />
+                android:text="@string/female" />
         </RadioGroup>
 
         <TextView
             android:layout_width="260dp"
             android:layout_height="wrap_content"
-            android:gravity="center"
             android:layout_gravity="center"
-            android:textColor="#2B2B2B"
+            android:layout_marginBottom="20dp"
+            android:gravity="center"
             android:text="@string/sign_up_gender_bottom_message"
-            android:layout_marginBottom="20dp"/>
+            android:textColor="#2B2B2B" />
     </LinearLayout>
 
     <Button
@@ -190,105 +187,100 @@
         android:layout_width="260dp"
         android:layout_height="35dp"
         android:layout_gravity="center"
-        android:text="@string/sign_up_continue"
-        android:visibility="gone"
         android:background="#4285F4"
-        android:textColor="#FFFFFF"/>
+        android:text="@string/sign_up_continue"
+        android:textColor="#FFFFFF"
+        android:visibility="gone" />
 
     <RelativeLayout
         android:id="@+id/sign_up_complete_layout"
         android:layout_width="260dp"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:visibility="gone"
-        >
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/userinfo_complete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:layout_centerHorizontal="true"
-            android:text="다시 한번 확인하세요"
-            android:textSize="20sp"
+            android:layout_gravity="center"
+            android:text="@string/sign_up_alert_message"
             android:textColor="#0100FF"
-            android:textStyle="bold"
-            />
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/email"
             android:layout_width="120dp"
             android:layout_height="30dp"
             android:layout_below="@id/userinfo_complete"
-            android:text="이메일"
             android:background="@drawable/xml_black_stroke"
-            />
+            android:text="@string/email" />
+
         <TextView
+            android:id="@+id/sign_up_email_written"
             android:layout_width="wrap_content"
             android:layout_height="30dp"
-            android:layout_toRightOf="@id/email"
             android:layout_alignParentRight="true"
             android:layout_below="@id/userinfo_complete"
-            android:text="test@gmail.com"
-            android:gravity="right"
+            android:layout_toRightOf="@id/email"
             android:background="@drawable/xml_black_stroke"
-            />
+            android:gravity="center_vertical|end" />
 
         <TextView
             android:id="@+id/name"
             android:layout_width="120dp"
             android:layout_height="30dp"
             android:layout_below="@id/email"
-            android:text="이름"
             android:background="@drawable/xml_black_stroke"
-            />
+            android:text="@string/name" />
+
         <TextView
+            android:id="@+id/sign_up_name_written"
             android:layout_width="wrap_content"
             android:layout_height="30dp"
-            android:layout_toRightOf="@id/name"
-            android:layout_below="@id/email"
             android:layout_alignParentRight="true"
-            android:text="김아무개"
-            android:gravity="right"
+            android:layout_below="@id/email"
+            android:layout_toRightOf="@id/name"
             android:background="@drawable/xml_black_stroke"
-            />
+            android:gravity="center_vertical|end" />
 
         <TextView
             android:id="@+id/age"
             android:layout_width="120dp"
             android:layout_height="30dp"
             android:layout_below="@id/name"
-            android:text="나이"
             android:background="@drawable/xml_black_stroke"
-            />
+            android:text="@string/age" />
+
         <TextView
+            android:id="@+id/sign_up_age_written"
             android:layout_width="wrap_content"
             android:layout_height="30dp"
-            android:layout_toRightOf="@id/age"
-            android:layout_below="@id/name"
             android:layout_alignParentRight="true"
-            android:text="30"
-            android:gravity="right"
+            android:layout_below="@id/name"
+            android:layout_toRightOf="@id/age"
             android:background="@drawable/xml_black_stroke"
-            />
+            android:gravity="center_vertical|end" />
 
         <TextView
             android:id="@+id/gender"
             android:layout_width="120dp"
             android:layout_height="30dp"
             android:layout_below="@id/age"
-            android:text="성별"
-            android:background="@drawable/xml_black_stroke"/>
+            android:background="@drawable/xml_black_stroke"
+            android:text="@string/gender" />
+
         <TextView
+            android:id="@+id/sign_up_gender_written"
             android:layout_width="wrap_content"
             android:layout_height="30dp"
-            android:layout_toRightOf="@id/gender"
-            android:layout_below="@id/age"
             android:layout_alignParentRight="true"
-            android:text="남성"
-            android:gravity="right"
+            android:layout_below="@id/age"
+            android:layout_toRightOf="@id/gender"
             android:background="@drawable/xml_black_stroke"
-            />
+            android:gravity="center_vertical|end" />
 
     </RelativeLayout>
 </LinearLayout>

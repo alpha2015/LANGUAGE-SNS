@@ -39,18 +39,18 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
     private static TextView editGender;
     private Button saveButton;
 
-    private static User user = new User(null, "test@naver.com", "김아무개", "1234", 30, 'M');
+    private static User user = new User(null, "test@naver.com", "김아무개", "1234", 30, 'M', null, null);
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_update_userinfo, container, false);
-        editEmail = (EditText)view.findViewById(R.id.setting_edit_email);
-        editName = (EditText)view.findViewById(R.id.setting_edit_name);
-        editPassword = (EditText)view.findViewById(R.id.setting_edit_password);
-        editAge = (TextView)view.findViewById(R.id.setting_edit_age);
-        editGender = (TextView)view.findViewById(R.id.setting_edit_gender);
-        saveButton = (Button)view.findViewById(R.id.setting_save);
+        editEmail = (EditText) view.findViewById(R.id.setting_edit_email);
+        editName = (EditText) view.findViewById(R.id.setting_edit_name);
+        editPassword = (EditText) view.findViewById(R.id.setting_edit_password);
+        editAge = (TextView) view.findViewById(R.id.setting_edit_age);
+        editGender = (TextView) view.findViewById(R.id.setting_edit_gender);
+        saveButton = (Button) view.findViewById(R.id.setting_save);
         editAge.setOnClickListener(this);
         editGender.setOnClickListener(this);
         saveButton.setOnClickListener(this);
@@ -64,27 +64,30 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
         editName.setText(user.getName());
         editPassword.setText("********");
         editAge.setText(Integer.toString(user.getAge()));
-        editGender.setText("" + user.getGender());
+        editGender.setText(user.getGenderForKorean());
     }
 
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        switch (id){
-            case R.id.setting_edit_age :
+        switch (id) {
+            case R.id.setting_edit_age:
                 new AgePickerDialog().show(getFragmentManager(), "dialog");
                 break;
-            case R.id.setting_edit_gender :
+            case R.id.setting_edit_gender:
                 new GenderRadioDialog().show(getFragmentManager(), "dialog");
                 break;
-            case R.id.setting_save :
+            case R.id.setting_save:
                 //TODO App, SERVER DB 저장 구현
                 user.setEmail(editEmail.getText().toString());
                 user.setName(editName.getText().toString());
                 user.setPassword(editPassword.getText().toString());
                 user.setAge(Integer.parseInt(editAge.getText().toString()));
-                user.setGender(editGender.getText().charAt(0));
-                Toast.makeText(getActivity().getApplicationContext(), "저장 완료!!" + user, Toast.LENGTH_SHORT).show();
+                if (editGender.getText().equals("남성"))
+                    user.setGender('M');
+                else
+                    user.setGender('F');
+                Toast.makeText(getActivity().getApplicationContext(), "저장 완료!!", Toast.LENGTH_SHORT).show();
                 break;
         }
     }
@@ -94,7 +97,7 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             LayoutInflater inflater = (LayoutInflater)
                     getActivity().getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            final NumberPicker npView = (NumberPicker)inflater.inflate(R.layout.age_picker_dialog_layout, null);
+            final NumberPicker npView = (NumberPicker) inflater.inflate(R.layout.age_picker_dialog_layout, null);
             npView.setWrapSelectorWheel(false);
             npView.setMinValue(0);
             npView.setMaxValue(99);
@@ -106,7 +109,6 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
 //            builder.setMessage(R.string.dialog_fire_missiles)
                     .setPositiveButton("설정", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            // FIRE ZE MISSILES!
                             editAge.setText(Integer.toString(npView.getValue()));
                             Toast.makeText(getActivity().getApplicationContext(), "" + npView.getValue(), Toast.LENGTH_SHORT).show();
                         }
@@ -114,7 +116,7 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
                     .setNegativeButton("취소", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             // User cancelled the dialog
-                            Toast.makeText(getActivity().getApplicationContext(), "CANCEL BUTTON CLICKED", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity().getApplicationContext(), "나이 변경을 취소하였습니다.", Toast.LENGTH_SHORT).show();
                         }
                     });
             // Create the AlertDialog object and return it
@@ -129,11 +131,11 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
             LayoutInflater inflater = (LayoutInflater)
                     getActivity().getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             final RadioGroup npView = (RadioGroup) inflater.inflate(R.layout.gender_radio_dialog_layout, null);
-            if(user.getGender() == 'M') {
-                RadioButton maleRadio = (RadioButton)npView.findViewById(R.id.gender_male);
+            if (user.getGender() == 'M') {
+                RadioButton maleRadio = (RadioButton) npView.findViewById(R.id.gender_male);
                 maleRadio.setChecked(true);
-            }else{
-                RadioButton femaleRadio = (RadioButton)npView.findViewById(R.id.gender_female);
+            } else {
+                RadioButton femaleRadio = (RadioButton) npView.findViewById(R.id.gender_female);
                 femaleRadio.setChecked(true);
             }
 
@@ -144,22 +146,19 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
 //            builder.setMessage(R.string.dialog_fire_missiles)
                     .setPositiveButton("설정", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            // FIRE ZE MISSILES!
-                            if(npView.getCheckedRadioButtonId() == R.id.gender_male) {
-                                editGender.setText("M");
+                            if (npView.getCheckedRadioButtonId() == R.id.gender_male) {
+                                editGender.setText("남성");
                                 user.setGender('M');
-                            }
-                            else {
-                                editGender.setText("F");
+                            } else {
+                                editGender.setText("여성");
                                 user.setGender('F');
                             }
-                            Toast.makeText(getActivity().getApplicationContext(), "FIRE ZE MISSILES!", Toast.LENGTH_SHORT).show();
                         }
                     })
                     .setNegativeButton("취소", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             // User cancelled the dialog
-                            Toast.makeText(getActivity().getApplicationContext(), "CANCEL BUTTON CLICKED", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity().getApplicationContext(), "성별 변경을 취소하였습니다.", Toast.LENGTH_SHORT).show();
                         }
                     });
             // Create the AlertDialog object and return it
