@@ -128,11 +128,16 @@ public class MainActivity extends Activity implements View.OnClickListener {
         protected Pair<Boolean, String> doInBackground(Object... params) {
             /*
                 loadXmlFromNetwork 구현부
+                //TODO HttpConnection 구현체 호출, 로그인 url을 통해 요청
+                //TODO 결과값(성공여부, 회원정보) parsing
+                //TODO 성공시 TRUE, user정보 Pair instance return
+                //TODO 실패시 FALSE, 실패 사유 Pair instance return
              */
-            //TODO HttpConnection 구현체 호출, 로그인 url을 통해 요청
-            //TODO 결과값(성공여부, 회원정보) parsing
-            //TODO 성공시 TRUE, user정보 Pair instance return
-            //TODO 실패시 FALSE, 실패 사유 Pair instance return
+            try {
+                Thread.sleep(500); //progressBar 정상 동작 테스트를 위한 sleep, loadXmlFromNetwork구현시 제거
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             return new Pair<>(true, "success");
         }
 
