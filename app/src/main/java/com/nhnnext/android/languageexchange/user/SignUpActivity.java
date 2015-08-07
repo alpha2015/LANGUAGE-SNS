@@ -21,7 +21,7 @@ public class SignUpActivity extends FragmentActivity implements View.OnClickList
     private TextView backLogin;
     private Button requestButton;
     private User userForSignUp;
-
+    //TODO 가입완료후 자동로그인시 BACK BUTTON 눌러도 회원가입으로 돌아오는 문제 해결(taskAffinity)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,11 +98,16 @@ public class SignUpActivity extends FragmentActivity implements View.OnClickList
         protected Boolean doInBackground(Object... params) {
             /*
                 loadXmlFromNetwork 구현부
+                //TODO HttpConnection 구현체 호출, 회원가입 url을 통해 요청
+                //TODO 결과값(성공여부) parsing
+                //TODO 성공시 TRUE return
+                //TODO 실패시 FALSE return
              */
-            //TODO HttpConnection 구현체 호출, 회원가입 url을 통해 요청
-            //TODO 결과값(성공여부) parsing
-            //TODO 성공시 TRUE return
-            //TODO 실패시 FALSE return
+            try {
+                Thread.sleep(500); //progressBar 정상 동작 테스트를 위한 sleep, loadXmlFromNetwork구현시 제거
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             return true;
         }
 

@@ -38,7 +38,7 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
     private static TextView editGender;
     private Button saveButton;
     //test를 위한 dummy user data(db구현시 제거)
-    private static User user = new User(null, "test@naver.com", "김아무개", "1234", 30, 'M', null, null);
+    private User user = new User(null, "test@naver.com", "김아무개", "1234", 30, 'M', null, null);
 
     @Nullable
     @Override
@@ -71,10 +71,10 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
         int id = v.getId();
         switch (id) {
             case R.id.setting_edit_age:
-                new AgePickerDialog().show(getFragmentManager(), "dialog");
+                AgePickerDialog.newInstance(user.getAge()).show(getFragmentManager(), "dialog");
                 break;
             case R.id.setting_edit_gender:
-                new GenderRadioDialog().show(getFragmentManager(), "dialog");
+                GenderRadioDialog.newInstance(user.getGender()).show(getFragmentManager(), "dialog");
                 break;
             case R.id.setting_save:
                 //TODO App, SERVER DB 저장 구현
@@ -86,22 +86,39 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
                     user.setGender('M');
                 else
                     user.setGender('F');
-                Toast.makeText(getActivity().getApplicationContext(), "저장 완료!!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity().getApplicationContext(), "저장 완료!", Toast.LENGTH_SHORT).show();
                 break;
         }
     }
 
     //TODO Fragment 스터디후 반드시 수정(리팩토링)
     public static class AgePickerDialog extends DialogFragment {
+        private NumberPicker npView;
+
+        public static AgePickerDialog newInstance(int age) {
+            AgePickerDialog f = new AgePickerDialog();
+
+            // Supply index input as an argument.
+            Bundle args = new Bundle();
+            args.putInt("index", age);
+            f.setArguments(args);
+
+            return f;
+        }
+
+        public int getShownIndex() {
+            return getArguments().getInt("index", 0);
+        }
+
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             LayoutInflater inflater = (LayoutInflater)
                     getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            final NumberPicker npView = (NumberPicker) inflater.inflate(R.layout.age_picker_dialog_layout, null);
+            npView = (NumberPicker) inflater.inflate(R.layout.age_picker_dialog_layout, null);
             npView.setWrapSelectorWheel(false);
             npView.setMinValue(0);
             npView.setMaxValue(99);
-            npView.setValue(user.getAge());
+            npView.setValue(getShownIndex());
             // Use the Builder class for convenient dialog construction
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle("나이를 설정하세요.");
@@ -123,12 +140,29 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
 
     //TODO Fragment 스터디후 반드시 수정(리팩토링)
     public static class GenderRadioDialog extends DialogFragment {
+        private RadioGroup npView;
+
+        public static GenderRadioDialog newInstance(char gender) {
+            GenderRadioDialog f = new GenderRadioDialog();
+
+            // Supply index input as an argument.
+            Bundle args = new Bundle();
+            args.putChar("index", gender);
+            f.setArguments(args);
+
+            return f;
+        }
+
+        public char getShownIndex() {
+            return getArguments().getChar("index", 'N');
+        }
+
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             LayoutInflater inflater = (LayoutInflater)
                     getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            final RadioGroup npView = (RadioGroup) inflater.inflate(R.layout.gender_radio_dialog_layout, null);
-            if (user.getGender() == 'M') {
+            npView = (RadioGroup) inflater.inflate(R.layout.gender_radio_dialog_layout, null);
+            if (getShownIndex() == 'M') {
                 RadioButton maleRadio = (RadioButton) npView.findViewById(R.id.gender_male);
                 maleRadio.setChecked(true);
             } else {
@@ -142,12 +176,11 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
             builder.setView(npView)
                     .setPositiveButton("설정", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
+
                             if (npView.getCheckedRadioButtonId() == R.id.gender_male) {
                                 editGender.setText("남성");
-                                user.setGender('M');
                             } else {
                                 editGender.setText("여성");
-                                user.setGender('F');
                             }
                         }
                     })
