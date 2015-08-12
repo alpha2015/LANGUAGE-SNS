@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.widget.Button;
@@ -11,6 +12,7 @@ import android.widget.ImageButton;
 
 import com.nhnnext.android.languageexchange.R;
 import com.nhnnext.android.languageexchange.user.User;
+import com.nhnnext.android.languageexchange.user.UserParcelable;
 
 /**
  * Created by Alpha on 2015. 7. 22..
@@ -22,7 +24,8 @@ public class MatchingActivity extends FragmentActivity implements View.OnClickLi
     private Fragment_SelectLanguage fragment_SelectLanguage;
     private Fragment_StartMatch fragment_StartMatch;
     private Fragment_UpdateUserInfo fragment_UpdateUserInfo;
-    private User user = new User(null, "test@naver.com", "김아무개", "1234", 30, 'M', null, null); //dummy data
+//    private User user = new User(null, "test@naver.com", "김아무개", "1234", 30, "male", null, null, null); //dummy data
+    private UserParcelable user;
 
     //TODO MatchingActivity, frangment들간 User instance 공유 - fragment 스터디후 구현방식 적용
     @Override
@@ -32,9 +35,10 @@ public class MatchingActivity extends FragmentActivity implements View.OnClickLi
 
         //Fragment 초기화
         //TODO 처음에 모두 초기화하는것이 맞는지 Fragment 스터디후 재검토
+        user = getIntent().getExtras().getParcelable("user");
         fragment_SelectLanguage = new Fragment_SelectLanguage();
         fragment_StartMatch = new Fragment_StartMatch();
-        fragment_UpdateUserInfo = new Fragment_UpdateUserInfo();
+        fragment_UpdateUserInfo = Fragment_UpdateUserInfo.newInstance(user);
 
         selectLanButton = (Button) findViewById(R.id.menu_select_language);
         startMatchButton = (ImageButton) findViewById(R.id.menu_start_match);
@@ -44,6 +48,7 @@ public class MatchingActivity extends FragmentActivity implements View.OnClickLi
         selectLanButton.setOnClickListener(this);
         startMatchButton.setOnClickListener(this);
         updateInfoButton.setOnClickListener(this);
+
 
         //시작 화면으로 언어선택 Fragment 연결
         FragmentTransaction ft = getFragmentManager().beginTransaction();

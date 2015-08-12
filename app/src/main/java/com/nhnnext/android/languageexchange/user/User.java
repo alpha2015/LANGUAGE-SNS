@@ -11,19 +11,20 @@ public class User {
     private String name;
     private String password;
     private int age;
-    private char gender;
+    private String gender;
     private String nativeLanguage;
     private String practicingLanguage;
+    private String oauth;
 
     public User() {
-        this(null, null, null, null, 0, 'N', null, null);
+        this(null, null, null, null, 0, null, null, null, null);
     }
 
-    public User(String email, String name, String password, int age, char gender) {
-        this(null, email, name, password, age, gender, null, null);
+    public User(String email, String name, String password, int age, String gender) {
+        this(null, email, name, password, age, gender, null, null, null);
     }
 
-    public User(Bitmap image, String email, String name, String password, int age, char gender, String nativeLanguage, String practicingLanguage) {
+    public User(Bitmap image, String email, String name, String password, int age, String gender, String nativeLanguage, String practicingLanguage, String oauth) {
         this.image = image;
         this.email = email;
         this.name = name;
@@ -32,6 +33,7 @@ public class User {
         this.gender = gender;
         this.nativeLanguage = nativeLanguage;
         this.practicingLanguage = practicingLanguage;
+        this.oauth = oauth;
     }
 
     public Bitmap getImage() {
@@ -54,7 +56,7 @@ public class User {
         return age;
     }
 
-    public char getGender() {
+    public String getGender() {
         return gender;
     }
 
@@ -66,10 +68,12 @@ public class User {
         return practicingLanguage;
     }
 
+    public String getOauth() { return oauth; }
+
     public String getGenderForKorean() {
-        if (gender == 'M')
+        if (gender.equals("male"))
             return "남성";
-        else if (gender == 'F')
+        else if (gender.equals("female"))
             return "여성";
         else
             return null;
@@ -95,7 +99,7 @@ public class User {
         this.age = age;
     }
 
-    public void setGender(char gender) {
+    public void setGender(String gender) {
         this.gender = gender;
     }
 
@@ -107,6 +111,8 @@ public class User {
         this.practicingLanguage = practicingLanguage;
     }
 
+    public void setOauth(String oauth) { this.oauth = oauth; }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -115,15 +121,17 @@ public class User {
         User user = (User) o;
 
         if (age != user.age) return false;
-        if (gender != user.gender) return false;
         if (image != null ? !image.equals(user.image) : user.image != null) return false;
         if (email != null ? !email.equals(user.email) : user.email != null) return false;
         if (name != null ? !name.equals(user.name) : user.name != null) return false;
         if (password != null ? !password.equals(user.password) : user.password != null)
             return false;
+        if (gender != null ? !gender.equals(user.gender) : user.gender != null) return false;
         if (nativeLanguage != null ? !nativeLanguage.equals(user.nativeLanguage) : user.nativeLanguage != null)
             return false;
-        return !(practicingLanguage != null ? !practicingLanguage.equals(user.practicingLanguage) : user.practicingLanguage != null);
+        if (practicingLanguage != null ? !practicingLanguage.equals(user.practicingLanguage) : user.practicingLanguage != null)
+            return false;
+        return !(oauth != null ? !oauth.equals(user.oauth) : user.oauth != null);
 
     }
 
@@ -134,9 +142,10 @@ public class User {
         result = 31 * result + (name != null ? name.hashCode() : 0);
         result = 31 * result + (password != null ? password.hashCode() : 0);
         result = 31 * result + age;
-        result = 31 * result + (int) gender;
+        result = 31 * result + (gender != null ? gender.hashCode() : 0);
         result = 31 * result + (nativeLanguage != null ? nativeLanguage.hashCode() : 0);
         result = 31 * result + (practicingLanguage != null ? practicingLanguage.hashCode() : 0);
+        result = 31 * result + (oauth != null ? oauth.hashCode() : 0);
         return result;
     }
 
@@ -148,9 +157,10 @@ public class User {
                 ", name='" + name + '\'' +
                 ", password='" + password + '\'' +
                 ", age=" + age +
-                ", gender=" + gender +
+                ", gender='" + gender + '\'' +
                 ", nativeLanguage='" + nativeLanguage + '\'' +
                 ", practicingLanguage='" + practicingLanguage + '\'' +
+                ", oauth='" + oauth + '\'' +
                 '}';
     }
 }

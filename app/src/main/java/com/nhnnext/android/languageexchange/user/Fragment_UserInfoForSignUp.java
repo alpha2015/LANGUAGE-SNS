@@ -149,9 +149,9 @@ public class Fragment_UserInfoForSignUp extends Fragment {
 
                     case GENDER:
                         if (maleRadioButton.isChecked())
-                            userForSignUp.setGender('M');
+                            userForSignUp.setGender("male");
                         else    //femaleRadioButton is checked
-                            userForSignUp.setGender('F');
+                            userForSignUp.setGender("female");
                         genderLayout.setVisibility(View.GONE);
                         continueButton.setVisibility(View.GONE);
                         requestEnableSignUpBtn();

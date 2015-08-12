@@ -13,10 +13,10 @@ public class UserParcelable implements Parcelable {
     private String name;
     private String password;
     private int age;
-    private char gender;
+    private String gender;
 
     public UserParcelable() {
-        this(null, null, null, null, 0, 'N');
+        this(null, null, null, null, 0, null);
     }
 
     public UserParcelable(User user) {
@@ -28,7 +28,7 @@ public class UserParcelable implements Parcelable {
         this.gender = user.getGender();
     }
 
-    public UserParcelable(Bitmap image, String email, String name, String password, int age, char gender) {
+    public UserParcelable(Bitmap image, String email, String name, String password, int age, String gender) {
         this.image = image;
         this.email = email;
         this.name = name;
@@ -43,7 +43,7 @@ public class UserParcelable implements Parcelable {
         name = source.readString();
         password = source.readString();
         age = source.readInt();
-        gender = (char) source.readInt();
+        gender = source.readString();
     }
 
     @Override
@@ -58,7 +58,7 @@ public class UserParcelable implements Parcelable {
         dest.writeString(name);
         dest.writeString(password);
         dest.writeInt(age);
-        dest.writeInt(gender);
+        dest.writeString(gender);
     }
 
     public static final Parcelable.Creator<UserParcelable> CREATOR = new Creator<UserParcelable>() {
@@ -94,17 +94,41 @@ public class UserParcelable implements Parcelable {
         return age;
     }
 
-    public char getGender() {
+    public String getGender() {
         return gender;
     }
 
     public String getGenderForKorean() {
-        if (gender == 'M')
+        if (gender.equals("male"))
             return "남성";
-        else if (gender == 'F')
+        else if (gender.equals("female"))
             return "여성";
         else
             return null;
+    }
+
+    public void setImage(Bitmap image) {
+        this.image = image;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 
     @Override
@@ -115,7 +139,7 @@ public class UserParcelable implements Parcelable {
                 ", name='" + name + '\'' +
                 ", password='" + password + '\'' +
                 ", age=" + age +
-                ", gender=" + gender +
+                ", gender='" + gender + '\'' +
                 '}';
     }
 }

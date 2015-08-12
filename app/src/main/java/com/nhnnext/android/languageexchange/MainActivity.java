@@ -1,12 +1,16 @@
 package com.nhnnext.android.languageexchange;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.AttributeSet;
 import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
@@ -14,22 +18,35 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.nhnnext.android.languageexchange.user.User;
+import com.nhnnext.android.languageexchange.user.UserParcelable;
+import com.parse.ParseObject;
 
 /**
  * Created by Alpha on 2015. 7. 21..
  */
-public class MainActivity extends Activity implements View.OnClickListener {
+public class MainActivity extends FragmentActivity implements View.OnClickListener {
     private EditText emailEditText;
     private EditText passwordEditText;
     private Button loginButton;
     private TextView signupButton;
     private User user;
 
+    private TextView loginResultText;
+    private OauthFragment oauthFragment;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        ParseObject testObject = new ParseObject("User");
+        testObject.put("name", "최성원");
+        testObject.put("password", "1234");
+        testObject.put("email", "test.naver.com");
+
+        testObject.saveInBackground();
+
         //레이아웃 view
         emailEditText = (EditText) findViewById(R.id.login_email_text);
         passwordEditText = (EditText) findViewById(R.id.login_password_text);
@@ -41,6 +58,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
         passwordEditText.addTextChangedListener(textBarWatcher);
         loginButton.setOnClickListener(this);
         signupButton.setOnClickListener(this);
+
+        oauthFragment = new OauthFragment();
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.add(R.id.fragment_container_oauth, oauthFragment);
+        ft.commit();
+
     }
 
     @Override
@@ -51,9 +74,15 @@ public class MainActivity extends Activity implements View.OnClickListener {
         //TODO if 회원정보 존재하지 않을 경우) 자동 로그인 수행 하지 않음
 
         //TODO else 회원정보 존재할 경우) 자동로그인 시도시 서버 api를 통해 로그인 시도 및 성공/실패 여부 반환 요청 AsyncTask 실행
-        user = new User("test@naver.com", "최성원", "1234", 29, 'M'); //test dummy data
+        user = new User("test@naver.com", "최성원", "1234", 29, "male"); //test dummy data
         emailEditText.setText(user.getEmail());
 //        new LoginAsyncTask().execute("target url", user);
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(String name, Context context, AttributeSet attrs) {
+        return super.onCreateView(name, context, attrs);
     }
 
     @Override
@@ -102,6 +131,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
                  */
                 Intent intent = new Intent();
                 intent.setAction("com.nhnnext.android.action.SIGNUP");
+                UserParcelable parcelUser = new UserParcelable(user);
+                intent.putExtra("user", parcelUser);
                 startActivity(intent);
                 break;
             }
@@ -188,5 +219,4 @@ public class MainActivity extends Activity implements View.OnClickListener {
             }
         }
     };
-
 }

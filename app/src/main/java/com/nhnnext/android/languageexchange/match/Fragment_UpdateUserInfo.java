@@ -7,6 +7,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 
 import com.nhnnext.android.languageexchange.R;
 import com.nhnnext.android.languageexchange.user.User;
+import com.nhnnext.android.languageexchange.user.UserParcelable;
 
 /**
  * Created by Alpha on 2015. 7. 22..
@@ -38,12 +40,32 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
     private static TextView editGender;
     private Button saveButton;
     //test를 위한 dummy user data(db구현시 제거)
-    private User user = new User(null, "test@naver.com", "김아무개", "1234", 30, 'M', null, null);
+//    private User user = new User(null, "test@naver.com", "김아무개", "1234", 30, "male", null, null, null);
+    private UserParcelable user;
+
+    public static Fragment_UpdateUserInfo newInstance(UserParcelable user) {
+        Fragment_UpdateUserInfo f = new Fragment_UpdateUserInfo();
+
+        // Supply index input as an argument.
+        Bundle args = new Bundle();
+        args.putParcelable("user", user);
+        f.setArguments(args);
+
+        return f;
+    }
+
+    private UserParcelable getShownIndex() {
+        UserParcelable user = getArguments().getParcelable("user");
+        return user;
+    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         //TODO DB에서 가져온 회원정보 보여주기
+
+        user = getShownIndex();
+
         //레이아웃 view
         View view = inflater.inflate(R.layout.fragment_update_userinfo, container, false);
         editEmail = (EditText) view.findViewById(R.id.setting_edit_email);
@@ -83,9 +105,9 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
                 user.setPassword(editPassword.getText().toString());
                 user.setAge(Integer.parseInt(editAge.getText().toString()));
                 if (editGender.getText().equals("남성"))
-                    user.setGender('M');
+                    user.setGender("male");
                 else
-                    user.setGender('F');
+                    user.setGender("female");
                 Toast.makeText(getActivity().getApplicationContext(), "저장 완료!", Toast.LENGTH_SHORT).show();
                 break;
         }
@@ -142,12 +164,12 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
     public static class GenderRadioDialog extends DialogFragment {
         private RadioGroup npView;
 
-        public static GenderRadioDialog newInstance(char gender) {
+        public static GenderRadioDialog newInstance(String gender) {
             GenderRadioDialog f = new GenderRadioDialog();
 
             // Supply index input as an argument.
             Bundle args = new Bundle();
-            args.putChar("index", gender);
+            args.putString("index", gender);
             f.setArguments(args);
 
             return f;

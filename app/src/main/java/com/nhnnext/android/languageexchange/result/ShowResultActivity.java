@@ -30,37 +30,37 @@ public class ShowResultActivity extends Activity {
         userList = new ArrayList<>(); //유저리스트 저장을 위한 ArrayList
         //dummy user list item
         userList.add(new User(BitmapFactory.decodeResource(getResources(), R.drawable.sample_image_1), "sample1@naver.com",
-                "Rebecca", null, 21, 'F', null, null));
+                "Rebecca", null, 21, "female", null, null, null));
         userList.add(new User(BitmapFactory.decodeResource(getResources(), R.drawable.sample_image_2), "sample2@naver.com",
-                "TOM", null, 22, 'M', null, null));
+                "TOM", null, 22, "male", null, null, null));
         userList.add(new User(BitmapFactory.decodeResource(getResources(), R.drawable.sample_image_3), "sample3@naver.com",
-                "JUNG WOO", null, 23, 'M', null, null));
+                "JUNG WOO", null, 23, "male", null, null, null));
         userList.add(new User(BitmapFactory.decodeResource(getResources(), R.drawable.sample_image_4), "sample4@naver.com",
-                "Liu", null, 24, 'F', null, null));
+                "Liu", null, 24, "female", null, null, null));
         userList.add(new User(BitmapFactory.decodeResource(getResources(), R.drawable.sample_image_5), "sample5@naver.com",
-                "Emilia", null, 25, 'F', null, null));
+                "Emilia", null, 25, "female", null, null, null));
         userList.add(new User(BitmapFactory.decodeResource(getResources(), R.drawable.sample_image_6), "sample6@naver.com",
-                "Ko-eun", null, 26, 'F', null, null));
+                "Ko-eun", null, 26, "female", null, null, null));
         userList.add(new User(BitmapFactory.decodeResource(getResources(), R.drawable.sample_image_7), "sample7@naver.com",
-                "천우희", null, 27, 'F', null, null));
+                "천우희", null, 27, "female", null, null, null));
         userList.add(new User(BitmapFactory.decodeResource(getResources(), R.drawable.sample_image_8), "sample8@naver.com",
-                "전지현", null, 28, 'F', null, null));
+                "전지현", null, 28, "female", null, null, null));
         userList.add(new User(BitmapFactory.decodeResource(getResources(), R.drawable.sample_image_9), "sample9@naver.com",
-                "Seydoux", null, 29, 'F', null, null));
+                "Seydoux", null, 29, "female", null, null, null));
         userList.add(new User(BitmapFactory.decodeResource(getResources(), R.drawable.sample_image_10), "sample10@naver.com",
-                "은미", null, 30, 'F', null, null));
+                "은미", null, 30, "female", null, null, null));
         userList.add(new User(BitmapFactory.decodeResource(getResources(), R.drawable.sample_image_11), "sample11@naver.com",
-                "Jeremy", null, 31, 'M', null, null));
+                "Jeremy", null, 31, "male", null, null, null));
         userList.add(new User(BitmapFactory.decodeResource(getResources(), R.drawable.sample_image_12), "sample12@naver.com",
-                "Christopher", null, 32, 'M', null, null));
+                "Christopher", null, 32, "male", null, null, null));
         userList.add(new User(BitmapFactory.decodeResource(getResources(), R.drawable.sample_image_13), "sample13@naver.com",
-                "이정재", null, 33, 'M', null, null));
+                "이정재", null, 33, "male", null, null, null));
         userList.add(new User(BitmapFactory.decodeResource(getResources(), R.drawable.sample_image_14), "sample14@naver.com",
-                "황정민", null, 34, 'M', null, null));
+                "황정민", null, 34, "male", null, null, null));
         userList.add(new User(BitmapFactory.decodeResource(getResources(), R.drawable.sample_image_15), "sample15@naver.com",
-                "달수", null, 35, 'M', null, null));
+                "달수", null, 35, "male", null, null, null));
         userList.add(new User(BitmapFactory.decodeResource(getResources(), R.drawable.sample_image_16), "sample16@naver.com",
-                "임지연", null, 36, 'F', null, null));
+                "임지연", null, 36, "female", null, null, null));
 
         /*
             매칭된 유저 리스트 보여주기
