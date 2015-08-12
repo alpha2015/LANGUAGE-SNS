@@ -3,12 +3,12 @@ package com.nhnnext.android.languageexchange.match;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -93,10 +93,10 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
         int id = v.getId();
         switch (id) {
             case R.id.setting_edit_age:
-                AgePickerDialog.newInstance(user.getAge()).show(getFragmentManager(), "dialog");
+//                AgePickerDialog.newInstance(user.getAge()).show(getFragmentManager(), "dialog");
                 break;
             case R.id.setting_edit_gender:
-                GenderRadioDialog.newInstance(user.getGender()).show(getFragmentManager(), "dialog");
+//                GenderRadioDialog.newInstance(user.getGender()).show(getFragmentManager(), "dialog");
                 break;
             case R.id.setting_save:
                 //TODO App, SERVER DB 저장 구현

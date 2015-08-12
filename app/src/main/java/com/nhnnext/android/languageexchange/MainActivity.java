@@ -191,6 +191,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             //match Activity 호출
             Intent intent = new Intent();
             intent.setAction("com.nhnnext.android.action.MATCH");
+            UserParcelable parcelUser = new UserParcelable(new User("test@naver.com", "최성원", "1234", 29, "male"));
+            intent.putExtra("user", parcelUser);
             startActivity(intent);
         }
     }

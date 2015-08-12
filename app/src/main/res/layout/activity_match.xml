@@ -1,44 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <FrameLayout
-        android:id="@+id/fragment_container_match"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="7" />
 
-
-    <LinearLayout
+    <android.support.v4.view.ViewPager
+        android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:orientation="horizontal">
-        <!-- TODO 3개 버튼 비율 동일 설정 옵션 바꾸기(WARNING 제거)-->
-        <Button
-            android:id="@+id/menu_select_language"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="@string/select_language" />
-
-        <ImageButton
-            android:id="@+id/menu_start_match"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:contentDescription="@string/matching_start_button"
-            android:src="@drawable/ic_search_black_36dp" />
-
-        <ImageButton
-            android:id="@+id/menu_update_info"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:contentDescription="@string/profile_update_button"
-            android:src="@drawable/ic_settings_black_36dp" />
-    </LinearLayout>
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        />
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tab"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        />
 
 </LinearLayout>
