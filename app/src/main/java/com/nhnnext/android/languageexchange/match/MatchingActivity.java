@@ -5,11 +5,13 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 
 import com.nhnnext.android.languageexchange.R;
 import com.nhnnext.android.languageexchange.user.UserParcelable;
@@ -20,7 +22,7 @@ import java.util.List;
 /**
  * Created by Alpha on 2015. 7. 22..
  */
-public class MatchingActivity extends AppCompatActivity{
+public class MatchingActivity extends AppCompatActivity {
     /**
      * The pager widget, which handles animation and allows swiping horizontally to access previous
      * and next wizard steps.
@@ -50,12 +52,12 @@ public class MatchingActivity extends AppCompatActivity{
         //언어 선택 Fragment
         mPagerAdapter.addFragment(new Fragment_SelectLanguage());
         //매칭 시작 Fragment
-        mPagerAdapter.addFragment(new Fragment_StartMatch());
+        mPagerAdapter.addFragment(Fragment_StartMatch.newInstance(user));
         //개인정보 수정 Fragment
         mPagerAdapter.addFragment(Fragment_UpdateUserInfo.newInstance(user));
         mPager.setAdapter(mPagerAdapter);
 
-        tabLayout = (TabLayout)findViewById(R.id.tab);
+        tabLayout = (TabLayout) findViewById(R.id.tab);
         tabLayout.setupWithViewPager(mPager);
         tabLayout.getTabAt(0).setIcon(R.drawable.ic_translate_black_36dp);
         tabLayout.getTabAt(1).setIcon(R.drawable.ic_search_black_36dp);
@@ -83,6 +85,25 @@ public class MatchingActivity extends AppCompatActivity{
         // Inflate the menu items for use in the action bar
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.matching_activity_actions, menu);
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        MenuItem friendListItem = menu.findItem(R.id.action_friends_list);
+
+        // When using the support library, the setOnActionExpandListener() method is
+        // static and accepts the MenuItem object as an argument
+        MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                // Do something when collapsed
+                return true;  // Return true to collapse action view
+            }
+
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                // Do something when expanded
+                return true;  // Return true to expand action view
+            }
+        });
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -107,7 +128,7 @@ public class MatchingActivity extends AppCompatActivity{
             return mFragmentList.size();
         }
 
-        public void addFragment(Fragment fragment){
+        public void addFragment(Fragment fragment) {
             mFragmentList.add(fragment);
         }
     }

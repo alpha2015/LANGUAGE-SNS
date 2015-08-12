@@ -6,7 +6,6 @@ import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -21,7 +20,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.nhnnext.android.languageexchange.R;
-import com.nhnnext.android.languageexchange.user.User;
 import com.nhnnext.android.languageexchange.user.UserParcelable;
 
 /**
@@ -55,8 +53,7 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
     }
 
     private UserParcelable getShownIndex() {
-        UserParcelable user = getArguments().getParcelable("user");
-        return user;
+        return getArguments().getParcelable("user");
     }
 
     @Nullable

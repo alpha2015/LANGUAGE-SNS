@@ -14,9 +14,12 @@ public class UserParcelable implements Parcelable {
     private String password;
     private int age;
     private String gender;
+    private String nativeLanguage;
+    private String practicingLanguage;
+    private String oauth;
 
     public UserParcelable() {
-        this(null, null, null, null, 0, null);
+        this(null, null, null, null, 0, null, null, null, null);
     }
 
     public UserParcelable(User user) {
@@ -26,15 +29,21 @@ public class UserParcelable implements Parcelable {
         this.password = user.getPassword();
         this.age = user.getAge();
         this.gender = user.getGender();
+        this.nativeLanguage = user.getNativeLanguage();
+        this.practicingLanguage = user.getPracticingLanguage();
+        this.oauth = user.getOauth();
     }
 
-    public UserParcelable(Bitmap image, String email, String name, String password, int age, String gender) {
+    public UserParcelable(Bitmap image, String email, String name, String password, int age, String gender, String nativeLanguage, String practicingLanguage, String oauth) {
         this.image = image;
         this.email = email;
         this.name = name;
         this.password = password;
         this.age = age;
         this.gender = gender;
+        this.nativeLanguage = nativeLanguage;
+        this.practicingLanguage = practicingLanguage;
+        this.oauth = oauth;
     }
 
     public UserParcelable(Parcel source) {
@@ -44,6 +53,9 @@ public class UserParcelable implements Parcelable {
         password = source.readString();
         age = source.readInt();
         gender = source.readString();
+        nativeLanguage = source.readString();
+        practicingLanguage = source.readString();
+        oauth = source.readString();
     }
 
     @Override
@@ -59,6 +71,9 @@ public class UserParcelable implements Parcelable {
         dest.writeString(password);
         dest.writeInt(age);
         dest.writeString(gender);
+        dest.writeString(nativeLanguage);
+        dest.writeString(practicingLanguage);
+        dest.writeString(oauth);
     }
 
     public static final Parcelable.Creator<UserParcelable> CREATOR = new Creator<UserParcelable>() {
@@ -107,6 +122,18 @@ public class UserParcelable implements Parcelable {
             return null;
     }
 
+    public String getNativeLanguage() {
+        return nativeLanguage;
+    }
+
+    public String getPracticingLanguage() {
+        return practicingLanguage;
+    }
+
+    public String getOauth() {
+        return oauth;
+    }
+
     public void setImage(Bitmap image) {
         this.image = image;
     }
@@ -131,6 +158,18 @@ public class UserParcelable implements Parcelable {
         this.gender = gender;
     }
 
+    public void setNativeLanguage(String nativeLanguage) {
+        this.nativeLanguage = nativeLanguage;
+    }
+
+    public void setPracticingLanguage(String practicingLanguage) {
+        this.practicingLanguage = practicingLanguage;
+    }
+
+    public void setOauth(String oauth) {
+        this.oauth = oauth;
+    }
+
     @Override
     public String toString() {
         return "UserParcelable{" +
@@ -140,6 +179,9 @@ public class UserParcelable implements Parcelable {
                 ", password='" + password + '\'' +
                 ", age=" + age +
                 ", gender='" + gender + '\'' +
+                ", nativeLanguage='" + nativeLanguage + '\'' +
+                ", practicingLanguage='" + practicingLanguage + '\'' +
+                ", oauth='" + oauth + '\'' +
                 '}';
     }
 }

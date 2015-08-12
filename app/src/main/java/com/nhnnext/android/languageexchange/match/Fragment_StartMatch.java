@@ -1,6 +1,8 @@
 package com.nhnnext.android.languageexchange.match;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -10,9 +12,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.nhnnext.android.languageexchange.R;
 import com.nhnnext.android.languageexchange.user.User;
+import com.nhnnext.android.languageexchange.user.UserParcelable;
 
 import java.util.ArrayList;
 
@@ -20,7 +24,28 @@ import java.util.ArrayList;
  * Created by Alpha on 2015. 7. 22.
  */
 public class Fragment_StartMatch extends Fragment implements View.OnClickListener {
+    private Button nativeBtn;
+    private Button practicingBtn;
+    private TextView selectedNative;
+    private TextView selectedPracticing;
     private Button matchButton;
+    private UserParcelable user;
+    private int dialogType;
+
+    public static Fragment_StartMatch newInstance(UserParcelable user) {
+        Fragment_StartMatch f = new Fragment_StartMatch();
+
+        // Supply index input as an argument.
+        Bundle args = new Bundle();
+        args.putParcelable("user", user);
+        f.setArguments(args);
+
+        return f;
+    }
+
+    private UserParcelable getShownIndex() {
+        return getArguments().getParcelable("user");
+    }
 
     @Nullable
     @Override
@@ -28,7 +53,52 @@ public class Fragment_StartMatch extends Fragment implements View.OnClickListene
         View view = inflater.inflate(R.layout.fragment_start_match, container, false);
         matchButton = (Button) view.findViewById(R.id.start_match_button);
         matchButton.setOnClickListener(this);
+
+        nativeBtn = (Button) view.findViewById(R.id.native_language);
+        practicingBtn = (Button) view.findViewById(R.id.practicing_language);
+        selectedNative = (TextView) view.findViewById(R.id.selected_native);
+        selectedPracticing = (TextView) view.findViewById(R.id.selected_practicing);
+
+        nativeBtn.setOnClickListener(this);
+        practicingBtn.setOnClickListener(this);
+
+        user = getShownIndex();
+
         return view;
+    }
+
+
+    private void DialogLanguageSelectOption(int index) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), AlertDialog.THEME_DEVICE_DEFAULT_DARK);
+        if (dialogType == 1)
+            builder.setTitle("Select a Native Language");
+        else
+            builder.setTitle("Select a Practicing Language");
+        builder.setSingleChoiceItems(R.array.languages, index, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        }).setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                int position = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
+                String[] langs = getResources().getStringArray(R.array.languages);
+                if (dialogType == 1) {
+                    user.setNativeLanguage(langs[position]);
+                    selectedNative.setText(user.getNativeLanguage());
+                } else {
+                    user.setPracticingLanguage(langs[position]);
+                    selectedPracticing.setText(user.getPracticingLanguage());
+                }
+            }
+        }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        builder.show();
     }
 
     @Override
@@ -46,6 +116,40 @@ public class Fragment_StartMatch extends Fragment implements View.OnClickListene
         switch (id) {
             case R.id.start_match_button:
                 new MatchAsyncTask().execute("target url");
+                break;
+
+            //TODO ENUM으로 리팩토링!!!!!
+            case R.id.native_language:
+                dialogType = 1;
+                if (user.getNativeLanguage() == null)
+                    DialogLanguageSelectOption(0);
+                else if (user.getNativeLanguage().equals("Korean"))
+                    DialogLanguageSelectOption(0);
+                else if (user.getNativeLanguage().equals("English"))
+                    DialogLanguageSelectOption(1);
+                else if (user.getNativeLanguage().equals("Japanese"))
+                    DialogLanguageSelectOption(2);
+                else if (user.getNativeLanguage().equals("Chinese"))
+                    DialogLanguageSelectOption(3);
+                else
+                    DialogLanguageSelectOption(4);
+                break;
+
+            //TODO ENUM으로 리팩토링!!!!!
+            case R.id.practicing_language:
+                dialogType = 2;
+                if (user.getNativeLanguage() == null)
+                    DialogLanguageSelectOption(1);
+                else if (user.getPracticingLanguage().equals("Korean"))
+                    DialogLanguageSelectOption(0);
+                else if (user.getPracticingLanguage().equals("English"))
+                    DialogLanguageSelectOption(1);
+                else if (user.getPracticingLanguage().equals("Japanese"))
+                    DialogLanguageSelectOption(2);
+                else if (user.getPracticingLanguage().equals("Chinese"))
+                    DialogLanguageSelectOption(3);
+                else
+                    DialogLanguageSelectOption(4);
                 break;
         }
 
