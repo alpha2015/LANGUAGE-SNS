@@ -50,4 +50,6 @@
     <string name="app_logo_icon">App logo icon</string>
     <string name="profile_update_button">Profile update button</string>
     <string name="matching_start_button">Matching start button</string>
+    <string name="drawer_open">Open navigation drawer</string>
+    <string name="drawer_close">Close navigation drawer</string>
 </resources>
