@@ -1,6 +1,7 @@
 package com.nhnnext.android.languageexchange.match;
 
 import android.content.res.Configuration;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -11,7 +12,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,16 +24,22 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.nhnnext.android.languageexchange.Model.MessageInfo;
 import com.nhnnext.android.languageexchange.R;
+import com.nhnnext.android.languageexchange.common.NotiItemAdapter;
+import com.nhnnext.android.languageexchange.user.User;
 import com.nhnnext.android.languageexchange.user.UserParcelable;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
  * Created by Alpha on 2015. 7. 22..
  */
 public class MatchingActivity extends AppCompatActivity {
+    private ArrayList<MessageInfo> messageList;
     private String[] mPlanetTitles;
     private ListView mRightDrawerList;
     private DrawerLayout mDrawerLayout;
@@ -59,13 +65,21 @@ public class MatchingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_match);
 
+        messageList = new ArrayList<>(); //메시지리스트 저장을 위한 ArrayList
+        messageList.add(new MessageInfo(BitmapFactory.decodeResource(getResources(), R.drawable.sample_image_1), "name1", "hello? my name is name1", new Date()));
+        messageList.add(new MessageInfo(BitmapFactory.decodeResource(getResources(), R.drawable.sample_image_2), "name2", "hello? my name is name2", new Date()));
+        messageList.add(new MessageInfo(BitmapFactory.decodeResource(getResources(), R.drawable.sample_image_3), "name3", "hello? my name is name3", new Date()));
+        messageList.add(new MessageInfo(BitmapFactory.decodeResource(getResources(), R.drawable.sample_image_4), "name4", "hello? my name is name4", new Date()));
+        messageList.add(new MessageInfo(BitmapFactory.decodeResource(getResources(), R.drawable.sample_image_5), "name5", "hello? my name is name5", new Date()));
+        messageList.add(new MessageInfo(BitmapFactory.decodeResource(getResources(), R.drawable.sample_image_6), "name6", "hello? my name is name6", new Date()));
+
         mPlanetTitles = getResources().getStringArray(R.array.languages);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mRightDrawerList = (ListView) findViewById(R.id.right_drawer);
 
         // Set the adapter for the list view
-        mRightDrawerList.setAdapter(new ArrayAdapter<>(this,
-                R.layout.drawer_list_item, mPlanetTitles));
+        mRightDrawerList.setAdapter(new NotiItemAdapter(this,
+                R.layout.notification_list_item, messageList));
 
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
                 R.string.drawer_open, R.string.drawer_close) {
