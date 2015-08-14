@@ -24,6 +24,11 @@ import java.util.ArrayList;
  * Created by Alpha on 2015. 7. 22.
  */
 public class Fragment_StartMatch extends Fragment implements View.OnClickListener {
+    //TODO 서버 DB를 통해 설정된 default native, practicing 언어 가져오기
+    //TODO 선택할 수 있는 언어 종류 저장 할 DB 설계
+    //TODO App DB, Server DB에 변경된 언어 저장.
+    //TODO "모국어와 배우고자하는 언어를 다르게 선택해주세요." 메시지
+
     private Button nativeBtn;
     private Button practicingBtn;
     private TextView selectedNative;

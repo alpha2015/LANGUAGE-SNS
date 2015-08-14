@@ -11,13 +11,18 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Layout;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.nhnnext.android.languageexchange.R;
 import com.nhnnext.android.languageexchange.user.UserParcelable;
@@ -91,7 +96,7 @@ public class MatchingActivity extends AppCompatActivity {
 
         mPagerAdapter = new MatchScreenSlidePagerAdapter(getSupportFragmentManager());
         //언어 선택 Fragment
-        mPagerAdapter.addFragment(new Fragment_SelectLanguage());
+        mPagerAdapter.addFragment(new Fragment_TimeLine());
         //매칭 시작 Fragment
         mPagerAdapter.addFragment(Fragment_StartMatch.newInstance(user));
         //개인정보 수정 Fragment
@@ -100,9 +105,19 @@ public class MatchingActivity extends AppCompatActivity {
 
         tabLayout = (TabLayout) findViewById(R.id.tab);
         tabLayout.setupWithViewPager(mPager);
-        tabLayout.getTabAt(0).setIcon(R.drawable.ic_translate_black_36dp);
-        tabLayout.getTabAt(1).setIcon(R.drawable.ic_search_black_36dp);
-        tabLayout.getTabAt(2).setIcon(R.drawable.ic_settings_black_36dp);
+
+        LinearLayout tab1 = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.custom_tab, null);
+        ((ImageView)tab1.findViewById(R.id.tab_icon)).setImageResource(R.drawable.ic_contacts_black_24dp);
+        ((TextView)tab1.findViewById(R.id.tab_text)).setText("TimeLine");
+        tabLayout.getTabAt(0).setCustomView(tab1);
+        LinearLayout tab2 = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.custom_tab, null);
+        ((ImageView)tab2.findViewById(R.id.tab_icon)).setImageResource(R.drawable.ic_search_black_24dp);
+        ((TextView)tab2.findViewById(R.id.tab_text)).setText("Match");
+        tabLayout.getTabAt(1).setCustomView(tab2);
+        LinearLayout tab3 = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.custom_tab, null);
+        ((ImageView)tab3.findViewById(R.id.tab_icon)).setImageResource(R.drawable.ic_settings_black_24dp);
+        ((TextView)tab3.findViewById(R.id.tab_text)).setText("MyInfo");
+        tabLayout.getTabAt(2).setCustomView(tab3);
 
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
