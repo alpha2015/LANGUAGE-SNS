@@ -14,9 +14,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.nhnnext.android.languageexchange.Model.User;
+import com.nhnnext.android.languageexchange.Model.UserParcelable;
 import com.nhnnext.android.languageexchange.R;
-import com.nhnnext.android.languageexchange.user.User;
-import com.nhnnext.android.languageexchange.user.UserParcelable;
 
 import java.util.ArrayList;
 
@@ -143,7 +143,7 @@ public class Fragment_StartMatch extends Fragment implements View.OnClickListene
             //TODO ENUM으로 리팩토링!!!!!
             case R.id.practicing_language:
                 dialogType = 2;
-                if (user.getNativeLanguage() == null)
+                if (user.getPracticingLanguage() == null)
                     DialogLanguageSelectOption(1);
                 else if (user.getPracticingLanguage().equals("Korean"))
                     DialogLanguageSelectOption(0);

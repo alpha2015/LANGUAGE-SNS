@@ -17,9 +17,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.nhnnext.android.languageexchange.user.User;
-import com.nhnnext.android.languageexchange.user.UserParcelable;
-import com.parse.ParseObject;
+import com.nhnnext.android.languageexchange.Model.User;
+import com.nhnnext.android.languageexchange.Model.UserParcelable;
 
 /**
  * Created by Alpha on 2015. 7. 21..
@@ -40,12 +39,12 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ParseObject testObject = new ParseObject("User");
-        testObject.put("name", "최성원");
-        testObject.put("password", "1234");
-        testObject.put("email", "test.naver.com");
-
-        testObject.saveInBackground();
+        //parse db 연동 테스트
+//        ParseObject testObject = new ParseObject("User");
+//        testObject.put("name", "최성원");
+//        testObject.put("password", "1234");
+//        testObject.put("email", "test.naver.com");
+//        testObject.saveInBackground();
 
         //레이아웃 view
         emailEditText = (EditText) findViewById(R.id.login_email_text);
@@ -191,7 +190,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             //match Activity 호출
             Intent intent = new Intent();
             intent.setAction("com.nhnnext.android.action.MATCH");
-            UserParcelable parcelUser = new UserParcelable(new User("test@naver.com", "최성원", "1234", 29, "male"));
+            UserParcelable parcelUser = new UserParcelable(new User("test1@naver.com", "최성원", "1234", 29, "male"));
             intent.putExtra("user", parcelUser);
             startActivity(intent);
         }

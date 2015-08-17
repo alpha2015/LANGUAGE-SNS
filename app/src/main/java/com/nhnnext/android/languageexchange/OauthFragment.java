@@ -17,21 +17,17 @@ import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
-import com.facebook.Profile;
 import com.facebook.ProfileTracker;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
-import com.nhnnext.android.languageexchange.user.User;
-import com.nhnnext.android.languageexchange.user.UserParcelable;
+import com.nhnnext.android.languageexchange.Model.User;
+import com.nhnnext.android.languageexchange.Model.UserParcelable;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
 
 /**
  * Created by Alpha on 2015. 8. 10..

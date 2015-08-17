@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import com.nhnnext.android.languageexchange.Model.MessageInfo;
 import com.nhnnext.android.languageexchange.R;
-import com.nhnnext.android.languageexchange.user.User;
 
 import java.text.SimpleDateFormat;
 import java.util.List;

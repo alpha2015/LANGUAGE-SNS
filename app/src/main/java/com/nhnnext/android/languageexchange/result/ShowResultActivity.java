@@ -8,10 +8,10 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
+import com.nhnnext.android.languageexchange.Model.User;
+import com.nhnnext.android.languageexchange.Model.UserParcelable;
 import com.nhnnext.android.languageexchange.R;
 import com.nhnnext.android.languageexchange.common.UserItemAdapter;
-import com.nhnnext.android.languageexchange.user.User;
-import com.nhnnext.android.languageexchange.user.UserParcelable;
 
 import java.util.ArrayList;
 

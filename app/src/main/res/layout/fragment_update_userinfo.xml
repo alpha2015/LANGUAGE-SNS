@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="#9FB5B3">
 
     <TextView
         android:layout_width="match_parent"
@@ -14,59 +15,82 @@
         android:textColor="#000000"
         android:textSize="18sp" />
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:paddingLeft="22.5dp"
-        android:paddingRight="22.5dp">
-
-        <ImageView
-            android:id="@+id/imageView01"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:contentDescription="@string/profile_user_image"
-            android:src="@drawable/square_profile_default" />
-
-        <ImageView
-            android:id="@+id/imageView03"
+        android:orientation="horizontal"
+        android:layout_margin="10dp"
+        >
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignRight="@id/imageView01"
-            android:contentDescription="@string/profile_image_delete_button"
-            android:src="@drawable/square_profile_delete" />
+            android:gravity="center"
+            android:paddingLeft="22.5dp"
+            android:paddingRight="22.5dp">
 
+            <ImageView
+                android:id="@+id/imageView01"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:contentDescription="@string/profile_user_image"
+                android:src="@drawable/square_profile_default" />
 
-    </RelativeLayout>
+            <ImageView
+                android:id="@+id/imageView03"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignRight="@id/imageView01"
+                android:contentDescription="@string/profile_image_delete_button"
+                android:src="@drawable/square_profile_delete" />
+        </RelativeLayout>
 
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="54dp"
-        android:background="@drawable/shape_rectangle">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:text="@string/email"
-            android:textColor="#4c4c4c"
-            android:textSize="16sp" />
-
-        <EditText
-            android:id="@+id/setting_edit_email"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:gravity="center_vertical|end"
-            android:inputType="textEmailAddress" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="center_vertical">
+            <TextView
+                android:id="@+id/setting_email"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:text="test@naver.com"/>
+        </LinearLayout>
     </LinearLayout>
 
+
+    <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="54dp"-->
+        <!--android:background="@drawable/shape_rectangle">-->
+
+        <!--<TextView-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_weight="1"-->
+            <!--android:gravity="center_vertical"-->
+            <!--android:text="@string/email"-->
+            <!--android:textColor="#4c4c4c"-->
+            <!--android:textSize="16sp" />-->
+
+        <!--<EditText-->
+            <!--android:id="@+id/setting_edit_email"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_weight="2"-->
+            <!--android:gravity="center_vertical|end"-->
+            <!--android:inputType="textEmailAddress" />-->
+    <!--</LinearLayout>-->
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="54dp"
-        android:background="@drawable/shape_rectangle">
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/shape_rectangle"
+        >
 
         <TextView
             android:layout_width="0dp"
@@ -88,8 +112,12 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="54dp"
-        android:background="@drawable/shape_rectangle">
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/shape_rectangle"
+        >
 
         <TextView
             android:layout_width="0dp"
@@ -111,53 +139,92 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="54dp"
+        android:layout_height="35dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="10dp"
         android:background="@drawable/shape_rectangle">
 
         <TextView
             android:layout_width="0dp"
-            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="center_vertical"
+            android:layout_height="match_parent"
             android:text="@string/age"
             android:textColor="#4c4c4c"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            />
 
         <TextView
-            android:id="@+id/setting_edit_age"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
             android:layout_weight="2"
-            android:gravity="center_vertical|end" />
+            android:layout_height="match_parent"
+            android:id="@+id/setting_edit_age"
+
+            />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:text="@string/gender"
+            android:textColor="#4c4c4c"
+            android:textSize="16sp"
+            />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:layout_height="match_parent"
+            android:id="@+id/setting_edit_gender"
+
+            />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="54dp"
-        android:background="@drawable/shape_rectangle">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/shape_rectangle"
+        android:layout_marginBottom="20dp">
 
-        <TextView
-            android:layout_width="0dp"
+        <EditText
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:text="@string/gender"
-            android:textColor="#4c4c4c"
-            android:textSize="16sp" />
+            android:hint="introduce yourself"/>
 
-        <TextView
-            android:id="@+id/setting_edit_gender"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:gravity="center_vertical|end" />
     </LinearLayout>
+
+    <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="54dp"-->
+        <!--android:background="@drawable/shape_rectangle">-->
+
+        <!--<TextView-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_weight="1"-->
+            <!--android:gravity="center_vertical"-->
+            <!--android:text="@string/gender"-->
+            <!--android:textColor="#4c4c4c"-->
+            <!--android:textSize="16sp" />-->
+
+        <!--<TextView-->
+            <!--android:id="@+id/setting_edit_gender"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_weight="2"-->
+            <!--android:gravity="center_vertical|end" />-->
+    <!--</LinearLayout>-->
 
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="54dp"
-        android:background="#f4f5f7"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/shape_rectangle"
         android:orientation="vertical">
 
         <Button

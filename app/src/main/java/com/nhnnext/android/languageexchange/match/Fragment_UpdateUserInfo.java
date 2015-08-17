@@ -19,8 +19,8 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.nhnnext.android.languageexchange.Model.UserParcelable;
 import com.nhnnext.android.languageexchange.R;
-import com.nhnnext.android.languageexchange.user.UserParcelable;
 
 /**
  * Created by Alpha on 2015. 7. 22..
@@ -31,7 +31,7 @@ import com.nhnnext.android.languageexchange.user.UserParcelable;
 public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickListener {
     //TODO 사진찍기 Activity 호출, 프로필 사진으로 저장 구현(서버DB 저장)
     //TODO 갤러리 접근, 프로필 사진으로 저장 구현(서버DB 저장)
-    private EditText editEmail;
+    private TextView viewEmail;
     private EditText editName;
     private EditText editPassword;
     private static TextView editAge;
@@ -65,7 +65,7 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
 
         //레이아웃 view
         View view = inflater.inflate(R.layout.fragment_update_userinfo, container, false);
-        editEmail = (EditText) view.findViewById(R.id.setting_edit_email);
+        viewEmail = (TextView) view.findViewById(R.id.setting_email);
         editName = (EditText) view.findViewById(R.id.setting_edit_name);
         editPassword = (EditText) view.findViewById(R.id.setting_edit_password);
         editAge = (TextView) view.findViewById(R.id.setting_edit_age);
@@ -77,7 +77,7 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
         saveButton.setOnClickListener(this);
 
         //DB에서 가져온 user data view에 설정
-        editEmail.setText(user.getEmail());
+        viewEmail.setText(user.getEmail());
         editName.setText(user.getName());
         editPassword.setText("********");
         editAge.setText(Integer.toString(user.getAge()));
@@ -97,7 +97,6 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
                 break;
             case R.id.setting_save:
                 //TODO App, SERVER DB 저장 구현
-                user.setEmail(editEmail.getText().toString());
                 user.setName(editName.getText().toString());
                 user.setPassword(editPassword.getText().toString());
                 user.setAge(Integer.parseInt(editAge.getText().toString()));

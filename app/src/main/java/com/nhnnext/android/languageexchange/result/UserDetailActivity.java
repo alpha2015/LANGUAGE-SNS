@@ -1,8 +1,6 @@
 package com.nhnnext.android.languageexchange.result;
 
 import android.app.Activity;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -10,8 +8,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.nhnnext.android.languageexchange.Model.UserParcelable;
 import com.nhnnext.android.languageexchange.R;
-import com.nhnnext.android.languageexchange.user.UserParcelable;
+import com.parse.ParseInstallation;
+import com.parse.ParsePush;
+import com.parse.ParseQuery;
 
 /**
  * Created by Alpha on 2015. 8. 6..
@@ -61,13 +62,22 @@ public class UserDetailActivity extends Activity implements View.OnClickListener
         switch (id) {
             case R.id.request_send_email_button:
                 //메일 보내기 버튼 클릭시 mail send activity 호출
-                Uri uri = Uri.parse("mailto:" + user.getEmail());
-                Intent intent = new Intent(Intent.ACTION_SENDTO, uri);
-                startActivity(intent);
+//                Uri uri = Uri.parse("mailto:" + user.getEmail());
+//                Intent intent = new Intent(Intent.ACTION_SENDTO, uri);
+//                startActivity(intent);
+
+                //TODO 대상 유저에게 PUSH MESSAGE 보내기
+                ParsePush push = new ParsePush();
+                ParseQuery pushQuery = ParseInstallation.getQuery();
+                pushQuery.whereEqualTo("email", "test@naver.com");
+                push.setQuery(pushQuery); // Set our Installation query
+
+                push.setMessage("test@naver.com" + "hello!!!");
+                push.sendInBackground();
                 break;
             case R.id.request_friend_button:
                 //TODO 페이스북 친구 요청이나 타 메신저 친구 요청 기능 구현
-                Toast.makeText(UserDetailActivity.this, "친구요청 하기를 수행합니다." ,
+                Toast.makeText(UserDetailActivity.this, "친구요청 하기를 수행합니다.",
                         Toast.LENGTH_SHORT).show();
                 break;
         }

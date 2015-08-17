@@ -6,6 +6,21 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
+    <!-- parse push notification permission-->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <!--
+      IMPORTANT: Change "com.parse.starter.permission.C2D_MESSAGE" in the lines below
+      to match your app's package name + ".permission.C2D_MESSAGE".
+    -->
+    <permission android:protectionLevel="signature"
+        android:name="com.nhnnext.android.languageexchange.permission.C2D_MESSAGE" />
+    <uses-permission android:name="com.nhnnext.android.languageexchange.permission.C2D_MESSAGE" />
+
+
     <!-- 프로필 사진 추가 기능으로 인한 카메라 사용 권한 -->
     <uses-permission android:name="android.permission.CAMERA" />
     <!-- 프로필 사진 등록을 위한 갤러리 접근 권한 -->
@@ -163,6 +178,35 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
+
+        <service android:name="com.parse.PushService" />
+        <receiver android:name="com.parse.ParseBroadcastReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.USER_PRESENT" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name="com.parse.ParsePushBroadcastReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.parse.push.intent.RECEIVE" />
+                <action android:name="com.parse.push.intent.DELETE" />
+                <action android:name="com.parse.push.intent.OPEN" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name="com.parse.GcmBroadcastReceiver"
+            android:permission="com.google.android.c2dm.permission.SEND">
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+
+                <!--
+                  IMPORTANT: Change "com.parse.starter" to match your app's package name.
+                -->
+                <category android:name="com.nhnnext.android.languageexchange" />
+            </intent-filter>
+        </receiver>
 
     </application>
 

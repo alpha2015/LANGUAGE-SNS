@@ -22,8 +22,8 @@ public class MyApplication extends Application {
         printHashKey();
         // Enable Local Datastore.
         Parse.enableLocalDatastore(this);
-
         Parse.initialize(this, "2P6EE1rTbSz1bTxLoCUuKv73dOpQQbe4ioad3Lsr", "IjsrTTpAsPDENLTmtFbAdyf9VI251NCeuPPxwCot");
+
     }
 
     public void printHashKey() {

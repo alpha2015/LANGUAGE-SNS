@@ -18,6 +18,7 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.nhnnext.android.languageexchange.Model.User;
 import com.nhnnext.android.languageexchange.R;
 
 /**

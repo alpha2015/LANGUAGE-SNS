@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.nhnnext.android.languageexchange.R;
-import com.nhnnext.android.languageexchange.user.User;
+import com.nhnnext.android.languageexchange.Model.User;
 
 import java.util.List;
 

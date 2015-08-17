@@ -1,4 +1,4 @@
-package com.nhnnext.android.languageexchange.user;
+package com.nhnnext.android.languageexchange.Model;
 
 import android.graphics.Bitmap;
 import android.os.Parcel;

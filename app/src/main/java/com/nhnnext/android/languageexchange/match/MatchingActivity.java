@@ -18,19 +18,17 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.nhnnext.android.languageexchange.Model.MessageInfo;
+import com.nhnnext.android.languageexchange.Model.UserParcelable;
 import com.nhnnext.android.languageexchange.R;
 import com.nhnnext.android.languageexchange.common.NotiItemAdapter;
-import com.nhnnext.android.languageexchange.user.User;
-import com.nhnnext.android.languageexchange.user.UserParcelable;
+import com.parse.ParseInstallation;
 
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -106,6 +104,13 @@ public class MatchingActivity extends AppCompatActivity {
         // Instantiate a ViewPager and a PagerAdapter.
         // Fragment 초기화
         user = getIntent().getExtras().getParcelable("user");
+
+        // push notification email 등록 installation
+        ParseInstallation installation = ParseInstallation.getCurrentInstallation();
+        installation.put("email", user.getEmail());
+        installation.saveInBackground();
+
+
         mPager = (ViewPager) findViewById(R.id.pager);
 
         mPagerAdapter = new MatchScreenSlidePagerAdapter(getSupportFragmentManager());

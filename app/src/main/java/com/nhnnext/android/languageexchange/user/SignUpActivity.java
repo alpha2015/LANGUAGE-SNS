@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.nhnnext.android.languageexchange.Model.User;
 import com.nhnnext.android.languageexchange.R;
 
 /**
