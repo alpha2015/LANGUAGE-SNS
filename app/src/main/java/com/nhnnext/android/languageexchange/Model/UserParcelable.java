@@ -22,7 +22,7 @@ public class UserParcelable implements Parcelable {
     private String userUpdateDate;
 
     public UserParcelable() {
-        this(null, null, null, null, 0, null, null, null, null, null,null,null);
+        this(null, null, null, null, 0, null, null, null, null, null, null, null);
     }
 
     public UserParcelable(User user) {

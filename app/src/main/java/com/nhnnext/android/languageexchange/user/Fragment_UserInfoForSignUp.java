@@ -80,10 +80,10 @@ public class Fragment_UserInfoForSignUp extends Fragment {
         femaleRadioButton = (RadioButton) view.findViewById(R.id.gender_female);
         continueButton = (Button) view.findViewById(R.id.sign_up_continue_btn);
 
-        writtenEmailEditText = (TextView)view.findViewById(R.id.sign_up_email_written);
-        writtenNameEditText = (TextView)view.findViewById(R.id.sign_up_name_written);
-        writtenAgeEditText = (TextView)view.findViewById(R.id.sign_up_age_written);
-        writtenGenderEditText = (TextView)view.findViewById(R.id.sign_up_gender_written);
+        writtenEmailEditText = (TextView) view.findViewById(R.id.sign_up_email_written);
+        writtenNameEditText = (TextView) view.findViewById(R.id.sign_up_name_written);
+        writtenAgeEditText = (TextView) view.findViewById(R.id.sign_up_age_written);
+        writtenGenderEditText = (TextView) view.findViewById(R.id.sign_up_gender_written);
 
         //성별 설정 radio group 이벤트 등록
         genderRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {

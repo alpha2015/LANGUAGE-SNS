@@ -150,14 +150,13 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                     public void run() {
                         User loadedUser = loginFromNetwork(user);
                         progressDialog.dismiss();
-                        if(loadedUser != null) {
+                        if (loadedUser != null) {
                             Intent intent = new Intent();
                             intent.setAction("com.nhnnext.android.action.MATCH");
                             UserParcelable parcelUser = new UserParcelable(loadedUser);
                             intent.putExtra("user", parcelUser);
                             startActivity(intent);
-                        }
-                        else{
+                        } else {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {

@@ -126,16 +126,16 @@ public class MatchingActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(mPager);
 
         LinearLayout tab1 = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.custom_tab, null);
-        ((ImageView)tab1.findViewById(R.id.tab_icon)).setImageResource(R.drawable.ic_contacts_black_24dp);
-        ((TextView)tab1.findViewById(R.id.tab_text)).setText("TimeLine");
+        ((ImageView) tab1.findViewById(R.id.tab_icon)).setImageResource(R.drawable.ic_contacts_black_24dp);
+        ((TextView) tab1.findViewById(R.id.tab_text)).setText("TimeLine");
         tabLayout.getTabAt(0).setCustomView(tab1);
         LinearLayout tab2 = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.custom_tab, null);
-        ((ImageView)tab2.findViewById(R.id.tab_icon)).setImageResource(R.drawable.ic_search_black_24dp);
-        ((TextView)tab2.findViewById(R.id.tab_text)).setText("Match");
+        ((ImageView) tab2.findViewById(R.id.tab_icon)).setImageResource(R.drawable.ic_search_black_24dp);
+        ((TextView) tab2.findViewById(R.id.tab_text)).setText("Match");
         tabLayout.getTabAt(1).setCustomView(tab2);
         LinearLayout tab3 = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.custom_tab, null);
-        ((ImageView)tab3.findViewById(R.id.tab_icon)).setImageResource(R.drawable.ic_settings_black_24dp);
-        ((TextView)tab3.findViewById(R.id.tab_text)).setText("MyInfo");
+        ((ImageView) tab3.findViewById(R.id.tab_icon)).setImageResource(R.drawable.ic_settings_black_24dp);
+        ((TextView) tab3.findViewById(R.id.tab_text)).setText("MyInfo");
         tabLayout.getTabAt(2).setCustomView(tab3);
 
         getSupportActionBar().setDisplayShowTitleEnabled(false);

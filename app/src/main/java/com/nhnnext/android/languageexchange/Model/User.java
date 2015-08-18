@@ -21,16 +21,16 @@ public class User {
 
 
     public User() {
-        this(null, null, null, null, 0, null, null, null, null, null,null,null);
+        this(null, null, null, null, 0, null, null, null, null, null, null, null);
     }
 
     //for login
     public User(String userEmail, String userPassword, String oAuth) {
-        this(null, userEmail, null, userPassword, 0, null, null, null, oAuth, null,null,null);
+        this(null, userEmail, null, userPassword, 0, null, null, null, oAuth, null, null, null);
     }
 
     public User(String userEmail, String userName, String userPassword, int userAge, String userGender) {
-        this(null, userEmail, userName, userPassword, userAge, userGender, null, null, null, null,null,null);
+        this(null, userEmail, userName, userPassword, userAge, userGender, null, null, null, null, null, null);
     }
 
     public User(Bitmap userImage, String userEmail, String userName, String userPassword, int userAge, String userGender, String userNative, String userPracticing, String oAuth, String userIntro, String userCreateDate, String userUpdateDate) {

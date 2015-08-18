@@ -8,8 +8,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.nhnnext.android.languageexchange.R;
 import com.nhnnext.android.languageexchange.Model.User;
+import com.nhnnext.android.languageexchange.R;
 
 import java.util.List;
 
