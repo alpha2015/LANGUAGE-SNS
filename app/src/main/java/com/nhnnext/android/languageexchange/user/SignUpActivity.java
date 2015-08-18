@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.net.Network;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Pair;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import com.nhnnext.android.languageexchange.Model.User;
 import com.nhnnext.android.languageexchange.Model.UserParcelable;
 import com.nhnnext.android.languageexchange.R;
+import com.nhnnext.android.languageexchange.common.NetworkUtil;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -125,7 +127,7 @@ public class SignUpActivity extends FragmentActivity implements View.OnClickList
 
                             OutputStreamWriter outStream = new OutputStreamWriter(http.getOutputStream(), "UTF-8");
                             PrintWriter writer = new PrintWriter(outStream);
-                            writer.write(getQuery(params));
+                            writer.write(NetworkUtil.getQuery(params));
                             writer.flush();
                             InputStreamReader tmp = new InputStreamReader(http.getInputStream(), "EUC-KR");
                             BufferedReader reader = new BufferedReader(tmp);
@@ -171,26 +173,6 @@ public class SignUpActivity extends FragmentActivity implements View.OnClickList
     protected void enableSignUp(User userForSignUp) {
         requestButton.setVisibility(View.VISIBLE);
         this.userForSignUp = userForSignUp;
-    }
-
-    private String getQuery(List<Pair<String, String>> params) throws UnsupportedEncodingException {
-        StringBuilder result = new StringBuilder();
-        boolean first = true;
-
-        for (Pair<String, String> pair : params) {
-            if (first)
-                first = false;
-            else
-                result.append("&");
-
-            result.append(URLEncoder.encode(pair.first, "UTF-8"));
-            result.append("=");
-            if (pair.second == null)
-                result.append(URLEncoder.encode("", "UTF-8"));
-            else
-                result.append(URLEncoder.encode(pair.second, "UTF-8"));
-        }
-        return result.toString();
     }
 }
 

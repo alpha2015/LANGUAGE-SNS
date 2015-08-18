@@ -15,16 +15,17 @@ public class User {
     private String nativeLanguage;
     private String practicingLanguage;
     private String oauth;
+    private String intro;
 
     public User() {
-        this(null, null, null, null, 0, null, null, null, null);
+        this(null, null, null, null, 0, null, null, null, null, null);
     }
 
     public User(String email, String name, String password, int age, String gender) {
-        this(null, email, name, password, age, gender, null, null, null);
+        this(null, email, name, password, age, gender, null, null, null, null);
     }
 
-    public User(Bitmap image, String email, String name, String password, int age, String gender, String nativeLanguage, String practicingLanguage, String oauth) {
+    public User(Bitmap image, String email, String name, String password, int age, String gender, String nativeLanguage, String practicingLanguage, String oauth, String intro) {
         this.image = image;
         this.email = email;
         this.name = name;
@@ -34,6 +35,7 @@ public class User {
         this.nativeLanguage = nativeLanguage;
         this.practicingLanguage = practicingLanguage;
         this.oauth = oauth;
+        this.intro = intro;
     }
 
     public Bitmap getImage() {
@@ -69,6 +71,10 @@ public class User {
     }
 
     public String getOauth() { return oauth; }
+
+    public String getIntro() {
+        return intro;
+    }
 
     public String getGenderForKorean() {
         if (gender.equals("male"))
@@ -113,6 +119,10 @@ public class User {
 
     public void setOauth(String oauth) { this.oauth = oauth; }
 
+    public void setIntro(String intro) {
+        this.intro = intro;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -131,7 +141,8 @@ public class User {
             return false;
         if (practicingLanguage != null ? !practicingLanguage.equals(user.practicingLanguage) : user.practicingLanguage != null)
             return false;
-        return !(oauth != null ? !oauth.equals(user.oauth) : user.oauth != null);
+        if (oauth != null ? !oauth.equals(user.oauth) : user.oauth != null) return false;
+        return !(intro != null ? !intro.equals(user.intro) : user.intro != null);
 
     }
 
@@ -146,6 +157,7 @@ public class User {
         result = 31 * result + (nativeLanguage != null ? nativeLanguage.hashCode() : 0);
         result = 31 * result + (practicingLanguage != null ? practicingLanguage.hashCode() : 0);
         result = 31 * result + (oauth != null ? oauth.hashCode() : 0);
+        result = 31 * result + (intro != null ? intro.hashCode() : 0);
         return result;
     }
 
@@ -161,6 +173,7 @@ public class User {
                 ", nativeLanguage='" + nativeLanguage + '\'' +
                 ", practicingLanguage='" + practicingLanguage + '\'' +
                 ", oauth='" + oauth + '\'' +
+                ", intro='" + intro + '\'' +
                 '}';
     }
 }

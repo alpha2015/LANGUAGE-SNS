@@ -4,10 +4,12 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +23,19 @@ import android.widget.Toast;
 
 import com.nhnnext.android.languageexchange.Model.UserParcelable;
 import com.nhnnext.android.languageexchange.R;
+import com.nhnnext.android.languageexchange.common.NetworkUtil;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Alpha on 2015. 7. 22..
@@ -37,6 +52,7 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
     private static TextView editAge;
     private static TextView editGender;
     private Button saveButton;
+    private TextView editIntro;
     //test를 위한 dummy user data(db구현시 제거)
 //    private User user = new User(null, "test@naver.com", "김아무개", "1234", 30, "male", null, null, null);
     private UserParcelable user;
@@ -71,6 +87,8 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
         editAge = (TextView) view.findViewById(R.id.setting_edit_age);
         editGender = (TextView) view.findViewById(R.id.setting_edit_gender);
         saveButton = (Button) view.findViewById(R.id.setting_save);
+        editIntro = (TextView) view.findViewById(R.id.setting_edit_intro);
+
         //각 회원정보에 대한 클릭, 저장 이벤트 등록
         editAge.setOnClickListener(this);
         editGender.setOnClickListener(this);
@@ -82,6 +100,7 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
         editPassword.setText("********");
         editAge.setText(Integer.toString(user.getAge()));
         editGender.setText(user.getGenderForKorean());
+        editIntro.setText(user.getIntro());
         return view;
     }
 
@@ -104,7 +123,75 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
                     user.setGender("male");
                 else
                     user.setGender("female");
-                Toast.makeText(getActivity().getApplicationContext(), "저장 완료!", Toast.LENGTH_SHORT).show();
+                user.setIntro(editIntro.getText().toString());
+
+
+                /*
+                    서버에 회원정보 수정 요청
+                 */
+                new Thread(new Runnable() {
+                    public void run() {
+                        URL url = null;       // URL 설정
+                        String result = null;
+                        try {
+                            url = new URL("http://10.0.3.2:8080/user/update");
+                            HttpURLConnection http = (HttpURLConnection) url.openConnection();
+                            http.setDefaultUseCaches(false);
+                            http.setDoInput(true);  // 읽기 모드 지정
+                            http.setDoOutput(true); // 쓰기 모드 지정
+                            http.setRequestMethod("POST");  // method POST
+                            //Form tag 방식으로 처리
+                            http.setRequestProperty("content-type", "application/x-www-form-urlencoded");
+
+                            List<Pair<String, String>> params = new ArrayList<>();
+                            params.add(new Pair<>("userEmail", user.getEmail()));
+                            params.add(new Pair<>("userName", user.getName()));
+                            params.add(new Pair<>("userPassword", user.getPassword()));
+                            params.add(new Pair<>("userGender", user.getGender()));
+                            params.add(new Pair<>("userAge", "" + user.getAge()));
+                            params.add(new Pair<>("userIntro", user.getIntro()));
+
+                            OutputStreamWriter outStream = new OutputStreamWriter(http.getOutputStream(), "UTF-8");
+                            PrintWriter writer = new PrintWriter(outStream);
+                            writer.write(NetworkUtil.getQuery(params));
+                            writer.flush();
+                            InputStreamReader tmp = new InputStreamReader(http.getInputStream(), "EUC-KR");
+                            BufferedReader reader = new BufferedReader(tmp);
+                            StringBuilder builder = new StringBuilder();
+                            String str;
+                            while ((str = reader.readLine()) != null) {       // 서버에서 라인단위로 보내줄 것이므로 라인단위로 읽는다
+                                builder.append(str + "\n");
+                            }
+                            result = builder.toString();
+
+                            /*
+                               업데이트 실패
+                             */
+                            //TODO 실패사유 Toast로 표시
+
+                            /*
+                                업데이트 성공
+                             */
+                            //TODO 추후 자동로그인을 위해 App DB에 회원정보 UPDATE
+                            if (result.equals("success\n")) {
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(getActivity().getApplicationContext(), "저장 완료!", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }
+                        } catch (MalformedURLException e) {
+                            e.printStackTrace();
+                        } catch (ProtocolException e) {
+                            e.printStackTrace();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
+
+
                 break;
         }
     }
@@ -171,8 +258,8 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
             return f;
         }
 
-        public char getShownIndex() {
-            return getArguments().getChar("index", 'N');
+        public String getShownIndex() {
+            return getArguments().getString("index", "null");
         }
 
         @Override
@@ -180,7 +267,7 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
             LayoutInflater inflater = (LayoutInflater)
                     getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             npView = (RadioGroup) inflater.inflate(R.layout.gender_radio_dialog_layout, null);
-            if (getShownIndex() == 'M') {
+            if (getShownIndex().equals("male")) {
                 RadioButton maleRadio = (RadioButton) npView.findViewById(R.id.gender_male);
                 maleRadio.setChecked(true);
             } else {

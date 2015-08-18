@@ -17,9 +17,10 @@ public class UserParcelable implements Parcelable {
     private String nativeLanguage;
     private String practicingLanguage;
     private String oauth;
+    private String intro;
 
     public UserParcelable() {
-        this(null, null, null, null, 0, null, null, null, null);
+        this(null, null, null, null, 0, null, null, null, null, null);
     }
 
     public UserParcelable(User user) {
@@ -32,9 +33,10 @@ public class UserParcelable implements Parcelable {
         this.nativeLanguage = user.getNativeLanguage();
         this.practicingLanguage = user.getPracticingLanguage();
         this.oauth = user.getOauth();
+        this.intro = user.getIntro();
     }
 
-    public UserParcelable(Bitmap image, String email, String name, String password, int age, String gender, String nativeLanguage, String practicingLanguage, String oauth) {
+    public UserParcelable(Bitmap image, String email, String name, String password, int age, String gender, String nativeLanguage, String practicingLanguage, String oauth, String intro) {
         this.image = image;
         this.email = email;
         this.name = name;
@@ -44,6 +46,7 @@ public class UserParcelable implements Parcelable {
         this.nativeLanguage = nativeLanguage;
         this.practicingLanguage = practicingLanguage;
         this.oauth = oauth;
+        this.intro = intro;
     }
 
     public UserParcelable(Parcel source) {
@@ -56,6 +59,7 @@ public class UserParcelable implements Parcelable {
         nativeLanguage = source.readString();
         practicingLanguage = source.readString();
         oauth = source.readString();
+        intro = source.readString();
     }
 
     @Override
@@ -74,6 +78,7 @@ public class UserParcelable implements Parcelable {
         dest.writeString(nativeLanguage);
         dest.writeString(practicingLanguage);
         dest.writeString(oauth);
+        dest.writeString(intro);
     }
 
     public static final Parcelable.Creator<UserParcelable> CREATOR = new Creator<UserParcelable>() {
@@ -134,6 +139,10 @@ public class UserParcelable implements Parcelable {
         return oauth;
     }
 
+    public String getIntro() {
+        return intro;
+    }
+
     public void setImage(Bitmap image) {
         this.image = image;
     }
@@ -170,6 +179,10 @@ public class UserParcelable implements Parcelable {
         this.oauth = oauth;
     }
 
+    public void setIntro(String intro) {
+        this.intro = intro;
+    }
+
     @Override
     public String toString() {
         return "UserParcelable{" +
@@ -182,6 +195,7 @@ public class UserParcelable implements Parcelable {
                 ", nativeLanguage='" + nativeLanguage + '\'' +
                 ", practicingLanguage='" + practicingLanguage + '\'' +
                 ", oauth='" + oauth + '\'' +
+                ", intro='" + intro + '\'' +
                 '}';
     }
 }
