@@ -118,12 +118,12 @@ public class SignUpActivity extends FragmentActivity implements View.OnClickList
                             http.setRequestProperty("content-type", "application/x-www-form-urlencoded");
 
                             List<Pair<String, String>> params = new ArrayList<>();
-                            params.add(new Pair<>("userEmail", userForSignUp.getEmail()));
-                            params.add(new Pair<>("userName", userForSignUp.getName()));
-                            params.add(new Pair<>("userPassword", userForSignUp.getPassword()));
-                            params.add(new Pair<>("userGender", userForSignUp.getGender()));
-                            params.add(new Pair<>("userAge", "" + userForSignUp.getAge()));
-                            params.add(new Pair<>("oAuth", userForSignUp.getOauth()));
+                            params.add(new Pair<>("userEmail", userForSignUp.getUserEmail()));
+                            params.add(new Pair<>("userName", userForSignUp.getUserName()));
+                            params.add(new Pair<>("userPassword", userForSignUp.getUserPassword()));
+                            params.add(new Pair<>("userGender", userForSignUp.getUserGender()));
+                            params.add(new Pair<>("userAge", "" + userForSignUp.getUserAge()));
+                            params.add(new Pair<>("oAuth", userForSignUp.getoAuth()));
 
                             OutputStreamWriter outStream = new OutputStreamWriter(http.getOutputStream(), "UTF-8");
                             PrintWriter writer = new PrintWriter(outStream);

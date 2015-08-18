@@ -6,174 +6,163 @@ import android.graphics.Bitmap;
  * Created by Alpha on 2015. 8. 3..
  */
 public class User {
-    private Bitmap image;
-    private String email;
-    private String name;
-    private String password;
-    private int age;
-    private String gender;
-    private String nativeLanguage;
-    private String practicingLanguage;
-    private String oauth;
-    private String intro;
+    private Bitmap userImage;
+    private String userEmail;
+    private String userName;
+    private String userPassword;
+    private int userAge;
+    private String userGender;
+    private String userNative;
+    private String userPracticing;
+    private String oAuth;
+    private String userIntro;
+    private String userCreateDate;
+    private String userUpdateDate;
+
 
     public User() {
-        this(null, null, null, null, 0, null, null, null, null, null);
+        this(null, null, null, null, 0, null, null, null, null, null,null,null);
     }
 
-    public User(String email, String name, String password, int age, String gender) {
-        this(null, email, name, password, age, gender, null, null, null, null);
+    public User(String userEmail, String userName, String userPassword, int userAge, String userGender) {
+        this(null, userEmail, userName, userPassword, userAge, userGender, null, null, null, null,null,null);
     }
 
-    public User(Bitmap image, String email, String name, String password, int age, String gender, String nativeLanguage, String practicingLanguage, String oauth, String intro) {
-        this.image = image;
-        this.email = email;
-        this.name = name;
-        this.password = password;
-        this.age = age;
-        this.gender = gender;
-        this.nativeLanguage = nativeLanguage;
-        this.practicingLanguage = practicingLanguage;
-        this.oauth = oauth;
-        this.intro = intro;
+    public User(Bitmap userImage, String userEmail, String userName, String userPassword, int userAge, String userGender, String userNative, String userPracticing, String oAuth, String userIntro, String userCreateDate, String userUpdateDate) {
+        this.userImage = userImage;
+        this.userEmail = userEmail;
+        this.userName = userName;
+        this.userPassword = userPassword;
+        this.userAge = userAge;
+        this.userGender = userGender;
+        this.userNative = userNative;
+        this.userPracticing = userPracticing;
+        this.oAuth = oAuth;
+        this.userIntro = userIntro;
+        this.userCreateDate = userCreateDate;
+        this.userUpdateDate = userUpdateDate;
     }
 
-    public Bitmap getImage() {
-        return image;
+    public Bitmap getUserImage() {
+        return userImage;
     }
 
-    public String getEmail() {
-        return email;
+    public String getUserEmail() {
+        return userEmail;
     }
 
-    public String getName() {
-        return name;
+    public String getUserName() {
+        return userName;
     }
 
-    public String getPassword() {
-        return password;
+    public String getUserPassword() {
+        return userPassword;
     }
 
-    public int getAge() {
-        return age;
+    public int getUserAge() {
+        return userAge;
     }
 
-    public String getGender() {
-        return gender;
+    public String getUserGender() {
+        return userGender;
     }
 
-    public String getNativeLanguage() {
-        return nativeLanguage;
+    public String getUserNative() {
+        return userNative;
     }
 
-    public String getPracticingLanguage() {
-        return practicingLanguage;
+    public String getUserPracticing() {
+        return userPracticing;
     }
 
-    public String getOauth() { return oauth; }
+    public String getoAuth() {
+        return oAuth;
+    }
 
-    public String getIntro() {
-        return intro;
+    public String getUserIntro() {
+        return userIntro;
+    }
+
+    public String getUserCreateDate() {
+        return userCreateDate;
+    }
+
+    public String getUserUpdateDate() {
+        return userUpdateDate;
     }
 
     public String getGenderForKorean() {
-        if (gender.equals("male"))
+        if (userGender.equals("male"))
             return "남성";
-        else if (gender.equals("female"))
+        else if (userGender.equals("female"))
             return "여성";
         else
             return null;
     }
 
-    public void setImage(Bitmap image) {
-        this.image = image;
+    public void setUserImage(Bitmap userImage) {
+        this.userImage = userImage;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setUserPassword(String userPassword) {
+        this.userPassword = userPassword;
     }
 
-    public void setAge(int age) {
-        this.age = age;
+    public void setUserAge(int userAge) {
+        this.userAge = userAge;
     }
 
-    public void setGender(String gender) {
-        this.gender = gender;
+    public void setUserGender(String userGender) {
+        this.userGender = userGender;
     }
 
-    public void setNativeLanguage(String nativeLanguage) {
-        this.nativeLanguage = nativeLanguage;
+    public void setUserNative(String userNative) {
+        this.userNative = userNative;
     }
 
-    public void setPracticingLanguage(String practicingLanguage) {
-        this.practicingLanguage = practicingLanguage;
+    public void setUserPracticing(String userPracticing) {
+        this.userPracticing = userPracticing;
     }
 
-    public void setOauth(String oauth) { this.oauth = oauth; }
-
-    public void setIntro(String intro) {
-        this.intro = intro;
+    public void setoAuth(String oAuth) {
+        this.oAuth = oAuth;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        User user = (User) o;
-
-        if (age != user.age) return false;
-        if (image != null ? !image.equals(user.image) : user.image != null) return false;
-        if (email != null ? !email.equals(user.email) : user.email != null) return false;
-        if (name != null ? !name.equals(user.name) : user.name != null) return false;
-        if (password != null ? !password.equals(user.password) : user.password != null)
-            return false;
-        if (gender != null ? !gender.equals(user.gender) : user.gender != null) return false;
-        if (nativeLanguage != null ? !nativeLanguage.equals(user.nativeLanguage) : user.nativeLanguage != null)
-            return false;
-        if (practicingLanguage != null ? !practicingLanguage.equals(user.practicingLanguage) : user.practicingLanguage != null)
-            return false;
-        if (oauth != null ? !oauth.equals(user.oauth) : user.oauth != null) return false;
-        return !(intro != null ? !intro.equals(user.intro) : user.intro != null);
-
+    public void setUserIntro(String userIntro) {
+        this.userIntro = userIntro;
     }
 
-    @Override
-    public int hashCode() {
-        int result = image != null ? image.hashCode() : 0;
-        result = 31 * result + (email != null ? email.hashCode() : 0);
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        result = 31 * result + (password != null ? password.hashCode() : 0);
-        result = 31 * result + age;
-        result = 31 * result + (gender != null ? gender.hashCode() : 0);
-        result = 31 * result + (nativeLanguage != null ? nativeLanguage.hashCode() : 0);
-        result = 31 * result + (practicingLanguage != null ? practicingLanguage.hashCode() : 0);
-        result = 31 * result + (oauth != null ? oauth.hashCode() : 0);
-        result = 31 * result + (intro != null ? intro.hashCode() : 0);
-        return result;
+    public void setUserCreateDate(String userCreateDate) {
+        this.userCreateDate = userCreateDate;
+    }
+
+    public void setUserUpdateDate(String usesrUpdateDate) {
+        this.userUpdateDate = usesrUpdateDate;
     }
 
     @Override
     public String toString() {
         return "User{" +
-                "image=" + image +
-                ", email='" + email + '\'' +
-                ", name='" + name + '\'' +
-                ", password='" + password + '\'' +
-                ", age=" + age +
-                ", gender='" + gender + '\'' +
-                ", nativeLanguage='" + nativeLanguage + '\'' +
-                ", practicingLanguage='" + practicingLanguage + '\'' +
-                ", oauth='" + oauth + '\'' +
-                ", intro='" + intro + '\'' +
+                "userImage=" + userImage +
+                ", userEmail='" + userEmail + '\'' +
+                ", userName='" + userName + '\'' +
+                ", userPassword='" + userPassword + '\'' +
+                ", userAge=" + userAge +
+                ", userGender='" + userGender + '\'' +
+                ", userNative='" + userNative + '\'' +
+                ", userPracticing='" + userPracticing + '\'' +
+                ", oAuth='" + oAuth + '\'' +
+                ", userIntro='" + userIntro + '\'' +
+                ", userCreateDate='" + userCreateDate + '\'' +
+                ", userUpdateDate='" + userUpdateDate + '\'' +
                 '}';
     }
 }

@@ -24,16 +24,16 @@ public class UserParcelable implements Parcelable {
     }
 
     public UserParcelable(User user) {
-        this.image = user.getImage();
-        this.email = user.getEmail();
-        this.name = user.getName();
-        this.password = user.getPassword();
-        this.age = user.getAge();
-        this.gender = user.getGender();
-        this.nativeLanguage = user.getNativeLanguage();
-        this.practicingLanguage = user.getPracticingLanguage();
-        this.oauth = user.getOauth();
-        this.intro = user.getIntro();
+        this.image = user.getUserImage();
+        this.email = user.getUserEmail();
+        this.name = user.getUserName();
+        this.password = user.getUserPassword();
+        this.age = user.getUserAge();
+        this.gender = user.getUserGender();
+        this.nativeLanguage = user.getUserNative();
+        this.practicingLanguage = user.getUserPracticing();
+        this.oauth = user.getoAuth();
+        this.intro = user.getUserIntro();
     }
 
     public UserParcelable(Bitmap image, String email, String name, String password, int age, String gender, String nativeLanguage, String practicingLanguage, String oauth, String intro) {

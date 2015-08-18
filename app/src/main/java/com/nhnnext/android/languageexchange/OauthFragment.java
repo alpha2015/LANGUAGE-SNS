@@ -89,16 +89,16 @@ public class OauthFragment extends Fragment {
                                 try {
                                     //User 정보 저장
                                     //facebook 로그인의 경우 비밀번호가 필요없음
-                                    user.setEmail(jsonObject.getString("email"));
-                                    user.setName(jsonObject.getString("name"));
-                                    user.setGender(jsonObject.getString("gender"));
+                                    user.setUserEmail(jsonObject.getString("email"));
+                                    user.setUserName(jsonObject.getString("name"));
+                                    user.setUserGender(jsonObject.getString("gender"));
                                     String[] birthday = jsonObject.getString("birthday").split("/");
                                     int age = Calendar.getInstance().get(Calendar.YEAR) - Integer.parseInt(birthday[2]) + 1;
-                                    user.setAge(age);
+                                    user.setUserAge(age);
                                 } catch (JSONException e) {
                                     Log.d("oauth", "error : bring jsonObject from facebook");
                                 }
-                                user.setOauth("facebook");
+                                user.setoAuth("facebook");
 
                                 Log.d("oauth", "user : " + user);
 

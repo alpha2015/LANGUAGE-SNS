@@ -114,7 +114,7 @@ public class Fragment_UserInfoForSignUp extends Fragment {
                         //TODO if 서버 DB에 해당 email 존재할 경우) toast 알림
 
                         //else 서버 DB에 해당 Email 존재 하지 않을 경우) 이름 정보 입력을 위한 view 활성화
-                        userForSignUp.setEmail(emailEditText.getText().toString());
+                        userForSignUp.setUserEmail(emailEditText.getText().toString());
                         emailLayout.setVisibility(View.GONE);
                         nameLayout.setVisibility(View.VISIBLE);
                         signUpStep = SignUpStep.NAME;
@@ -124,7 +124,7 @@ public class Fragment_UserInfoForSignUp extends Fragment {
                     case NAME:
                         nameLayout.setVisibility(View.GONE);
                         passwordLayout.setVisibility(View.VISIBLE);
-                        userForSignUp.setName(nameEditText.getText().toString());
+                        userForSignUp.setUserName(nameEditText.getText().toString());
                         signUpStep = SignUpStep.PASSWORD;
                         continueButton.setVisibility(View.GONE);
                         break;
@@ -136,29 +136,29 @@ public class Fragment_UserInfoForSignUp extends Fragment {
                         agePicker.setMinValue(0);
                         agePicker.setMaxValue(99);
                         agePicker.setValue(20);
-                        userForSignUp.setPassword(passwordEditText.getText().toString());
+                        userForSignUp.setUserPassword(passwordEditText.getText().toString());
                         signUpStep = SignUpStep.AGE;
                         break;
 
                     case AGE:
                         ageLayout.setVisibility(View.GONE);
                         genderLayout.setVisibility(View.VISIBLE);
-                        userForSignUp.setAge(agePicker.getValue());
+                        userForSignUp.setUserAge(agePicker.getValue());
                         continueButton.setVisibility(View.GONE);
                         signUpStep = SignUpStep.GENDER;
                         break;
 
                     case GENDER:
                         if (maleRadioButton.isChecked())
-                            userForSignUp.setGender("male");
+                            userForSignUp.setUserGender("male");
                         else    //femaleRadioButton is checked
-                            userForSignUp.setGender("female");
+                            userForSignUp.setUserGender("female");
                         genderLayout.setVisibility(View.GONE);
                         continueButton.setVisibility(View.GONE);
                         requestEnableSignUpBtn();
-                        writtenEmailEditText.setText(userForSignUp.getEmail());
-                        writtenNameEditText.setText(userForSignUp.getName());
-                        writtenAgeEditText.setText(Integer.toString(userForSignUp.getAge()));
+                        writtenEmailEditText.setText(userForSignUp.getUserEmail());
+                        writtenNameEditText.setText(userForSignUp.getUserName());
+                        writtenAgeEditText.setText(Integer.toString(userForSignUp.getUserAge()));
                         writtenGenderEditText.setText(userForSignUp.getGenderForKorean());
                         completeLayout.setVisibility(View.VISIBLE);
                         break;

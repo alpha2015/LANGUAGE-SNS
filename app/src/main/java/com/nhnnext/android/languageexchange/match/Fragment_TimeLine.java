@@ -5,16 +5,24 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.Spinner;
-import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.nhnnext.android.languageexchange.Model.User;
 import com.nhnnext.android.languageexchange.R;
 import com.nhnnext.android.languageexchange.common.TimeLineItemAdapter;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Alpha on 2015. 7. 22..
@@ -24,7 +32,7 @@ public class Fragment_TimeLine extends Fragment {
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    private String[] myDataset = {"item1", "item2", "item3", "item4", "item5", "item6", "item7", "item8"}; //user info dummy code
+    ArrayList<User> users;
 
     @Nullable
     @Override
@@ -41,9 +49,58 @@ public class Fragment_TimeLine extends Fragment {
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // user list adapter 등록
-        mAdapter = new TimeLineItemAdapter(myDataset);
-        mRecyclerView.setAdapter(mAdapter);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                users = loadTimelineListFromNetwork();
 
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mAdapter = new TimeLineItemAdapter(users);
+                        mRecyclerView.setAdapter(mAdapter);
+                    }
+                });
+            }
+        }).start();
         return view;
+    }
+
+    private ArrayList<User> loadTimelineListFromNetwork() {
+        HttpURLConnection connection = null;
+        String result = null;
+        try {
+            URL url = new URL("http://10.0.3.2:8080/user/timeline");
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.connect();
+
+            int responseCode = connection.getResponseCode();
+            if (responseCode != HttpURLConnection.HTTP_OK) {
+                throw new IOException("error code = " + responseCode);
+            }
+
+            InputStreamReader tmp = new InputStreamReader(connection.getInputStream(), "UTF-8");
+            BufferedReader reader = new BufferedReader(tmp);
+            StringBuilder builder = new StringBuilder();
+            String str;
+            while ((str = reader.readLine()) != null) {       // 서버에서 라인단위로 보내줄 것이므로 라인단위로 읽는다
+                builder.append(str);
+            }
+            result = builder.toString();
+
+
+            ArrayList<User> users = new Gson().fromJson(result, new TypeToken<List<User>>() {
+            }.getType());
+            return users;
+
+        } catch (IOException e) {
+            Log.e("Error", "IOException occurred", e);
+            return null;
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
+        }
     }
 }

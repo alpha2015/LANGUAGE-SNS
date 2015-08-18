@@ -74,7 +74,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
         //TODO else 회원정보 존재할 경우) 자동로그인 시도시 서버 api를 통해 로그인 시도 및 성공/실패 여부 반환 요청 AsyncTask 실행
         user = new User("test@naver.com", "최성원", "1234", 29, "male"); //test dummy data
-        emailEditText.setText(user.getEmail());
+        emailEditText.setText(user.getUserEmail());
 //        new LoginAsyncTask().execute("target url", user);
     }
 
