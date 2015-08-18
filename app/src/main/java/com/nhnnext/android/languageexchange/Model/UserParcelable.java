@@ -18,9 +18,11 @@ public class UserParcelable implements Parcelable {
     private String practicingLanguage;
     private String oauth;
     private String intro;
+    private String userCreateDate;
+    private String userUpdateDate;
 
     public UserParcelable() {
-        this(null, null, null, null, 0, null, null, null, null, null);
+        this(null, null, null, null, 0, null, null, null, null, null,null,null);
     }
 
     public UserParcelable(User user) {
@@ -34,9 +36,11 @@ public class UserParcelable implements Parcelable {
         this.practicingLanguage = user.getUserPracticing();
         this.oauth = user.getoAuth();
         this.intro = user.getUserIntro();
+        this.userCreateDate = user.getUserCreateDate();
+        this.userUpdateDate = user.getUserUpdateDate();
     }
 
-    public UserParcelable(Bitmap image, String email, String name, String password, int age, String gender, String nativeLanguage, String practicingLanguage, String oauth, String intro) {
+    public UserParcelable(Bitmap image, String email, String name, String password, int age, String gender, String nativeLanguage, String practicingLanguage, String oauth, String intro, String userCreateDate, String userUpdateDate) {
         this.image = image;
         this.email = email;
         this.name = name;
@@ -47,6 +51,9 @@ public class UserParcelable implements Parcelable {
         this.practicingLanguage = practicingLanguage;
         this.oauth = oauth;
         this.intro = intro;
+        this.userCreateDate = userCreateDate;
+        this.userUpdateDate = userUpdateDate;
+
     }
 
     public UserParcelable(Parcel source) {
@@ -60,6 +67,8 @@ public class UserParcelable implements Parcelable {
         practicingLanguage = source.readString();
         oauth = source.readString();
         intro = source.readString();
+        userCreateDate = source.readString();
+        userUpdateDate = source.readString();
     }
 
     @Override
@@ -79,6 +88,8 @@ public class UserParcelable implements Parcelable {
         dest.writeString(practicingLanguage);
         dest.writeString(oauth);
         dest.writeString(intro);
+        dest.writeString(userCreateDate);
+        dest.writeString(userUpdateDate);
     }
 
     public static final Parcelable.Creator<UserParcelable> CREATOR = new Creator<UserParcelable>() {
@@ -143,6 +154,14 @@ public class UserParcelable implements Parcelable {
         return intro;
     }
 
+    public String getUserCreateDate() {
+        return userCreateDate;
+    }
+
+    public String getUserUpdateDate() {
+        return userUpdateDate;
+    }
+
     public void setImage(Bitmap image) {
         this.image = image;
     }
@@ -183,6 +202,14 @@ public class UserParcelable implements Parcelable {
         this.intro = intro;
     }
 
+    public void setUserCreateDate(String userCreateDate) {
+        this.userCreateDate = userCreateDate;
+    }
+
+    public void setUserUpdateDate(String userUpdateDate) {
+        this.userUpdateDate = userUpdateDate;
+    }
+
     @Override
     public String toString() {
         return "UserParcelable{" +
@@ -196,6 +223,8 @@ public class UserParcelable implements Parcelable {
                 ", practicingLanguage='" + practicingLanguage + '\'' +
                 ", oauth='" + oauth + '\'' +
                 ", intro='" + intro + '\'' +
+                ", userCreateDate='" + userCreateDate + '\'' +
+                ", userUpdateDate='" + userUpdateDate + '\'' +
                 '}';
     }
 }

@@ -11,14 +11,31 @@ import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.nhnnext.android.languageexchange.Model.User;
 import com.nhnnext.android.languageexchange.Model.UserParcelable;
+import com.nhnnext.android.languageexchange.common.NetworkUtil;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Alpha on 2015. 7. 21..
@@ -32,6 +49,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
     private TextView loginResultText;
     private OauthFragment oauthFragment;
+    ProgressDialog progressDialog;
 
 
     @Override
@@ -120,7 +138,35 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                     서버 DB에 확인을 통해 login 요청
                  */
                 //TODO target url 변경
-                new LoginAsyncTask().execute("target url", user);
+//                new LoginAsyncTask().execute("target url", user);
+                user = new User(emailEditText.getText().toString(), passwordEditText.getText().toString(), null);
+
+                //progressBar 표시
+                progressDialog = new ProgressDialog(MainActivity.this);
+                progressDialog.setMessage("로그인 중");
+                progressDialog.show();
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        User loadedUser = loginFromNetwork(user);
+                        progressDialog.dismiss();
+                        if(loadedUser != null) {
+                            Intent intent = new Intent();
+                            intent.setAction("com.nhnnext.android.action.MATCH");
+                            UserParcelable parcelUser = new UserParcelable(loadedUser);
+                            intent.putExtra("user", parcelUser);
+                            startActivity(intent);
+                        }
+                        else{
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(getApplicationContext(), "로그인 실패!", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                    }
+                }).start();
 
                 break;
 
@@ -137,6 +183,62 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             }
         }
 
+    }
+
+    private User loginFromNetwork(User user) {
+        URL url = null;       // URL 설정
+        String result = null;
+        try {
+            url = new URL("http://10.0.3.2:8080/user/login");
+            HttpURLConnection http = (HttpURLConnection) url.openConnection();
+            http.setDefaultUseCaches(false);
+            http.setDoInput(true);  // 읽기 모드 지정
+            http.setDoOutput(true); // 쓰기 모드 지정
+            http.setRequestMethod("POST");  // method POST
+            //Form tag 방식으로 처리
+            http.setRequestProperty("content-type", "application/x-www-form-urlencoded");
+
+            List<Pair<String, String>> params = new ArrayList<>();
+            params.add(new Pair<>("userEmail", user.getUserEmail()));
+            params.add(new Pair<>("userPassword", user.getUserPassword()));
+            params.add(new Pair<>("oAuth", user.getoAuth()));
+
+            OutputStreamWriter outStream = new OutputStreamWriter(http.getOutputStream(), "UTF-8");
+            PrintWriter writer = new PrintWriter(outStream);
+            writer.write(NetworkUtil.getQuery(params));
+            writer.flush();
+
+
+            int responseCode = http.getResponseCode();
+            if (responseCode != HttpURLConnection.HTTP_OK) {
+                throw new IOException("error code = " + responseCode);
+            }
+
+            InputStreamReader tmp = new InputStreamReader(http.getInputStream(), "UTF-8");
+            BufferedReader reader = new BufferedReader(tmp);
+            StringBuilder builder = new StringBuilder();
+            String str;
+            while ((str = reader.readLine()) != null) {       // 서버에서 라인단위로 보내줄 것이므로 라인단위로 읽는다
+                builder.append(str);
+            }
+            result = builder.toString();
+
+            Log.d("loadedJson", result);
+
+            User loadedUser = new Gson().fromJson(result, new TypeToken<User>() {
+            }.getType());
+
+            return loadedUser;
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            return null;
+        } catch (ProtocolException e) {
+            e.printStackTrace();
+            return null;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     /*
@@ -209,7 +311,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         public void afterTextChanged(Editable s) {
 
         }
-
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
