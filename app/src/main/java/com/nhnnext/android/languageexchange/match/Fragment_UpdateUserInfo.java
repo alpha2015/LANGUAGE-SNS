@@ -1,19 +1,28 @@
 package com.nhnnext.android.languageexchange.match;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -25,6 +34,7 @@ import com.nhnnext.android.languageexchange.R;
 import com.nhnnext.android.languageexchange.common.NetworkUtil;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -33,7 +43,9 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -52,6 +64,16 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
     private static TextView editGender;
     private Button saveButton;
     private TextView editIntro;
+    private ImageView imageView;
+    private ImageView imageCancelView;
+    private Bitmap profileBitmap;
+    private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
+    private static final int CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE = 200;
+
+    private Uri fileUri;
+    public static final int MEDIA_TYPE_IMAGE = 1;
+    public static final int MEDIA_TYPE_VIDEO = 2;
+
     //test를 위한 dummy user data(db구현시 제거)
 //    private User user = new User(null, "test@naver.com", "김아무개", "1234", 30, "male", null, null, null);
     private UserParcelable user;
@@ -75,7 +97,6 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         //TODO DB에서 가져온 회원정보 보여주기
-
         user = getShownIndex();
 
         //레이아웃 view
@@ -87,11 +108,15 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
         editGender = (TextView) view.findViewById(R.id.setting_edit_gender);
         saveButton = (Button) view.findViewById(R.id.setting_save);
         editIntro = (TextView) view.findViewById(R.id.setting_edit_intro);
+        imageView = (ImageView) view.findViewById(R.id.imageView01);
+        imageCancelView = (ImageView) view.findViewById(R.id.imageView02);
 
         //각 회원정보에 대한 클릭, 저장 이벤트 등록
         editAge.setOnClickListener(this);
         editGender.setOnClickListener(this);
         saveButton.setOnClickListener(this);
+        imageView.setOnClickListener(this);
+        imageCancelView.setOnClickListener(this);
 
         //DB에서 가져온 user data view에 설정
         viewEmail.setText(user.getEmail());
@@ -107,6 +132,30 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
     public void onClick(View v) {
         int id = v.getId();
         switch (id) {
+            case R.id.imageView01:
+                if (checkCameraHardware(getActivity().getApplicationContext())) {
+
+                    Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    startActivityForResult(cameraIntent,CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+
+//                    Toast.makeText(getActivity().getApplicationContext(), "test", Toast.LENGTH_SHORT).show();
+//                    Intent intent = new Intent();
+//                    intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+//                    fileUri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE); // create a file to save the image
+//                    intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri); // set the image file name
+//
+//                    // start the image capture Intent
+//                    startActivityForResult(intent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+                } else {
+                    Toast.makeText(getActivity().getApplicationContext(), "카메라에 접근할 수 없습니다.", Toast.LENGTH_SHORT).show();
+                }
+
+                break;
+
+            case R.id.imageView02:
+                imageView.setImageResource(R.drawable.square_profile_default);
+                profileBitmap = null;
+                break;
             case R.id.setting_edit_age:
                 AgePickerDialog.newInstance(user.getAge()).show(getFragmentManager(), "dialog");
                 break;
@@ -114,7 +163,7 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
                 GenderRadioDialog.newInstance(user.getGender()).show(getFragmentManager(), "dialog");
                 break;
             case R.id.setting_save:
-                //TODO App, SERVER DB 저장 구현
+                //TODO App, SERVER DB 저장 구현(Bitmap profileBitmap, user info)
                 user.setName(editName.getText().toString());
                 user.setPassword(editPassword.getText().toString());
                 user.setAge(Integer.parseInt(editAge.getText().toString()));
@@ -297,4 +346,102 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
             return builder.create();
         }
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode!=0){
+            if(requestCode==CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE&&!data.equals(null)){
+                try{
+                    profileBitmap = (Bitmap)data.getExtras().get("data");
+                    imageView.setImageBitmap(profileBitmap);
+                    imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+                } catch(Exception e){
+                    return;
+                }
+            }
+        }
+
+//        if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
+//            if (resultCode == Activity.RESULT_OK) {
+//                // Image captured and saved to fileUri specified in the Intent
+////                Toast.makeText(getActivity().getApplicationContext(), "Image saved to:\n" +
+////                        data.getData(), Toast.LENGTH_LONG).show();
+//            } else if (resultCode == Activity.RESULT_CANCELED) {
+//                // User cancelled the image capture
+//            } else {
+//                // Image capture failed, advise user
+//            }
+//        }
+//
+//        if (requestCode == CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE) {
+//            if (resultCode == Activity.RESULT_OK) {
+//                // Video captured and saved to fileUri specified in the Intent
+//                Toast.makeText(getActivity().getApplicationContext(), "Video saved to:\n" +
+//                        data.getData(), Toast.LENGTH_LONG).show();
+//            } else if (resultCode == Activity.RESULT_CANCELED) {
+//                // User cancelled the video capture
+//            } else {
+//                // Video capture failed, advise user
+//            }
+//        }
+    }
+
+    /**
+     * Create a file Uri for saving an image or video
+     */
+    private static Uri getOutputMediaFileUri(int type) {
+        return Uri.fromFile(getOutputMediaFile(type));
+    }
+
+    /**
+     * Create a File for saving an image or video
+     */
+    private static File getOutputMediaFile(int type) {
+        // To be safe, you should check that the SDCard is mounted
+        // using Environment.getExternalStorageState() before doing this.
+
+        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES), "MyCameraApp");
+        // This location works best if you want the created images to be shared
+        // between applications and persist after your app has been uninstalled.
+
+        // Create the storage directory if it does not exist
+        if (!mediaStorageDir.exists()) {
+            if (!mediaStorageDir.mkdirs()) {
+                Log.d("MyCameraApp", "failed to create directory");
+                return null;
+            }
+        }
+
+        // Create a media file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        File mediaFile;
+        if (type == MEDIA_TYPE_IMAGE) {
+            mediaFile = new File(mediaStorageDir.getPath() + File.separator +
+                    "IMG_" + timeStamp + ".jpg");
+        } else if (type == MEDIA_TYPE_VIDEO) {
+            mediaFile = new File(mediaStorageDir.getPath() + File.separator +
+                    "VID_" + timeStamp + ".mp4");
+        } else {
+            return null;
+        }
+
+        return mediaFile;
+    }
+
+    /**
+     * Check if this device has a camera
+     */
+    private boolean checkCameraHardware(Context context) {
+        if (context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
+            // this device has a camera
+            return true;
+        } else {
+            // no camera on this device
+            return false;
+        }
+    }
 }
+
+

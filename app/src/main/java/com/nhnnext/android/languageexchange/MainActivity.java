@@ -19,11 +19,22 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.nhnnext.android.languageexchange.Model.User;
 import com.nhnnext.android.languageexchange.Model.UserParcelable;
+import com.nhnnext.android.languageexchange.common.GsonRequest;
 import com.nhnnext.android.languageexchange.common.NetworkUtil;
+
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -35,7 +46,9 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Alpha on 2015. 7. 21..
@@ -49,13 +62,35 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
     private TextView loginResultText;
     private OauthFragment oauthFragment;
-    ProgressDialog progressDialog;
+    private ProgressDialog progressDialog;
+    private RequestQueue queue;
+    private String loginUrl = "http://10.0.3.2:8080/user/login";
+    GsonRequest<User> loginRequest;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        queue = Volley.newRequestQueue(this);
+        loginRequest = new GsonRequest<>(loginUrl, User.class, null,
+                new Response.Listener<User>(){
+                    @Override
+                    public void onResponse(User user) {
+                        progressDialog.dismiss();
+                        Intent intent = new Intent();
+                        intent.setAction("com.nhnnext.android.action.MATCH");
+                        UserParcelable parcelUser = new UserParcelable(user);
+                        intent.putExtra("user", parcelUser);
+                        startActivity(intent);
+                    }
+                }, new Response.ErrorListener(){
+            @Override
+            public void onErrorResponse(VolleyError volleyError) {
+                progressDialog.dismiss();
+                Toast.makeText(getApplicationContext(), "로그인 실패!", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         //parse db 연동 테스트
 //        ParseObject testObject = new ParseObject("User");
@@ -138,37 +173,22 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                     서버 DB에 확인을 통해 login 요청
                  */
                 //TODO target url 변경
-//                new LoginAsyncTask().execute("target url", user);
-                user = new User(emailEditText.getText().toString(), passwordEditText.getText().toString(), null);
+                user = new User(emailEditText.getText().toString(), passwordEditText.getText().toString(), "");
 
                 //progressBar 표시
                 progressDialog = new ProgressDialog(MainActivity.this);
                 progressDialog.setMessage("로그인 중");
                 progressDialog.show();
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        User loadedUser = loginFromNetwork(user);
-                        progressDialog.dismiss();
-                        if (loadedUser != null) {
-                            Intent intent = new Intent();
-                            intent.setAction("com.nhnnext.android.action.MATCH");
-                            UserParcelable parcelUser = new UserParcelable(loadedUser);
-                            intent.putExtra("user", parcelUser);
-                            startActivity(intent);
-                        } else {
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toast.makeText(getApplicationContext(), "로그인 실패!", Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                        }
-                    }
-                }).start();
+
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("userEmail", user.getUserEmail());
+                params.put("userPassword", user.getUserPassword());
+                params.put("oAuth", user.getoAuth());
+
+                loginRequest.setParams(params);
+                queue.add(loginRequest);
 
                 break;
-
             case R.id.signup_btn: {
                 /*
                     회원가입 Activity 호출
@@ -182,119 +202,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             }
         }
 
-    }
-
-    private User loginFromNetwork(User user) {
-        URL url = null;       // URL 설정
-        String result = null;
-        try {
-            url = new URL("http://10.0.3.2:8080/user/login");
-            HttpURLConnection http = (HttpURLConnection) url.openConnection();
-            http.setDefaultUseCaches(false);
-            http.setDoInput(true);  // 읽기 모드 지정
-            http.setDoOutput(true); // 쓰기 모드 지정
-            http.setRequestMethod("POST");  // method POST
-            //Form tag 방식으로 처리
-            http.setRequestProperty("content-type", "application/x-www-form-urlencoded");
-
-            List<Pair<String, String>> params = new ArrayList<>();
-            params.add(new Pair<>("userEmail", user.getUserEmail()));
-            params.add(new Pair<>("userPassword", user.getUserPassword()));
-            params.add(new Pair<>("oAuth", user.getoAuth()));
-
-            OutputStreamWriter outStream = new OutputStreamWriter(http.getOutputStream(), "UTF-8");
-            PrintWriter writer = new PrintWriter(outStream);
-            writer.write(NetworkUtil.getQuery(params));
-            writer.flush();
-
-
-            int responseCode = http.getResponseCode();
-            if (responseCode != HttpURLConnection.HTTP_OK) {
-                throw new IOException("error code = " + responseCode);
-            }
-
-            InputStreamReader tmp = new InputStreamReader(http.getInputStream(), "UTF-8");
-            BufferedReader reader = new BufferedReader(tmp);
-            StringBuilder builder = new StringBuilder();
-            String str;
-            while ((str = reader.readLine()) != null) {       // 서버에서 라인단위로 보내줄 것이므로 라인단위로 읽는다
-                builder.append(str);
-            }
-            result = builder.toString();
-
-            Log.d("loadedJson", result);
-
-            User loadedUser = new Gson().fromJson(result, new TypeToken<User>() {
-            }.getType());
-
-            return loadedUser;
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            return null;
-        } catch (ProtocolException e) {
-            e.printStackTrace();
-            return null;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    /*
-        서버로 로그인 요청과 요청결과에 따른 분기 처리
-     */
-    private class LoginAsyncTask extends AsyncTask<Object, Void, Pair<Boolean, String>> {
-        ProgressDialog progressDialog;
-
-        @Override
-        protected void onPreExecute() {
-            //progressBar 표시
-            progressDialog = new ProgressDialog(MainActivity.this);
-            progressDialog.setMessage("로그인 중");
-            progressDialog.show();
-            super.onPreExecute();
-        }
-
-        @Override
-        protected Pair<Boolean, String> doInBackground(Object... params) {
-            /*
-                loadXmlFromNetwork 구현부
-                //TODO HttpConnection 구현체 호출, 로그인 url을 통해 요청
-                //TODO 결과값(성공여부, 회원정보) parsing
-                //TODO 성공시 TRUE, user정보 Pair instance return
-                //TODO 실패시 FALSE, 실패 사유 Pair instance return
-             */
-            try {
-                Thread.sleep(500); //progressBar 정상 동작 테스트를 위한 sleep, loadXmlFromNetwork구현시 제거
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            return new Pair<>(true, "success");
-        }
-
-        @Override
-        protected void onPostExecute(Pair<Boolean, String> booleanStringPair) {
-            super.onPostExecute(booleanStringPair);
-            //progressBar 숨기기
-            progressDialog.dismiss();
-
-            /*
-               App DB와 서버 DB 불일치시(로그인 실패)
-             */
-            //TODO 실패 사유 Toast로 표시
-            //TODO App DB에 기존 회원정보 삭제(이후 한번은 수동입력 로그인 하도록)
-
-            /*
-                App DB와 서버 DB 일치시(로그인 성공)
-             */
-            //TODO 회원정보 App DB에 UPDATE
-            //match Activity 호출
-            Intent intent = new Intent();
-            intent.setAction("com.nhnnext.android.action.MATCH");
-            UserParcelable parcelUser = new UserParcelable(new User("test1@naver.com", "최성원", "1234", 29, "male"));
-            intent.putExtra("user", parcelUser);
-            startActivity(intent);
-        }
     }
 
     /*

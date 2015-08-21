@@ -33,15 +33,17 @@
                 android:layout_width="70dp"
                 android:layout_height="70dp"
                 android:contentDescription="@string/profile_user_image"
-                android:src="@drawable/square_profile_default" />
+                android:src="@drawable/square_profile_default"
+                android:clickable="true"/>
 
             <ImageView
-                android:id="@+id/imageView03"
+                android:id="@+id/imageView02"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignRight="@id/imageView01"
                 android:contentDescription="@string/profile_image_delete_button"
-                android:src="@drawable/square_profile_delete" />
+                android:src="@drawable/square_profile_delete"
+                android:clickable="true"/>
         </RelativeLayout>
 
         <LinearLayout
@@ -58,30 +60,6 @@
                 android:text="test@naver.com"/>
         </LinearLayout>
     </LinearLayout>
-
-
-    <!--<LinearLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="54dp"-->
-        <!--android:background="@drawable/shape_rectangle">-->
-
-        <!--<TextView-->
-            <!--android:layout_width="0dp"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:layout_weight="1"-->
-            <!--android:gravity="center_vertical"-->
-            <!--android:text="@string/email"-->
-            <!--android:textColor="#4c4c4c"-->
-            <!--android:textSize="16sp" />-->
-
-        <!--<EditText-->
-            <!--android:id="@+id/setting_edit_email"-->
-            <!--android:layout_width="0dp"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:layout_weight="2"-->
-            <!--android:gravity="center_vertical|end"-->
-            <!--android:inputType="textEmailAddress" />-->
-    <!--</LinearLayout>-->
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -196,29 +174,6 @@
             android:hint="introduce yourself"/>
 
     </LinearLayout>
-
-    <!--<LinearLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="54dp"-->
-        <!--android:background="@drawable/shape_rectangle">-->
-
-        <!--<TextView-->
-            <!--android:layout_width="0dp"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:layout_weight="1"-->
-            <!--android:gravity="center_vertical"-->
-            <!--android:text="@string/gender"-->
-            <!--android:textColor="#4c4c4c"-->
-            <!--android:textSize="16sp" />-->
-
-        <!--<TextView-->
-            <!--android:id="@+id/setting_edit_gender"-->
-            <!--android:layout_width="0dp"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:layout_weight="2"-->
-            <!--android:gravity="center_vertical|end" />-->
-    <!--</LinearLayout>-->
-
 
     <RelativeLayout
         android:layout_width="match_parent"

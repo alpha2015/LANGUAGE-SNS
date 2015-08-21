@@ -25,6 +25,7 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <!-- 프로필 사진 등록을 위한 갤러리 접근 권한 -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <!-- camera를 사용하시면 uses-feature 검토 필요해보입니다. -->
     <!-- 재희님 리뷰사항 반영완료(7.23)-->
