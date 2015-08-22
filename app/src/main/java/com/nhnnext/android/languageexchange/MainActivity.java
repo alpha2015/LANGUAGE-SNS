@@ -23,6 +23,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
+import com.facebook.AccessToken;
 import com.nhnnext.android.languageexchange.Model.User;
 import com.nhnnext.android.languageexchange.Model.UserParcelable;
 import com.nhnnext.android.languageexchange.common.GsonRequest;
@@ -66,6 +67,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                     @Override
                     public void onResponse(User user) {
                         progressDialog.dismiss();
+                        saveUserIntoDb(user);
                         Intent intent = new Intent();
                         intent.setAction("com.nhnnext.android.action.MATCH");
                         UserParcelable parcelUser = new UserParcelable(user);
@@ -128,7 +130,25 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     @Override
     protected void onResume() {
         super.onResume();
-        readUserFromDb();
+//        deleteUserFromDb();
+        User user = readUserFromDb();
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        if (user != null) {
+            if (user.getOAuth() == null || (accessToken != null && !accessToken.isExpired())) {
+                //progressBar 표시
+                progressDialog = new ProgressDialog(MainActivity.this);
+                progressDialog.setMessage("자동 로그인 중");
+                progressDialog.show();
+
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("userEmail", user.getUserEmail());
+                params.put("userPassword", user.getUserPassword());
+                params.put("oAuth", user.getOAuth());
+
+                loginRequest.setParams(params);
+                queue.add(loginRequest);
+            }
+        }
     }
 
     @Override
@@ -162,7 +182,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                     서버 DB에 확인을 통해 login 요청
                  */
                 //TODO target url 변경
-                user = new User(emailEditText.getText().toString(), passwordEditText.getText().toString(), "");
+                user = new User(emailEditText.getText().toString(), passwordEditText.getText().toString(), null);
 
                 //progressBar 표시
                 progressDialog = new ProgressDialog(MainActivity.this);
@@ -217,17 +237,12 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         }
     };
 
-
     private User readUserFromDb() {
         // Get the data repository in read mode
         db = mDbHelper.getReadableDatabase();
 
-//        String[] projection = {
-//                "userImage", "userEmail", "userName", "userPassword", "userAge", "userGender",
-//                "userNative", "userPracticing", "oAuth", "userIntro"
-//        };
         String[] projection = {
-                "userEmail", "userName", "userPassword", "userAge", "userGender"
+                "userEmail", "userName", "userPassword", "userAge", "userGender", "oAuth"
         };
 
         // Table, Column, WHERE, ARGUMENTS, GROUPING, HAVING, SORTING
@@ -235,13 +250,15 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
         // AddView into the TableLayout using return value
 
-        User user = new User();
+        User user = null;
         while (cursor.moveToNext()) {
+            user = new User();
             user.setUserEmail(cursor.getString(0));
             user.setUserName(cursor.getString(1));
             user.setUserPassword(cursor.getString(2));
             user.setUserAge(cursor.getInt(3));
             user.setUserGender(cursor.getString(4));
+            user.setoAuth(cursor.getString(5));
         }
         cursor.close();
 
@@ -249,27 +266,29 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         return user;
     }
 
-    private void saveUserIntoDb(View view) {
+    private boolean deleteUserFromDb() {
+        boolean result = false;
+        db = mDbHelper.getWritableDatabase();
+        if (db.delete(MySqliteOpenHelper.USER_TABLE_NAME, null, null) > 0)
+            result = true;
+        db.close();
+        return result;
+    }
+
+    private void saveUserIntoDb(User user) {
         // Get the data repository in write mode
         db = mDbHelper.getWritableDatabase();
 
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
-//        values.put(MySqliteOpenHelper.KEY_IMAGE, mWord.getText().toString());
-//        values.put(MySqliteOpenHelper.KEY_EMAIL, mDefinition.getText().toString());
-//        values.put(MySqliteOpenHelper.KEY_NAME, mDefinition.getText().toString());
-//        values.put(MySqliteOpenHelper.KEY_PASSWORD, mDefinition.getText().toString());
-//        values.put(MySqliteOpenHelper.KEY_AGE, mDefinition.getText().toString());
-//        values.put(MySqliteOpenHelper.KEY_GENDER, mDefinition.getText().toString());
-//        values.put(MySqliteOpenHelper.KEY_NATIVIE, mDefinition.getText().toString());
-//        values.put(MySqliteOpenHelper.KEY_PRACTICING, mDefinition.getText().toString());
-//        values.put(MySqliteOpenHelper.KEY_OAUTH, mDefinition.getText().toString());
-//        values.put(MySqliteOpenHelper.KEY_INTRO, mDefinition.getText().toString());
+        values.put(MySqliteOpenHelper.KEY_EMAIL, user.getUserEmail());
+        values.put(MySqliteOpenHelper.KEY_NAME, user.getUserName());
+        values.put(MySqliteOpenHelper.KEY_PASSWORD, user.getUserPassword());
+        values.put(MySqliteOpenHelper.KEY_AGE, user.getUserAge());
+        values.put(MySqliteOpenHelper.KEY_GENDER, user.getUserGender());
 
         // Insert the new row, returning the primary key value of the new row
         long newRowId = db.insert(MySqliteOpenHelper.USER_TABLE_NAME, null, values);
         db.close();
-
-//        readData();
     }
 }

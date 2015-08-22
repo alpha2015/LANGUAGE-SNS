@@ -9,28 +9,26 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.util.Pair;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.nhnnext.android.languageexchange.Model.User;
 import com.nhnnext.android.languageexchange.Model.UserParcelable;
 import com.nhnnext.android.languageexchange.R;
 import com.nhnnext.android.languageexchange.common.MySqliteOpenHelper;
-import com.nhnnext.android.languageexchange.common.NetworkUtil;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Alpha on 2015. 7. 21..
@@ -46,6 +44,8 @@ public class SignUpActivity extends FragmentActivity implements View.OnClickList
     private User userForSignUp;
     private ProgressDialog progressDialog;
 
+    private RequestQueue queue;
+
     //TODO 가입완료후 자동로그인시 BACK BUTTON 눌러도 회원가입으로 돌아오는 문제 해결(taskAffinity)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +53,8 @@ public class SignUpActivity extends FragmentActivity implements View.OnClickList
         setContentView(R.layout.activity_signup);
         mContext = this;
         mDbHelper = new MySqliteOpenHelper(mContext);
+
+        queue = Volley.newRequestQueue(this);
 
         //회원정보 입력 fragment 연결
         //로그인 Activity 돌아가기 이벤트 등록
@@ -111,70 +113,52 @@ public class SignUpActivity extends FragmentActivity implements View.OnClickList
                 /*
                     서버에 회원가입 요청
                  */
-                new Thread(new Runnable() {
-                    public void run() {
-                        URL url = null;       // URL 설정
-                        String result = null;
-                        try {
-                            url = new URL("http://10.0.3.2:8080/user");
-                            HttpURLConnection http = (HttpURLConnection) url.openConnection();
-                            http.setDefaultUseCaches(false);
-                            http.setDoInput(true);  // 읽기 모드 지정
-                            http.setDoOutput(true); // 쓰기 모드 지정
-                            http.setRequestMethod("POST");  // method POST
-                            //Form tag 방식으로 처리
-                            http.setRequestProperty("content-type", "application/x-www-form-urlencoded");
-
-                            List<Pair<String, String>> params = new ArrayList<>();
-                            params.add(new Pair<>("userEmail", userForSignUp.getUserEmail()));
-                            params.add(new Pair<>("userName", userForSignUp.getUserName()));
-                            params.add(new Pair<>("userPassword", userForSignUp.getUserPassword()));
-                            params.add(new Pair<>("userGender", userForSignUp.getUserGender()));
-                            params.add(new Pair<>("userAge", "" + userForSignUp.getUserAge()));
-                            params.add(new Pair<>("oAuth", userForSignUp.getOAuth()));
-
-                            OutputStreamWriter outStream = new OutputStreamWriter(http.getOutputStream(), "UTF-8");
-                            PrintWriter writer = new PrintWriter(outStream);
-                            writer.write(NetworkUtil.getQuery(params));
-                            writer.flush();
-                            InputStreamReader tmp = new InputStreamReader(http.getInputStream(), "EUC-KR");
-                            BufferedReader reader = new BufferedReader(tmp);
-                            StringBuilder builder = new StringBuilder();
-                            String str;
-                            while ((str = reader.readLine()) != null) {       // 서버에서 라인단위로 보내줄 것이므로 라인단위로 읽는다
-                                builder.append(str + "\n");                     // View에 표시하기 위해 라인 구분자 추가
-                            }
-                            result = builder.toString();
-
-                            /*
-                               회원가입 실패
-                             */
-                            //TODO 실패사유 Toast로 표시
-
+                String url = "http://10.0.3.2:8080/user";
+                StringRequest myReq = new StringRequest(Request.Method.POST, url,
+                        new Response.Listener<String>() {
                             /*
                                 회원가입 성공
                              */
-                            //TODO 추후 자동로그인을 위해 App DB에 회원정보 INSERT, MatchingActivity 호출
-                            if (result.equals("success\n")) {
-                                progressDialog.dismiss();   //progressDialog dismiss
-                                saveUserIntoDb(userForSignUp);
-                                Intent intent = new Intent();
-                                intent.setAction("com.nhnnext.android.action.MATCH");
-                                UserParcelable parcelUser = new UserParcelable(userForSignUp);
-                                intent.putExtra("user", parcelUser);
-                                startActivity(intent);
+                            @Override
+                            public void onResponse(String response) {
+                                // Display the first 500 characters of the response string.
+                                Log.d("signuptest", "success");
+                                if (response.equals("success")) {
+                                    progressDialog.dismiss();   //progressDialog dismiss
+                                    deleteUserFromDb();
+                                    saveUserIntoDb(userForSignUp);
+                                    Intent intent = new Intent();
+                                    intent.setAction("com.nhnnext.android.action.MATCH");
+                                    UserParcelable parcelUser = new UserParcelable(userForSignUp);
+                                    intent.putExtra("user", parcelUser);
+                                    startActivity(intent);
+                                    finish();
+                                }
                             }
-                        } catch (MalformedURLException e) {
-                            e.printStackTrace();
-                        } catch (ProtocolException e) {
-                            e.printStackTrace();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                        }, new Response.ErrorListener() {
+                    /*
+                        회원가입 실패
+                     */
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        progressDialog.dismiss();
+                        // 가입 실패 Toast로 표시
+                        Toast.makeText(getApplicationContext(), "가입 실패!", Toast.LENGTH_SHORT).show();
                     }
-                }).start();
-
-
+                }) {
+                    @Override
+                    protected Map<String, String> getParams() throws AuthFailureError {
+                        Map<String, String> params = new HashMap<>();
+                        params.put("userEmail", userForSignUp.getUserEmail());
+                        params.put("userName", userForSignUp.getUserName());
+                        params.put("userPassword", userForSignUp.getUserPassword());
+                        params.put("userGender", userForSignUp.getUserGender());
+                        params.put("userAge", "" + userForSignUp.getUserAge());
+                        params.put("oAuth", "");
+                        return params;
+                    }
+                };
+                queue.add(myReq);
                 break;
         }
     }
@@ -184,22 +168,30 @@ public class SignUpActivity extends FragmentActivity implements View.OnClickList
         this.userForSignUp = userForSignUp;
     }
 
-    private void saveUserIntoDb(User userForSignUp) {
+    private void saveUserIntoDb(User user) {
         // Get the data repository in write mode
         db = mDbHelper.getWritableDatabase();
 
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
-        values.put(MySqliteOpenHelper.KEY_EMAIL, userForSignUp.getUserEmail());
-        values.put(MySqliteOpenHelper.KEY_NAME, userForSignUp.getUserName());
-        values.put(MySqliteOpenHelper.KEY_PASSWORD, userForSignUp.getUserPassword());
-        values.put(MySqliteOpenHelper.KEY_AGE, userForSignUp.getUserAge());
-        values.put(MySqliteOpenHelper.KEY_GENDER, userForSignUp.getUserGender());
+        values.put(MySqliteOpenHelper.KEY_EMAIL, user.getUserEmail());
+        values.put(MySqliteOpenHelper.KEY_NAME, user.getUserName());
+        values.put(MySqliteOpenHelper.KEY_PASSWORD, user.getUserPassword());
+        values.put(MySqliteOpenHelper.KEY_AGE, user.getUserAge());
+        values.put(MySqliteOpenHelper.KEY_GENDER, user.getUserGender());
 
         // Insert the new row, returning the primary key value of the new row
         long newRowId = db.insert(MySqliteOpenHelper.USER_TABLE_NAME, null, values);
         db.close();
+    }
 
+    private boolean deleteUserFromDb() {
+        boolean result = false;
+        db = mDbHelper.getWritableDatabase();
+        if (db.delete(MySqliteOpenHelper.USER_TABLE_NAME, null, null) > 0)
+            result = true;
+        db.close();
+        return result;
     }
 }
 

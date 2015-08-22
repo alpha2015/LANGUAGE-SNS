@@ -71,5 +71,9 @@ public class GsonRequest<T> extends Request<T> {
 
     public void setParams(Map<String, String> params) {
         this.params = params;
+        if(this.params.get("userPassword") == null)
+            this.params.put("userPassword", "");
+        if(this.params.get("oAuth") == null)
+            this.params.put("oAuth", "");
     }
 }

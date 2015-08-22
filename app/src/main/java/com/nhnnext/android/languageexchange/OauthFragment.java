@@ -1,6 +1,11 @@
 package com.nhnnext.android.languageexchange;
 
+import android.app.ProgressDialog;
+import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -8,7 +13,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
@@ -20,11 +24,11 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
 import com.facebook.ProfileTracker;
-import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.nhnnext.android.languageexchange.Model.User;
 import com.nhnnext.android.languageexchange.Model.UserParcelable;
+import com.nhnnext.android.languageexchange.common.MySqliteOpenHelper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -36,6 +40,11 @@ import java.util.Calendar;
  * Created by Alpha on 2015. 8. 10..
  */
 public class OauthFragment extends Fragment {
+    private MySqliteOpenHelper mDbHelper;
+    private SQLiteDatabase db;
+    private Context mContext;
+    private ProgressDialog progressDialog;
+
     private LoginButton loginButton;
     private CallbackManager callbackManager;
     private ProfileTracker profileTracker;
@@ -48,11 +57,14 @@ public class OauthFragment extends Fragment {
         FacebookSdk.sdkInitialize(getActivity().getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
 
+        mContext = getActivity();
+        mDbHelper = new MySqliteOpenHelper(mContext);
+
         // If the access token is available already assign it.
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
-        if(accessToken != null && !accessToken.isExpired()) {
+        if (accessToken != null && !accessToken.isExpired()) {
             //TODO 자동 DB조회 및 자동 로그인
-            ;
+            User user = readUserFromDb();
         }
 
     }
@@ -107,6 +119,9 @@ public class OauthFragment extends Fragment {
                                     String[] birthday = jsonObject.getString("birthday").split("/");
                                     int age = Calendar.getInstance().get(Calendar.YEAR) - Integer.parseInt(birthday[2]) + 1;
                                     user.setUserAge(age);
+                                    user.setoAuth("facebook");
+                                    deleteUserFromDb();
+                                    saveUserIntoDb(user);
                                 } catch (JSONException e) {
                                     Log.d("oauth", "error : bring jsonObject from facebook");
                                 }
@@ -159,5 +174,60 @@ public class OauthFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+    }
+
+    private void saveUserIntoDb(User user) {
+        // Get the data repository in write mode
+        db = mDbHelper.getWritableDatabase();
+
+        // Create a new map of values, where column names are the keys
+        ContentValues values = new ContentValues();
+        values.put(MySqliteOpenHelper.KEY_EMAIL, user.getUserEmail());
+        values.put(MySqliteOpenHelper.KEY_NAME, user.getUserName());
+        values.put(MySqliteOpenHelper.KEY_PASSWORD, user.getUserPassword());
+        values.put(MySqliteOpenHelper.KEY_AGE, user.getUserAge());
+        values.put(MySqliteOpenHelper.KEY_GENDER, user.getUserGender());
+        values.put(MySqliteOpenHelper.KEY_OAUTH, user.getOAuth());
+
+        // Insert the new row, returning the primary key value of the new row
+        long newRowId = db.insert(MySqliteOpenHelper.USER_TABLE_NAME, null, values);
+        db.close();
+    }
+
+    private User readUserFromDb() {
+        // Get the data repository in read mode
+        db = mDbHelper.getReadableDatabase();
+
+        String[] projection = {
+                "userEmail", "userName", "userPassword", "userAge", "userGender"
+        };
+
+        // Table, Column, WHERE, ARGUMENTS, GROUPING, HAVING, SORTING
+        Cursor cursor = db.query(MySqliteOpenHelper.USER_TABLE_NAME, projection, null, null, null, null, null);
+
+        // AddView into the TableLayout using return value
+
+        User user = null;
+        while (cursor.moveToNext()) {
+            user = new User();
+            user.setUserEmail(cursor.getString(0));
+            user.setUserName(cursor.getString(1));
+            user.setUserPassword(cursor.getString(2));
+            user.setUserAge(cursor.getInt(3));
+            user.setUserGender(cursor.getString(4));
+        }
+        cursor.close();
+
+        db.close();
+        return user;
+    }
+
+    private boolean deleteUserFromDb() {
+        boolean result = false;
+        db = mDbHelper.getWritableDatabase();
+        if (db.delete(MySqliteOpenHelper.USER_TABLE_NAME, null, null) > 0)
+            result = true;
+        db.close();
+        return result;
     }
 }

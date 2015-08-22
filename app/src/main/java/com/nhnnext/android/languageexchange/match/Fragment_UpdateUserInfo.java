@@ -1,12 +1,12 @@
 package com.nhnnext.android.languageexchange.match;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.RadioButton;
@@ -31,6 +32,7 @@ import android.widget.Toast;
 
 import com.nhnnext.android.languageexchange.Model.UserParcelable;
 import com.nhnnext.android.languageexchange.R;
+import com.nhnnext.android.languageexchange.common.MySqliteOpenHelper;
 import com.nhnnext.android.languageexchange.common.NetworkUtil;
 
 import java.io.BufferedReader;
@@ -57,6 +59,10 @@ import java.util.List;
 public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickListener {
     //TODO 사진찍기 Activity 호출, 프로필 사진으로 저장 구현(서버DB 저장)
     //TODO 갤러리 접근, 프로필 사진으로 저장 구현(서버DB 저장)
+    private MySqliteOpenHelper mDbHelper;
+    private SQLiteDatabase db;
+    private Context mContext;
+
     private TextView viewEmail;
     private EditText editName;
     private EditText editPassword;
@@ -66,6 +72,7 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
     private TextView editIntro;
     private ImageView imageView;
     private ImageView imageCancelView;
+    private ImageButton logoutButton;
     private Bitmap profileBitmap;
     private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
     private static final int CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE = 200;
@@ -110,6 +117,7 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
         editIntro = (TextView) view.findViewById(R.id.setting_edit_intro);
         imageView = (ImageView) view.findViewById(R.id.imageView01);
         imageCancelView = (ImageView) view.findViewById(R.id.imageView02);
+        logoutButton = (ImageButton) view.findViewById(R.id.logout_btn);
 
         //각 회원정보에 대한 클릭, 저장 이벤트 등록
         editAge.setOnClickListener(this);
@@ -117,6 +125,7 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
         saveButton.setOnClickListener(this);
         imageView.setOnClickListener(this);
         imageCancelView.setOnClickListener(this);
+        logoutButton.setOnClickListener(this);
 
         //DB에서 가져온 user data view에 설정
         viewEmail.setText(user.getEmail());
@@ -136,7 +145,7 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
                 if (checkCameraHardware(getActivity().getApplicationContext())) {
 
                     Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    startActivityForResult(cameraIntent,CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
+                    startActivityForResult(cameraIntent, CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE);
 
 //                    Toast.makeText(getActivity().getApplicationContext(), "test", Toast.LENGTH_SHORT).show();
 //                    Intent intent = new Intent();
@@ -151,7 +160,16 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
                 }
 
                 break;
+            case R.id.logout_btn:
+                //TODO DB지우기 , oauth면 oauth logout
+                mContext = getActivity();
+                mDbHelper = new MySqliteOpenHelper(mContext);
 
+                deleteUserFromDb();
+
+                getActivity().finish();
+
+                break;
             case R.id.imageView02:
                 imageView.setImageResource(R.drawable.square_profile_default);
                 profileBitmap = null;
@@ -350,13 +368,13 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode!=0){
-            if(requestCode==CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE&&!data.equals(null)){
-                try{
-                    profileBitmap = (Bitmap)data.getExtras().get("data");
+        if (resultCode != 0) {
+            if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE && !data.equals(null)) {
+                try {
+                    profileBitmap = (Bitmap) data.getExtras().get("data");
                     imageView.setImageBitmap(profileBitmap);
                     imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-                } catch(Exception e){
+                } catch (Exception e) {
                     return;
                 }
             }
@@ -441,6 +459,15 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
             // no camera on this device
             return false;
         }
+    }
+
+    private boolean deleteUserFromDb() {
+        boolean result = false;
+        db = mDbHelper.getWritableDatabase();
+        if (db.delete(MySqliteOpenHelper.USER_TABLE_NAME, null, null) > 0)
+            result = true;
+        db.close();
+        return result;
     }
 }
 
