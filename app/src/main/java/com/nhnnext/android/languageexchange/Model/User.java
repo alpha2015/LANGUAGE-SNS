@@ -80,7 +80,7 @@ public class User {
         return userPracticing;
     }
 
-    public String getoAuth() {
+    public String getOAuth() {
         return oAuth;
     }
 

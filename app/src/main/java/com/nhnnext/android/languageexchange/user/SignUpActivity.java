@@ -3,8 +3,10 @@ package com.nhnnext.android.languageexchange.user;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
+import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
-import android.net.Network;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Pair;
@@ -15,6 +17,7 @@ import android.widget.TextView;
 import com.nhnnext.android.languageexchange.Model.User;
 import com.nhnnext.android.languageexchange.Model.UserParcelable;
 import com.nhnnext.android.languageexchange.R;
+import com.nhnnext.android.languageexchange.common.MySqliteOpenHelper;
 import com.nhnnext.android.languageexchange.common.NetworkUtil;
 
 import java.io.BufferedReader;
@@ -22,12 +25,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +36,10 @@ import java.util.List;
  * Created by Alpha on 2015. 7. 21..
  */
 public class SignUpActivity extends FragmentActivity implements View.OnClickListener {
+    private MySqliteOpenHelper mDbHelper;
+    private SQLiteDatabase db;
+    private Context mContext;
+
     //fragment에서 입력한 회원정보 저장
     private TextView backLogin;
     private Button requestButton;
@@ -46,6 +51,9 @@ public class SignUpActivity extends FragmentActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
+        mContext = this;
+        mDbHelper = new MySqliteOpenHelper(mContext);
+
         //회원정보 입력 fragment 연결
         //로그인 Activity 돌아가기 이벤트 등록
         backLogin = (TextView) findViewById(R.id.back_login_page);
@@ -123,7 +131,7 @@ public class SignUpActivity extends FragmentActivity implements View.OnClickList
                             params.add(new Pair<>("userPassword", userForSignUp.getUserPassword()));
                             params.add(new Pair<>("userGender", userForSignUp.getUserGender()));
                             params.add(new Pair<>("userAge", "" + userForSignUp.getUserAge()));
-                            params.add(new Pair<>("oAuth", userForSignUp.getoAuth()));
+                            params.add(new Pair<>("oAuth", userForSignUp.getOAuth()));
 
                             OutputStreamWriter outStream = new OutputStreamWriter(http.getOutputStream(), "UTF-8");
                             PrintWriter writer = new PrintWriter(outStream);
@@ -149,6 +157,7 @@ public class SignUpActivity extends FragmentActivity implements View.OnClickList
                             //TODO 추후 자동로그인을 위해 App DB에 회원정보 INSERT, MatchingActivity 호출
                             if (result.equals("success\n")) {
                                 progressDialog.dismiss();   //progressDialog dismiss
+                                saveUserIntoDb(userForSignUp);
                                 Intent intent = new Intent();
                                 intent.setAction("com.nhnnext.android.action.MATCH");
                                 UserParcelable parcelUser = new UserParcelable(userForSignUp);
@@ -173,6 +182,24 @@ public class SignUpActivity extends FragmentActivity implements View.OnClickList
     protected void enableSignUp(User userForSignUp) {
         requestButton.setVisibility(View.VISIBLE);
         this.userForSignUp = userForSignUp;
+    }
+
+    private void saveUserIntoDb(User userForSignUp) {
+        // Get the data repository in write mode
+        db = mDbHelper.getWritableDatabase();
+
+        // Create a new map of values, where column names are the keys
+        ContentValues values = new ContentValues();
+        values.put(MySqliteOpenHelper.KEY_EMAIL, userForSignUp.getUserEmail());
+        values.put(MySqliteOpenHelper.KEY_NAME, userForSignUp.getUserName());
+        values.put(MySqliteOpenHelper.KEY_PASSWORD, userForSignUp.getUserPassword());
+        values.put(MySqliteOpenHelper.KEY_AGE, userForSignUp.getUserAge());
+        values.put(MySqliteOpenHelper.KEY_GENDER, userForSignUp.getUserGender());
+
+        // Insert the new row, returning the primary key value of the new row
+        long newRowId = db.insert(MySqliteOpenHelper.USER_TABLE_NAME, null, values);
+        db.close();
+
     }
 }
 

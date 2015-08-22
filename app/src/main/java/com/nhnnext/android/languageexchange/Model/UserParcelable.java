@@ -34,7 +34,7 @@ public class UserParcelable implements Parcelable {
         this.gender = user.getUserGender();
         this.nativeLanguage = user.getUserNative();
         this.practicingLanguage = user.getUserPracticing();
-        this.oauth = user.getoAuth();
+        this.oauth = user.getOAuth();
         this.intro = user.getUserIntro();
         this.userCreateDate = user.getUserCreateDate();
         this.userUpdateDate = user.getUserUpdateDate();

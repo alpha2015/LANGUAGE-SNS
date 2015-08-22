@@ -1,9 +1,11 @@
 package com.nhnnext.android.languageexchange;
 
 import android.app.ProgressDialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
@@ -11,49 +13,32 @@ import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.nhnnext.android.languageexchange.Model.User;
 import com.nhnnext.android.languageexchange.Model.UserParcelable;
 import com.nhnnext.android.languageexchange.common.GsonRequest;
-import com.nhnnext.android.languageexchange.common.NetworkUtil;
+import com.nhnnext.android.languageexchange.common.MySqliteOpenHelper;
 
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
-import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
  * Created by Alpha on 2015. 7. 21..
  */
 public class MainActivity extends FragmentActivity implements View.OnClickListener {
+    private MySqliteOpenHelper mDbHelper;
+    private SQLiteDatabase db;
+    private Context mContext;
+
     private EditText emailEditText;
     private EditText passwordEditText;
     private Button loginButton;
@@ -65,7 +50,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     private ProgressDialog progressDialog;
     private RequestQueue queue;
     private String loginUrl = "http://10.0.3.2:8080/user/login";
-    GsonRequest<User> loginRequest;
+    private GsonRequest<User> loginRequest;
 
 
     @Override
@@ -73,8 +58,11 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         queue = Volley.newRequestQueue(this);
+        mContext = this;
+        mDbHelper = new MySqliteOpenHelper(mContext);
+
         loginRequest = new GsonRequest<>(loginUrl, User.class, null,
-                new Response.Listener<User>(){
+                new Response.Listener<User>() {
                     @Override
                     public void onResponse(User user) {
                         progressDialog.dismiss();
@@ -84,7 +72,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                         intent.putExtra("user", parcelUser);
                         startActivity(intent);
                     }
-                }, new Response.ErrorListener(){
+                }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
                 progressDialog.dismiss();
@@ -140,6 +128,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     @Override
     protected void onResume() {
         super.onResume();
+        readUserFromDb();
     }
 
     @Override
@@ -183,7 +172,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("userEmail", user.getUserEmail());
                 params.put("userPassword", user.getUserPassword());
-                params.put("oAuth", user.getoAuth());
+                params.put("oAuth", user.getOAuth());
 
                 loginRequest.setParams(params);
                 queue.add(loginRequest);
@@ -227,4 +216,60 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             }
         }
     };
+
+
+    private User readUserFromDb() {
+        // Get the data repository in read mode
+        db = mDbHelper.getReadableDatabase();
+
+//        String[] projection = {
+//                "userImage", "userEmail", "userName", "userPassword", "userAge", "userGender",
+//                "userNative", "userPracticing", "oAuth", "userIntro"
+//        };
+        String[] projection = {
+                "userEmail", "userName", "userPassword", "userAge", "userGender"
+        };
+
+        // Table, Column, WHERE, ARGUMENTS, GROUPING, HAVING, SORTING
+        Cursor cursor = db.query(MySqliteOpenHelper.USER_TABLE_NAME, projection, null, null, null, null, null);
+
+        // AddView into the TableLayout using return value
+
+        User user = new User();
+        while (cursor.moveToNext()) {
+            user.setUserEmail(cursor.getString(0));
+            user.setUserName(cursor.getString(1));
+            user.setUserPassword(cursor.getString(2));
+            user.setUserAge(cursor.getInt(3));
+            user.setUserGender(cursor.getString(4));
+        }
+        cursor.close();
+
+        db.close();
+        return user;
+    }
+
+    private void saveUserIntoDb(View view) {
+        // Get the data repository in write mode
+        db = mDbHelper.getWritableDatabase();
+
+        // Create a new map of values, where column names are the keys
+        ContentValues values = new ContentValues();
+//        values.put(MySqliteOpenHelper.KEY_IMAGE, mWord.getText().toString());
+//        values.put(MySqliteOpenHelper.KEY_EMAIL, mDefinition.getText().toString());
+//        values.put(MySqliteOpenHelper.KEY_NAME, mDefinition.getText().toString());
+//        values.put(MySqliteOpenHelper.KEY_PASSWORD, mDefinition.getText().toString());
+//        values.put(MySqliteOpenHelper.KEY_AGE, mDefinition.getText().toString());
+//        values.put(MySqliteOpenHelper.KEY_GENDER, mDefinition.getText().toString());
+//        values.put(MySqliteOpenHelper.KEY_NATIVIE, mDefinition.getText().toString());
+//        values.put(MySqliteOpenHelper.KEY_PRACTICING, mDefinition.getText().toString());
+//        values.put(MySqliteOpenHelper.KEY_OAUTH, mDefinition.getText().toString());
+//        values.put(MySqliteOpenHelper.KEY_INTRO, mDefinition.getText().toString());
+
+        // Insert the new row, returning the primary key value of the new row
+        long newRowId = db.insert(MySqliteOpenHelper.USER_TABLE_NAME, null, values);
+        db.close();
+
+//        readData();
+    }
 }

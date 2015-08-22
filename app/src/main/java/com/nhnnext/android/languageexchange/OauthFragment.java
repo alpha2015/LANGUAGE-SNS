@@ -8,8 +8,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.facebook.AccessToken;
+import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -18,6 +20,7 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
 import com.facebook.ProfileTracker;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.nhnnext.android.languageexchange.Model.User;
@@ -36,12 +39,22 @@ public class OauthFragment extends Fragment {
     private LoginButton loginButton;
     private CallbackManager callbackManager;
     private ProfileTracker profileTracker;
+    AccessTokenTracker accessTokenTracker;
+    AccessToken accessToken;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getActivity().getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
+
+        // If the access token is available already assign it.
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        if(accessToken != null && !accessToken.isExpired()) {
+            //TODO 자동 DB조회 및 자동 로그인
+            ;
+        }
+
     }
 
     @Override
@@ -50,7 +63,6 @@ public class OauthFragment extends Fragment {
             ViewGroup container,
             Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.splash, container, false);
-
         loginButton = (LoginButton) view.findViewById(R.id.fb_login_button);
         loginButton.setReadPermissions(Arrays.asList("public_profile, email, user_birthday, user_friends"));
         // If using in a fragment
