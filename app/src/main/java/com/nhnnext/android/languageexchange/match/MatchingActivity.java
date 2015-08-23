@@ -2,6 +2,7 @@ package com.nhnnext.android.languageexchange.match;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -22,7 +23,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -320,7 +320,8 @@ public class MatchingActivity extends AppCompatActivity {
         @SuppressWarnings("unchecked")
         @Override
         public boolean onQueryTextSubmit(final String query) {
-            Type collectionType = new TypeToken<ArrayList<User>>(){}.getType();
+            Type collectionType = new TypeToken<ArrayList<User>>() {
+            }.getType();
             String loginUrl = "http://10.0.3.2:8080/user/search";
             searchRequest = new GsonRequest<ArrayList<User>>(loginUrl, collectionType, null,
                     new Response.Listener<ArrayList<User>>() {
@@ -330,6 +331,19 @@ public class MatchingActivity extends AppCompatActivity {
                             friendListAdapter = new FriendListAdapter(MatchingActivity.this, users);
                             friendListView.setAdapter(friendListAdapter);
                             friendListView.setTextFilterEnabled(false);
+
+                            friendListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                public void onItemClick(AdapterView<?> parent, View v,
+                                                        int position, long id) {
+                                    Intent intent = new Intent();
+                                    intent.setAction("com.nhnnext.android.action.DETAIL");
+                                    //상세보기 activity 호출시 해당 유저 정보 parcelable instance로 전달
+                                    UserParcelable parcelUser = new UserParcelable((User) friendListView.getAdapter().getItem(position));
+                                    intent.putExtra("user", parcelUser);
+                                    startActivity(intent);
+                                }
+                            });
+
                             Toast.makeText(getApplicationContext(), "검색 성공", Toast.LENGTH_SHORT).show();
                         }
                     }, new Response.ErrorListener() {
@@ -351,7 +365,7 @@ public class MatchingActivity extends AppCompatActivity {
 
         @Override
         public boolean onQueryTextChange(String newText) {
-            if(newText.equals(""))
+            if (newText.equals(""))
                 friendListView.setAdapter(null);
             return false;
         }

@@ -1,6 +1,7 @@
 package com.nhnnext.android.languageexchange.common;
 
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -80,6 +81,9 @@ public class FriendListAdapter extends BaseAdapter implements Filterable {
         // to findViewById() on each row.
         final ViewHolder holder;
         final User user = (User) getItem(position);
+
+        //TODO 이미지 수정후 제거
+        user.setUserImage(BitmapFactory.decodeResource(activity.getResources(), R.drawable.square_profile_default));
 
         if (view == null) {
             LayoutInflater layoutInflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
