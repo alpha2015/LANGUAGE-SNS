@@ -1,10 +1,8 @@
 package com.nhnnext.android.languageexchange;
 
-import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -23,7 +21,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.facebook.AccessToken;
-import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -31,7 +28,6 @@ import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
-import com.facebook.ProfileTracker;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.nhnnext.android.languageexchange.Model.User;
@@ -49,20 +45,15 @@ import java.util.Map;
 
 /**
  * Created by Alpha on 2015. 8. 10..
+ * Class OauthFragment : oauth login을 위한 facebook api fragment
  */
 public class OauthFragment extends Fragment {
     private MySqliteOpenHelper mDbHelper;
     private SQLiteDatabase db;
     private Context mContext;
-    private ProgressDialog progressDialog;
-
     private LoginButton loginButton;
     private CallbackManager callbackManager;
-    private ProfileTracker profileTracker;
-    private AccessTokenTracker accessTokenTracker;
-    private AccessToken accessToken;
     private User user;
-
     private RequestQueue queue;
     private GsonRequest<User> loginRequest;
 
@@ -71,20 +62,22 @@ public class OauthFragment extends Fragment {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getActivity().getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
-
         queue = Volley.newRequestQueue(getActivity());
         mContext = getActivity();
         mDbHelper = new MySqliteOpenHelper(mContext);
-
-        // If the access token is available already assign it.
-        AccessToken accessToken = AccessToken.getCurrentAccessToken();
-        if (accessToken != null && !accessToken.isExpired()) {
-            //TODO 자동 DB조회 및 자동 로그인
-            User user = readUserFromDb();
-        }
-
     }
 
+    /**
+     * Method onCreateView
+     * facebook login button 등록
+     * login 성공후 서버 db user 조회
+     * user 존재하지 않을 경우) user 정보 server db에 create, app db에 저장, MatchingActivity 호출
+     * user 존재할 경우) user 정보 server db에 재갱신, app db에 저장, MatchingActivity 호출
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(
             LayoutInflater inflater,
@@ -102,8 +95,6 @@ public class OauthFragment extends Fragment {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 // App code
-                Log.d("oauth", "success");
-
                 Bundle fbParams = new Bundle();
                 fbParams.putString("fields", "id, email, name, birthday, gender");
                 new GraphRequest(
@@ -114,7 +105,6 @@ public class OauthFragment extends Fragment {
                         new GraphRequest.Callback() {
                             public void onCompleted(GraphResponse response) {
                                 /* handle the result */
-                                Log.d("oauth", "response : " + response.toString());
                                 JSONObject jsonObject = response.getJSONObject();
 
                                 //if) 등록되지 않은 사용자라면 서버 DB로 저장하며 가입시킨다.
@@ -233,31 +223,27 @@ public class OauthFragment extends Fragment {
                 Log.d("oauth", "error");
             }
         });
-
         return view;
     }
 
+    /**
+     * Method onActivityResult(int requestCode, int resultCode, Intent data)
+     * facebook login activity 호출 결과 등록을 위해 재정의
+     * @param requestCode 요청 코드
+     * @param resultCode 응답 코드
+     * @param data data
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
-
+    /**
+     * Method saveUserIntoDb(User user)
+     * db에 user 정보 저장
+     * @param user
+     */
     private void saveUserIntoDb(User user) {
         // Get the data repository in write mode
         db = mDbHelper.getWritableDatabase();
@@ -276,34 +262,11 @@ public class OauthFragment extends Fragment {
         db.close();
     }
 
-    private User readUserFromDb() {
-        // Get the data repository in read mode
-        db = mDbHelper.getReadableDatabase();
-
-        String[] projection = {
-                "userEmail", "userName", "userPassword", "userAge", "userGender"
-        };
-
-        // Table, Column, WHERE, ARGUMENTS, GROUPING, HAVING, SORTING
-        Cursor cursor = db.query(MySqliteOpenHelper.USER_TABLE_NAME, projection, null, null, null, null, null);
-
-        // AddView into the TableLayout using return value
-
-        User user = null;
-        while (cursor.moveToNext()) {
-            user = new User();
-            user.setUserEmail(cursor.getString(0));
-            user.setUserName(cursor.getString(1));
-            user.setUserPassword(cursor.getString(2));
-            user.setUserAge(cursor.getInt(3));
-            user.setUserGender(cursor.getString(4));
-        }
-        cursor.close();
-
-        db.close();
-        return user;
-    }
-
+    /**
+     * Method deleteUserFromDb()
+     * db에서 user 정보 삭제
+     * @return delete 성공 유무
+     */
     private boolean deleteUserFromDb() {
         boolean result = false;
         db = mDbHelper.getWritableDatabase();

@@ -53,10 +53,12 @@ import java.util.Map;
 
 /**
  * Created by Alpha on 2015. 7. 22..
+ * Class MatchingActivity : app 핵심 activity
+ * fragemnt : 타임라인, 매칭시작, 정보수정
+ * action bar : 사용자 검색, push notification list
  */
 public class MatchingActivity extends AppCompatActivity {
     private ArrayList<MessageInfo> messageList;
-    private String[] mPlanetTitles;
     private ListView mRightDrawerList;
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -77,9 +79,8 @@ public class MatchingActivity extends AppCompatActivity {
     private MatchScreenSlidePagerAdapter mPagerAdapter;
     private UserParcelable user;
     private TabLayout tabLayout;
-    Menu menu;
+    private Menu menu;
 
-    //TODO MatchingActivity, frangment들간 User instance 공유 - fragment 스터디후 구현방식 적용
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,7 +97,6 @@ public class MatchingActivity extends AppCompatActivity {
         messageList.add(new MessageInfo(BitmapFactory.decodeResource(getResources(), R.drawable.sample_image_5), "name5", "hello? my name is name5", new Date()));
         messageList.add(new MessageInfo(BitmapFactory.decodeResource(getResources(), R.drawable.sample_image_6), "name6", "hello? my name is name6", new Date()));
 
-        mPlanetTitles = getResources().getStringArray(R.array.languages);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mRightDrawerList = (ListView) findViewById(R.id.right_drawer);
 
@@ -110,14 +110,12 @@ public class MatchingActivity extends AppCompatActivity {
             /** Called when a drawer has settled in a completely closed state. */
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
-//                getActionBar().setTitle(mTitle);
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
 
             /** Called when a drawer has settled in a completely open state. */
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-//                getActionBar().setTitle(mDrawerTitle);
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
         };
@@ -275,7 +273,6 @@ public class MatchingActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        //TODO 회원정보 DB에서 읽어오기( onCreate / onStart 위치 확인후 추후 다시 고려)
     }
 
     @Override
@@ -285,6 +282,9 @@ public class MatchingActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * Class DrawerItemClickListener : push notification list item 선택 이벤트 listener
+     */
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -317,6 +317,12 @@ public class MatchingActivity extends AppCompatActivity {
     }
 
     private SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
+        /**
+         * Method onQueryTextSubmit(final String query)
+         * 검색시 server db에 해당 query 포함된 사용자이름이나 이메일 검색후 user list 표시
+         * @param query 입력된 검색 query
+         * @return
+         */
         @SuppressWarnings("unchecked")
         @Override
         public boolean onQueryTextSubmit(final String query) {
@@ -363,6 +369,12 @@ public class MatchingActivity extends AppCompatActivity {
             return false;
         }
 
+        /**
+         * Method onQueryTextChange(String newText)
+         * 공백시 검색 결과 list item 제거
+         * @param newText 입력중인 query
+         * @return
+         */
         @Override
         public boolean onQueryTextChange(String newText) {
             if (newText.equals(""))

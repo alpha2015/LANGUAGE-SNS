@@ -23,12 +23,12 @@ import com.nhnnext.android.languageexchange.R;
 
 /**
  * Created by Alpha on 2015. 7. 23..
+ * Class Fragment_UserInfoForSignUp : 회원가입을 위한 회원정보 입력 fragment
  */
 public class Fragment_UserInfoForSignUp extends Fragment {
     private enum SignUpStep {
         EMAIL, NAME, PASSWORD, AGE, GENDER
     }
-
     private LinearLayout emailLayout;
     private LinearLayout nameLayout;
     private LinearLayout passwordLayout;
@@ -43,14 +43,11 @@ public class Fragment_UserInfoForSignUp extends Fragment {
     private RadioGroup genderRadioGroup;
     private RadioButton maleRadioButton;
     private RadioButton femaleRadioButton;
-
     private TextView writtenEmailEditText;
     private TextView writtenNameEditText;
     private TextView writtenAgeEditText;
     private TextView writtenGenderEditText;
-
     private Button continueButton;
-
     private SignUpStep signUpStep;
     private User userForSignUp;
 
@@ -102,7 +99,6 @@ public class Fragment_UserInfoForSignUp extends Fragment {
         //다음단계를 위한 계속 버튼 이벤트 등록 - 각각의 회원정보 입력시 추가 회원정보 입력을 위한 VIEW VISIBLE
         //Step : 이메일 -> 이름 -> 비밀번호 -> 나이 -> 성별
         continueButton.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
                 //단계별 회원정보 입력 EditText view visible 설정
@@ -163,22 +159,22 @@ public class Fragment_UserInfoForSignUp extends Fragment {
                         completeLayout.setVisibility(View.VISIBLE);
                         break;
                 }
-
             }
         });
-
         return view;
     }
 
-    private void requestEnableSignUpBtn() { //TODO 메소드명 변경
-        //TODO 회원정보 전부 입력시 회원가입요청 버튼 활성화 요청
-        Log.d("storedUserInfo", String.valueOf(userForSignUp));
+    /**
+     * Method requestEnableSignUpBtn()
+     * 회원정보 전부 입력시 SignUpActivity로 회원가입 버튼 활성화 요청
+     */
+    private void requestEnableSignUpBtn() {
         SignUpActivity signUpActivity = (SignUpActivity) getActivity();
         signUpActivity.enableSignUp(userForSignUp);
     }
 
-    /*
-        Email/Name/Password EditText에 대해 입력값 없을 경우 '계속' 버튼 Visibility = GONE 처리
+    /**
+     * Email/Name/Password EditText에 대해 입력값 없을 경우 '계속' 버튼 보이지 않도록 처리
      */
     private TextWatcher textBarWatcher = new TextWatcher() {
         @Override

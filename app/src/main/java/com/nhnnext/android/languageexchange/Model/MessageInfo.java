@@ -5,7 +5,9 @@ import android.graphics.Bitmap;
 import java.util.Date;
 
 /**
- * Created by Alpha on 2015. 8. 14..
+ * Created by Alpha on 2015. 7. 22..
+ * Class MessageInfo : 타 사용자로 부터 받은 push notification message model
+ * field values : 프로필 이미지, 이름, 메시지, 보낸 시간
  */
 public class MessageInfo {
     private Bitmap userImage;

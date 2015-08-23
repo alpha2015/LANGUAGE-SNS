@@ -32,21 +32,19 @@ import java.util.Map;
 
 /**
  * Created by Alpha on 2015. 7. 21..
+ * Class SignUpActivity : 회원가입 activity
  */
 public class SignUpActivity extends FragmentActivity implements View.OnClickListener {
     private MySqliteOpenHelper mDbHelper;
     private SQLiteDatabase db;
     private Context mContext;
-
     //fragment에서 입력한 회원정보 저장
     private TextView backLogin;
     private Button requestButton;
     private User userForSignUp;
     private ProgressDialog progressDialog;
-
     private RequestQueue queue;
 
-    //TODO 가입완료후 자동로그인시 BACK BUTTON 눌러도 회원가입으로 돌아오는 문제 해결(taskAffinity)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,38 +67,19 @@ public class SignUpActivity extends FragmentActivity implements View.OnClickList
         transaction.commit();
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
+    /**
+     * Method onClick()
+     * @param v : clicked view
+     * 로그인 페이지로 돌아가기 버튼) 회원가입 Activity 호출
+     * 회원가입 하기 버튼) 서버 api를 통해 회원가입 시도 및 성공/실패 여부 반환 요청, 성공시 MatchingActivity 호출
+     */
     @Override
     public void onClick(View v) {
         int id = v.getId();
 
         switch (id) {
             case R.id.back_login_page:
-                //TODO 로그인 Activity로 돌아가기
+                //로그인 Activity로 돌아가기
                 onBackPressed();
                 break;
             case R.id.sign_up_request_btn:
@@ -122,7 +101,6 @@ public class SignUpActivity extends FragmentActivity implements View.OnClickList
                             @Override
                             public void onResponse(String response) {
                                 // Display the first 500 characters of the response string.
-                                Log.d("signuptest", "success");
                                 if (response.equals("success")) {
                                     progressDialog.dismiss();   //progressDialog dismiss
                                     deleteUserFromDb();
@@ -163,11 +141,21 @@ public class SignUpActivity extends FragmentActivity implements View.OnClickList
         }
     }
 
+    /**
+     * Method enableSignUp(User userForSignUp)
+     * 회원정보 모두 입력시 가입요정 버튼 활성화, fragment user정보 activity로 전달
+     * @param userForSignUp
+     */
     protected void enableSignUp(User userForSignUp) {
         requestButton.setVisibility(View.VISIBLE);
         this.userForSignUp = userForSignUp;
     }
 
+    /**
+     * Method saveUserIntoDb(User user)
+     * db에 user 정보 저장
+     * @param user
+     */
     private void saveUserIntoDb(User user) {
         // Get the data repository in write mode
         db = mDbHelper.getWritableDatabase();
@@ -185,6 +173,11 @@ public class SignUpActivity extends FragmentActivity implements View.OnClickList
         db.close();
     }
 
+    /**
+     * Method deleteUserFromDb()
+     * db에서 user 정보 삭제
+     * @return delete 성공 유무
+     */
     private boolean deleteUserFromDb() {
         boolean result = false;
         db = mDbHelper.getWritableDatabase();

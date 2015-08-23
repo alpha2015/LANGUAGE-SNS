@@ -23,6 +23,10 @@ import java.util.ArrayList;
 /**
  * Created by Alpha on 2015. 7. 22.
  */
+/**
+ * Created by Alpha on 2015. 7. 22..
+ * Class Fragment_StartMatch : 매칭시작 fragment
+ */
 public class Fragment_StartMatch extends Fragment implements View.OnClickListener {
     //TODO 서버 DB를 통해 설정된 default native, practicing 언어 가져오기
     //TODO 선택할 수 있는 언어 종류 저장 할 DB 설계
@@ -37,6 +41,12 @@ public class Fragment_StartMatch extends Fragment implements View.OnClickListene
     private UserParcelable user;
     private int dialogType;
 
+    /**
+     * Method newInstance(UserParcelable user)
+     * caller activity로부터 전달 받은 user 값 bundle로 저장
+     * @param user 매칭할 언어 정보를 담고 있는 user data
+     * @return Fragment_StartMatch instance
+     */
     public static Fragment_StartMatch newInstance(UserParcelable user) {
         Fragment_StartMatch f = new Fragment_StartMatch();
 
@@ -48,6 +58,12 @@ public class Fragment_StartMatch extends Fragment implements View.OnClickListene
         return f;
     }
 
+    /**
+     * Method getShownIndex()
+     * user data getter
+     *
+     * @return activity로부터 전달 받은 data 값
+     */
     private UserParcelable getShownIndex() {
         return getArguments().getParcelable("user");
     }
@@ -72,8 +88,12 @@ public class Fragment_StartMatch extends Fragment implements View.OnClickListene
         return view;
     }
 
-
-    private void DialogLanguageSelectOption(int index) {
+    /**
+     * Method dialogLanguageSelectOption(int index)
+     * language 선택 다이얼로그 호출
+     * @param index native dialog / practicing dialog
+     */
+    private void dialogLanguageSelectOption(int index) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), AlertDialog.THEME_DEVICE_DEFAULT_DARK);
         if (dialogType == 1)
             builder.setTitle("Select a Native Language");
@@ -113,6 +133,14 @@ public class Fragment_StartMatch extends Fragment implements View.OnClickListene
         //TODO Fragment 라이프 사이클 스터디후 해당 위치에 view 변경하는게 맞는지 검토
     }
 
+    /**
+     * Method onClick(View v)
+     *
+     * @param v : clicked view
+     *          매칭시작 클릭시) 매칭된 사용자 리스트 검색을 위해 server db조회
+     *          모국어 선택 버튼 클릭시) 모국어어 선택 dialog 출
+     *          배울 언어 선택 클릭시) 배울 언어 선택 dialog 출
+     */
     @Override
     public void onClick(View v) {
         //TODO 매칭 시작 버튼 클릭시 서버 DB 접근 유저리스트 가져오기
@@ -127,39 +155,40 @@ public class Fragment_StartMatch extends Fragment implements View.OnClickListene
             case R.id.native_language:
                 dialogType = 1;
                 if (user.getNativeLanguage() == null)
-                    DialogLanguageSelectOption(0);
+                    dialogLanguageSelectOption(0);
                 else if (user.getNativeLanguage().equals("Korean"))
-                    DialogLanguageSelectOption(0);
+                    dialogLanguageSelectOption(0);
                 else if (user.getNativeLanguage().equals("English"))
-                    DialogLanguageSelectOption(1);
+                    dialogLanguageSelectOption(1);
                 else if (user.getNativeLanguage().equals("Japanese"))
-                    DialogLanguageSelectOption(2);
+                    dialogLanguageSelectOption(2);
                 else if (user.getNativeLanguage().equals("Chinese"))
-                    DialogLanguageSelectOption(3);
+                    dialogLanguageSelectOption(3);
                 else
-                    DialogLanguageSelectOption(4);
+                    dialogLanguageSelectOption(4);
                 break;
 
             //TODO ENUM으로 리팩토링!!!!!
             case R.id.practicing_language:
                 dialogType = 2;
                 if (user.getPracticingLanguage() == null)
-                    DialogLanguageSelectOption(1);
+                    dialogLanguageSelectOption(1);
                 else if (user.getPracticingLanguage().equals("Korean"))
-                    DialogLanguageSelectOption(0);
+                    dialogLanguageSelectOption(0);
                 else if (user.getPracticingLanguage().equals("English"))
-                    DialogLanguageSelectOption(1);
+                    dialogLanguageSelectOption(1);
                 else if (user.getPracticingLanguage().equals("Japanese"))
-                    DialogLanguageSelectOption(2);
+                    dialogLanguageSelectOption(2);
                 else if (user.getPracticingLanguage().equals("Chinese"))
-                    DialogLanguageSelectOption(3);
+                    dialogLanguageSelectOption(3);
                 else
-                    DialogLanguageSelectOption(4);
+                    dialogLanguageSelectOption(4);
                 break;
         }
 
     }
 
+    //TODO volley로 변경
     private class MatchAsyncTask extends AsyncTask<String, Void, ArrayList<User>> {
         ProgressDialog progressDialog;
 

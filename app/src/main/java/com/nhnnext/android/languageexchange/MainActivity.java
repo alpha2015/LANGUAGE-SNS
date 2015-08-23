@@ -13,7 +13,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -35,19 +34,17 @@ import java.util.Map;
 
 /**
  * Created by Alpha on 2015. 7. 21..
+ * Class MainActivity : 로그인 / 회원가입 activity
  */
 public class MainActivity extends FragmentActivity implements View.OnClickListener {
     private MySqliteOpenHelper mDbHelper;
     private SQLiteDatabase db;
     private Context mContext;
-
     private EditText emailEditText;
     private EditText passwordEditText;
     private Button loginButton;
     private TextView signupButton;
     private User user;
-
-    private TextView loginResultText;
     private OauthFragment oauthFragment;
     private ProgressDialog progressDialog;
     private RequestQueue queue;
@@ -110,30 +107,18 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
     }
 
-    @Override
-    protected void onStart() {
-
-        super.onStart();
-        //TODO 앱내 DB에 회원정보 가져오기
-        //TODO if 회원정보 존재하지 않을 경우) 자동 로그인 수행 하지 않음
-        //TODO else 회원정보 존재할 경우) 자동로그인 시도시 서버 api를 통해 로그인 시도 및 성공/실패 여부 반환 요청 AsyncTask 실행
-//        emailEditText.setText(user.getUserEmail());
-//        new LoginAsyncTask().execute("target url", user);
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(String name, Context context, AttributeSet attrs) {
-        return super.onCreateView(name, context, attrs);
-    }
-
+    /**
+     * Method onResume()
+     * 앱내 DB에 회원정보 가져오기
+     * if 회원정보 존재하지 않을 경우) 자동 로그인 수행 하지 않음
+     * else 회원정보 존재할 경우) 서버 api를 통해 자동로그인 시도 및 성공/실패 여부 반환 요청
+     */
     @Override
     protected void onResume() {
         super.onResume();
         user = readUserFromDb();
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         if (user != null) {
-            Log.d("dbuser2", "" + user);
             if (user.getOAuth() == null || (accessToken != null && !accessToken.isExpired())) {
                 //progressBar 표시
                 progressDialog = new ProgressDialog(MainActivity.this);
@@ -151,32 +136,16 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         }
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
-    /*
-        회원가입, 로그인 버튼 클릭에 대한 처리 구현
-        1) 회원가입 버튼 클릭시 회원가입 Activity 호출
-        2) 로그인 버튼 클릭시 서버 api를 통해 로그인 시도 및 성공/실패 여부 반환 요청 AsyncTask 실행
+    /**
+     * Method onClick()
+     * @param v : clicked view
+     * 회원가입 버튼 클릭시) 회원가입 Activity 호출
+     * 로그인 버튼 클릭시) 서버 api를 통해 로그인 시도 및 성공/실패 여부 반환 요청
      */
     @Override
     public void onClick(View v) {
         int id = v.getId();
-
         switch (id) {
-
             case R.id.login_btn:
                 /*
                     서버 DB에 확인을 통해 login 요청
@@ -211,8 +180,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
     }
 
-    /*
-        Email/Password EditText에 대해 입력값 없을 경우 버튼 비활성화
+    /**
+     * Email/Password EditText에 대해 입력값 없을 경우 버튼 비활성화
      */
     private TextWatcher textBarWatcher = new TextWatcher() {
         @Override
@@ -235,6 +204,11 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         }
     };
 
+    /**
+     * Method readUserFromDb()
+     * db에서 user 정보 조회
+     * @return User : user data from db
+     */
     private User readUserFromDb() {
         // Get the data repository in read mode
         db = mDbHelper.getReadableDatabase();
@@ -242,16 +216,11 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         String[] projection = {
                 "userEmail", "userName", "userPassword", "userAge", "userGender", "oAuth"
         };
-
         // Table, Column, WHERE, ARGUMENTS, GROUPING, HAVING, SORTING
         Cursor cursor = db.query(MySqliteOpenHelper.USER_TABLE_NAME, projection, null, null, null, null, null);
 
-        // AddView into the TableLayout using return value
-
         User user = null;
-        int count = 0;
         while (cursor.moveToNext()) {
-            count++;
             user = new User();
             user.setUserEmail(cursor.getString(0));
             user.setUserName(cursor.getString(1));
@@ -259,16 +228,17 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             user.setUserAge(cursor.getInt(3));
             user.setUserGender(cursor.getString(4));
             user.setoAuth(cursor.getString(5));
-            Log.d("dbuser1", "" + user);
-            Log.d("dbuser1", "" + count);
-
         }
         cursor.close();
-
         db.close();
         return user;
     }
 
+    /**
+     * Method deleteUserFromDb()
+     * db에서 user 정보 삭제
+     * @return delete 성공 유무
+     */
     private boolean deleteUserFromDb() {
         boolean result = false;
         db = mDbHelper.getWritableDatabase();
@@ -278,6 +248,11 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         return result;
     }
 
+    /**
+     * Method saveUserIntoDb(User user)
+     * db에 user 정보 저장
+     * @param user
+     */
     private void saveUserIntoDb(User user) {
         // Get the data repository in write mode
         db = mDbHelper.getWritableDatabase();

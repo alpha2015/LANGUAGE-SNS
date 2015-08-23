@@ -17,12 +17,20 @@ import java.util.ArrayList;
 
 /**
  * Created by Alpha on 2015. 7. 22..
+ * Class ShowResultActivity : 매칭된 사용자 리스트 보여주기 activity
  */
-
 public class ShowResultActivity extends Activity {
     private GridView userListGridView;
     private ArrayList<User> userList;
 
+    /**
+     * Method onCreate(Bundle savedInstanceState)
+     * 매칭된 유저 리스트 보여주기
+     * Adapter, list 연결
+     * stop - start 간 view 변경될 일 없으므로 onCreate 시점에 adapter, list 등록
+     * list item 클릭시 activity 호출 intent 구현, parcelable User instance  전달
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,14 +70,8 @@ public class ShowResultActivity extends Activity {
         userList.add(new User(BitmapFactory.decodeResource(getResources(), R.drawable.sample_image_16), "sample16@naver.com",
                 "임지연", null, 36, "female", null, null, null, null, null, null));
 
-        /*
-            매칭된 유저 리스트 보여주기
-            Adapter, list 연결
-            // stop - start 간 view 변경될 일 없으므로 onCreate 시점에 adapter, list 등록
-            // list item 클릭시 activity 호출 intent 구현, parcelable User instance  전달
-            //TODO USER Class 자체를 Parcelable로 변경할지 DB 설계시 검토
-            //TODO userList DB에서 읽어올지 Parcel로 전달 받을지 DB 설계시 결정할 것
-         */
+        //TODO USER Class 자체를 Parcelable로 변경할지 DB 설계시 검토
+        //TODO userList DB에서 읽어올지 Parcel로 전달 받을지 DB 설계시 결정할 것
         userListGridView = (GridView) findViewById(R.id.gridview);
         userListGridView.setAdapter(new UserItemAdapter(this, R.layout.user_list_item, userList));
 

@@ -12,8 +12,8 @@ android {
         applicationId "com.nhnnext.android.languageexchange"
         minSdkVersion 16
         targetSdkVersion 22
-        versionCode 29
-        versionName "0.0.29"
+        versionCode 30
+        versionName "0.0.30"
     }
     buildTypes {
         release {

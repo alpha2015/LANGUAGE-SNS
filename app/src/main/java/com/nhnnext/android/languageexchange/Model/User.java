@@ -4,6 +4,9 @@ import android.graphics.Bitmap;
 
 /**
  * Created by Alpha on 2015. 8. 3..
+ * Class User : 사용자 정보에 대한 model
+ * field values : 프로필 이미지, 이메일, 이름, 비밀번호, 나이, 성별, 모국어, 배우고자하는 언어, oAuth유무
+ * 소개 내용, 생성 시간, 수정 시간
  */
 public class User {
     private Bitmap userImage;
@@ -96,6 +99,12 @@ public class User {
         return userUpdateDate;
     }
 
+    /**
+     * Method getGenderForKorean()
+     * user 성별 한글로 표현
+     *
+     * @return 성별에 대한 한글단어값(male = 남성, female = 여성)
+     */
     public String getGenderForKorean() {
         if (userGender.equals("male"))
             return "남성";

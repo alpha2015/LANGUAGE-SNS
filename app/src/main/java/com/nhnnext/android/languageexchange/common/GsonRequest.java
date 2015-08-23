@@ -16,6 +16,7 @@ import java.util.Map;
 
 /**
  * Created by Alpha on 2015. 8. 21..
+ * Class GsonRequest<T> : customizing GsonRequest for user list
  */
 public class GsonRequest<T> extends Request<T> {
     private final Gson gson = new Gson();
@@ -26,11 +27,13 @@ public class GsonRequest<T> extends Request<T> {
     private Map<String, String> params;
 
     /**
-     * Make a GET request and return a parsed object from JSON.
-     *
-     * @param url     URL of the request to make
-     * @param clazz   Relevant class object, for Gson's reflection
+     * GsonRequest(String url, Class<T> clazz, Map<String, String> headers, Response.Listener<T> listener, Response.ErrorListener errorListener)
+     * Initialize context variables
+     * @param url URL of the request to make
+     * @param clazz Relevant class object, for Gson's reflection
      * @param headers Map of request headers
+     * @param listener Response listener
+     * @param errorListener error listener
      */
     public GsonRequest(String url, Class<T> clazz, Map<String, String> headers,
                        Response.Listener<T> listener, Response.ErrorListener errorListener) {
@@ -41,6 +44,15 @@ public class GsonRequest<T> extends Request<T> {
         this.listener = listener;
     }
 
+    /**
+     * GsonRequest(String url, Type type, Map<String, String> headers, Response.Listener<T> listener, Response.ErrorListener errorListener)
+     * Initialize context variables
+     * @param url URL of the request to make
+     * @param type Relevant type object, for Gson's reflection
+     * @param headers Map of request headers
+     * @param listener Response listener
+     * @param errorListener error listener
+     */
     public GsonRequest(String url, Type type, Map<String, String> headers,
                        Response.Listener<T> listener, Response.ErrorListener errorListener) {
         super(Method.POST, url, errorListener);
@@ -50,6 +62,12 @@ public class GsonRequest<T> extends Request<T> {
         this.listener = listener;
     }
 
+    /**
+     * Method getHeaders()
+     * http headers getter mothod
+     * @return http headers
+     * @throws AuthFailureError
+     */
     @Override
     public Map<String, String> getHeaders() throws AuthFailureError {
         return headers != null ? headers : super.getHeaders();
@@ -60,6 +78,12 @@ public class GsonRequest<T> extends Request<T> {
         listener.onResponse(response);
     }
 
+    /**
+     * Method parseNetworkResponse(NetworkResponse response)
+     * http response parser
+     * @param response http response
+     * @return gson object
+     */
     @SuppressWarnings("unchecked")
     @Override
     protected Response<T> parseNetworkResponse(NetworkResponse response) {
@@ -76,13 +100,6 @@ public class GsonRequest<T> extends Request<T> {
                         this.gson.fromJson(json, this.type),
                         HttpHeaderParser.parseCacheHeaders(response));
             }
-
-//            String json = new String(
-//                    response.data,
-//                    HttpHeaderParser.parseCharset(response.headers));
-//            return Response.success(
-//                    gson.fromJson(json, clazz),
-//                    HttpHeaderParser.parseCacheHeaders(response));
         } catch (UnsupportedEncodingException e) {
             return Response.error(new ParseError(e));
         } catch (JsonSyntaxException e) {
@@ -90,11 +107,21 @@ public class GsonRequest<T> extends Request<T> {
         }
     }
 
+    /**
+     * Method getParams()
+     * @return request params getter for user information
+     * @throws AuthFailureError
+     */
     @Override
     protected Map<String, String> getParams() throws AuthFailureError {
         return params;
     }
 
+    /**
+     * Method setParams(Map<String, String> params)
+     * request params setter for user information
+     * @param params
+     */
     public void setParams(Map<String, String> params) {
         this.params = params;
         if(this.params.get("userPassword") == null)

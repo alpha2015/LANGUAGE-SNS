@@ -16,10 +16,18 @@ import java.util.List;
 
 /**
  * Created by Alpha on 2015. 8. 6..
+ * Class NotiItemAdapter : push notification list adapter
  */
 public class NotiItemAdapter extends ArrayAdapter<MessageInfo> {
     private LayoutInflater mInflater;
 
+    /**
+     * NotiItemAdapter(Context context, int resource, List<MessageInfo> objects)
+     * Initialize context variables
+     * @param context Activity context
+     * @param resource notification item layout
+     * @param objects message info list
+     */
     public NotiItemAdapter(Context context, int resource, List<MessageInfo> objects) {
         super(context, resource, objects);
         mInflater = LayoutInflater.from(context);
@@ -55,5 +63,4 @@ public class NotiItemAdapter extends ArrayAdapter<MessageInfo> {
         TextView message;
         TextView time;
     }
-
 }

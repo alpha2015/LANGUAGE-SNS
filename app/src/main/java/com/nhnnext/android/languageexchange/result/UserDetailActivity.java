@@ -16,6 +16,7 @@ import com.parse.ParseQuery;
 
 /**
  * Created by Alpha on 2015. 8. 6..
+ * Class UserDetailActivity : 사용자 정보 상세보기 activity
  */
 public class UserDetailActivity extends Activity implements View.OnClickListener {
     private ImageView userImage;
@@ -56,6 +57,12 @@ public class UserDetailActivity extends Activity implements View.OnClickListener
 
     }
 
+    /**
+     * Method onClick()
+     * @param v : clicked view
+     * 이메일 보내기 버튼 클릭시) main send activity 호출
+     * 메세지 보내기 버튼 클릭시) 대상 유저에게 PUSH MESSAGE 보내기
+     */
     @Override
     public void onClick(View v) {
         int id = v.getId();

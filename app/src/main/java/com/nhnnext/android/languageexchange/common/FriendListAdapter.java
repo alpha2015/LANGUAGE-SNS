@@ -16,6 +16,7 @@ import java.util.ArrayList;
 
 /**
  * Created by Alpha on 2015. 8. 23..
+ * Class FriendListAdapter : searched user list adapter
  */
 public class FriendListAdapter extends BaseAdapter implements Filterable {
 
@@ -26,9 +27,10 @@ public class FriendListAdapter extends BaseAdapter implements Filterable {
     private ArrayList<User> filteredList;
 
     /**
+     * FriendListAdapter(MatchingActivity activity, ArrayList<User> friendList)
      * Initialize context variables
-     * @param activity friend list activity
-     * @param friendList friend list
+     * @param activity MatchingActivity
+     * @param friendList user list
      */
     public FriendListAdapter(MatchingActivity activity, ArrayList<User> friendList) {
         this.activity = activity;
@@ -40,6 +42,7 @@ public class FriendListAdapter extends BaseAdapter implements Filterable {
     }
 
     /**
+     * Method getCount()
      * Get size of user list
      * @return userList size
      */
@@ -49,6 +52,7 @@ public class FriendListAdapter extends BaseAdapter implements Filterable {
     }
 
     /**
+     * Method getItem(int i)
      * Get specific item from user list
      * @param i item index
      * @return list item
@@ -59,6 +63,7 @@ public class FriendListAdapter extends BaseAdapter implements Filterable {
     }
 
     /**
+     * Method getItemId(int i)
      * Get user list item id
      * @param i item index
      * @return current item id
@@ -69,6 +74,7 @@ public class FriendListAdapter extends BaseAdapter implements Filterable {
     }
 
     /**
+     * Method getView(int position, View view, ViewGroup parent)
      * Create list row view
      * @param position index
      * @param view current list item view
@@ -104,7 +110,6 @@ public class FriendListAdapter extends BaseAdapter implements Filterable {
         }
 
         // bind text with view holder content view for efficient use
-//        holder.iconText.setText("#");
         holder.image.setImageResource(R.drawable.square_profile_default);
         holder.email.setText(user.getUserEmail());
         holder.name.setText(user.getUserName());
@@ -114,6 +119,7 @@ public class FriendListAdapter extends BaseAdapter implements Filterable {
     }
 
     /**
+     * Method getFilter()
      * Get custom filter
      * @return filter
      */
@@ -122,20 +128,20 @@ public class FriendListAdapter extends BaseAdapter implements Filterable {
         if (friendFilter == null) {
             friendFilter = new FriendFilter();
         }
-
         return friendFilter;
     }
 
     /**
+     * Class ViewHolder : searched user data
      * Keep reference to children view to avoid unnecessary calls
      */
-    static class ViewHolder {
-//        TextView iconText;
+    private static class ViewHolder {
         ImageView image;
         TextView email;
         TextView name;
     }
 
+    //TODO 제거
     /**
      * Custom filter for friend list
      * Filter content in friend list according to the search text

@@ -15,6 +15,7 @@ import java.util.List;
 
 /**
  * Created by Alpha on 2015. 8. 6..
+ * Class UserItemAdapter : matched user item list adapter
  */
 public class UserItemAdapter extends ArrayAdapter<User> {
     private LayoutInflater mInflater;

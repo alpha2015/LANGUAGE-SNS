@@ -6,7 +6,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 
 /**
- * Created by Alpha on 15. 8. 22..
+ * Created by Alpha on 2015. 8. 22..
+ * Class MySqliteOpenHelper : customizing db open helper
  */
 public class MySqliteOpenHelper extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 2;
@@ -35,10 +36,15 @@ public class MySqliteOpenHelper extends SQLiteOpenHelper {
                     KEY_OAUTH + " TEXT, " +
                     KEY_INTRO + " TEXT);";
 
-    public MySqliteOpenHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
-        super(context, name, factory, version);
-    }
+//    public MySqliteOpenHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
+//        super(context, name, factory, version);
+//    }
 
+    /**
+     * MySqliteOpenHelper(Context context)
+     * Initialize context variables
+     * @param context Activity context
+     */
     public MySqliteOpenHelper(Context context) {
         super(context, USER_TABLE_NAME, null, DATABASE_VERSION);
     }
@@ -49,12 +55,26 @@ public class MySqliteOpenHelper extends SQLiteOpenHelper {
 
     }
 
+    /**
+     * Method onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
+     * database upgrade
+     * @param db database
+     * @param oldVersion pre version
+     * @param newVersion post version
+     */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // db.execSQL(SQL_DELETE_TABLE);
         // onCreate(db);
     }
 
+    /**
+     * Method onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion)
+     * database downgrade
+     * @param db database
+     * @param oldVersion pre version
+     * @param newVersion post version
+     */
     @Override
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // onUpgrade(db, oldVersion, newVersion);

@@ -26,7 +26,7 @@ import java.util.List;
 
 /**
  * Created by Alpha on 2015. 7. 22..
- * matched(native, practicing language) user's info page depends on update time
+ * Class Fragment_TimeLine : user's timeline page depends on update time
  */
 public class Fragment_TimeLine extends Fragment {
     private RecyclerView mRecyclerView;
@@ -38,16 +38,12 @@ public class Fragment_TimeLine extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_timeline, container, false);
-
         mRecyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
-
         // RecyclerView 사이즈 고정
         mRecyclerView.setHasFixedSize(true);
-
         // use a linear layout manager
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
-
         // user list adapter 등록
         new Thread(new Runnable() {
             @Override
@@ -66,6 +62,11 @@ public class Fragment_TimeLine extends Fragment {
         return view;
     }
 
+    /**
+     * Method loadTimelineListFromNetwork()
+     * 가장 최근 업데이트된 사용자 리스트 server로 부터 읽어오기(최대 20개)
+     * @return user list
+     */
     private ArrayList<User> loadTimelineListFromNetwork() {
         HttpURLConnection connection = null;
         String result = null;

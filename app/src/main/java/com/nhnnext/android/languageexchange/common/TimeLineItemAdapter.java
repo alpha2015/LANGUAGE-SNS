@@ -15,6 +15,7 @@ import java.util.List;
 
 /**
  * Created by Alpha on 2015. 8. 14..
+ * Class TimeLineItemAdapter : timeline item list adapter
  */
 public class TimeLineItemAdapter extends RecyclerView.Adapter<TimeLineItemAdapter.ViewHolder> {
     private List<User> users;
@@ -37,7 +38,11 @@ public class TimeLineItemAdapter extends RecyclerView.Adapter<TimeLineItemAdapte
         }
     }
 
-    // Card adapter constructor (dataset is matched user info)
+    /**
+     * TimeLineItemAdapter(ArrayList<User> users)
+     * Initialize user list
+     * @param users timeline user list
+     */
     public TimeLineItemAdapter(ArrayList<User> users) {
         this.users = users;
     }
