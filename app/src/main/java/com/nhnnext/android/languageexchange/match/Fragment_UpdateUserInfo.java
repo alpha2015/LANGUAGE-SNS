@@ -30,6 +30,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.login.LoginManager;
 import com.nhnnext.android.languageexchange.Model.UserParcelable;
 import com.nhnnext.android.languageexchange.R;
 import com.nhnnext.android.languageexchange.common.MySqliteOpenHelper;
@@ -166,6 +167,7 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
                 mDbHelper = new MySqliteOpenHelper(mContext);
 
                 deleteUserFromDb();
+                LoginManager.getInstance().logOut();
 
                 getActivity().finish();
 

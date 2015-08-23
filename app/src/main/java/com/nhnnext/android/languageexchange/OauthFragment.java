@@ -13,7 +13,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
@@ -28,6 +36,7 @@ import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.nhnnext.android.languageexchange.Model.User;
 import com.nhnnext.android.languageexchange.Model.UserParcelable;
+import com.nhnnext.android.languageexchange.common.GsonRequest;
 import com.nhnnext.android.languageexchange.common.MySqliteOpenHelper;
 
 import org.json.JSONException;
@@ -35,6 +44,8 @@ import org.json.JSONObject;
 
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Alpha on 2015. 8. 10..
@@ -48,8 +59,12 @@ public class OauthFragment extends Fragment {
     private LoginButton loginButton;
     private CallbackManager callbackManager;
     private ProfileTracker profileTracker;
-    AccessTokenTracker accessTokenTracker;
-    AccessToken accessToken;
+    private AccessTokenTracker accessTokenTracker;
+    private AccessToken accessToken;
+    private User user;
+
+    private RequestQueue queue;
+    private GsonRequest<User> loginRequest;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -57,6 +72,7 @@ public class OauthFragment extends Fragment {
         FacebookSdk.sdkInitialize(getActivity().getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
 
+        queue = Volley.newRequestQueue(getActivity());
         mContext = getActivity();
         mDbHelper = new MySqliteOpenHelper(mContext);
 
@@ -102,7 +118,7 @@ public class OauthFragment extends Fragment {
                                 JSONObject jsonObject = response.getJSONObject();
 
                                 //if) 등록되지 않은 사용자라면 서버 DB로 저장하며 가입시킨다.
-                                User user = new User();
+                                user = new User();
                                 try {
                                     //TODO oauth user id 필요한지 검토
                                     jsonObject.getInt("id");
@@ -120,20 +136,86 @@ public class OauthFragment extends Fragment {
                                     int age = Calendar.getInstance().get(Calendar.YEAR) - Integer.parseInt(birthday[2]) + 1;
                                     user.setUserAge(age);
                                     user.setoAuth("facebook");
-                                    deleteUserFromDb();
-                                    saveUserIntoDb(user);
+
+                                    /*
+                                        서버에 로그인 요청
+                                     */
+                                    String loginUrl = "http://10.0.3.2:8080/user/login";
+                                    loginRequest = new GsonRequest<>(loginUrl, User.class, null,
+                                            new Response.Listener<User>() {
+                                                @Override
+                                                public void onResponse(User user) {
+                                                    deleteUserFromDb();
+                                                    saveUserIntoDb(user);
+                                                    Intent intent = new Intent();
+                                                    intent.setAction("com.nhnnext.android.action.MATCH");
+                                                    UserParcelable parcelUser = new UserParcelable(user);
+                                                    intent.putExtra("user", parcelUser);
+                                                    startActivity(intent);
+                                                }
+                                            }, new Response.ErrorListener() {
+                                        @Override
+                                        public void onErrorResponse(VolleyError volleyError) {
+                                            /*
+                                               서버에 회원가입 요청
+                                             */
+                                            String url = "http://10.0.3.2:8080/user";
+                                            StringRequest myReq = new StringRequest(Request.Method.POST, url,
+                                                    new Response.Listener<String>() {
+                                                        /*
+                                                            회원가입 성공
+                                                         */
+                                                        @Override
+                                                        public void onResponse(String response) {
+                                                            // Display the first 500 characters of the response string.
+                                                            if (response.equals("success")) {
+//                                                        progressDialog.dismiss();   //progressDialog dismiss
+                                                                deleteUserFromDb();
+                                                                saveUserIntoDb(user);
+                                                                Intent intent = new Intent();
+                                                                intent.setAction("com.nhnnext.android.action.MATCH");
+                                                                UserParcelable parcelUser = new UserParcelable(user);
+                                                                intent.putExtra("user", parcelUser);
+                                                                startActivity(intent);
+                                                            }
+                                                        }
+                                                    }, new Response.ErrorListener() {
+                                                /*
+                                                    회원가입 실패
+                                                 */
+                                                @Override
+                                                public void onErrorResponse(VolleyError error) {
+//                                            progressDialog.dismiss();
+                                                    // 가입 실패 Toast로 표시
+                                                    Toast.makeText(getActivity().getApplicationContext(), "가입 실패!", Toast.LENGTH_SHORT).show();
+                                                }
+                                            }) {
+                                                @Override
+                                                protected Map<String, String> getParams() throws AuthFailureError {
+                                                    Map<String, String> params = new HashMap<>();
+                                                    params.put("userEmail", user.getUserEmail());
+                                                    params.put("userName", user.getUserName());
+                                                    params.put("userPassword", "");
+                                                    params.put("userGender", user.getUserGender());
+                                                    params.put("userAge", "" + user.getUserAge());
+                                                    params.put("oAuth", user.getOAuth());
+                                                    return params;
+                                                }
+                                            };
+                                            queue.add(myReq);
+                                        }
+                                    });
+
+                                    Map<String, String> params = new HashMap<String, String>();
+                                    params.put("userEmail", user.getUserEmail());
+                                    params.put("userPassword", user.getUserPassword());
+                                    params.put("oAuth", user.getOAuth());
+                                    loginRequest.setParams(params);
+                                    queue.add(loginRequest);
+
                                 } catch (JSONException e) {
                                     Log.d("oauth", "error : bring jsonObject from facebook");
                                 }
-                                user.setoAuth("facebook");
-
-                                Log.d("oauth", "user : " + user);
-
-                                Intent intent = new Intent();
-                                intent.setAction("com.nhnnext.android.action.MATCH");
-                                UserParcelable parcelUser = new UserParcelable(user);
-                                intent.putExtra("user", parcelUser);
-                                startActivity(intent);
                             }
                         }
                 ).executeAsync();

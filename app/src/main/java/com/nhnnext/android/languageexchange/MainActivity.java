@@ -13,6 +13,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -67,6 +68,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                     @Override
                     public void onResponse(User user) {
                         progressDialog.dismiss();
+                        deleteUserFromDb();
                         saveUserIntoDb(user);
                         Intent intent = new Intent();
                         intent.setAction("com.nhnnext.android.action.MATCH");
@@ -114,10 +116,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         super.onStart();
         //TODO 앱내 DB에 회원정보 가져오기
         //TODO if 회원정보 존재하지 않을 경우) 자동 로그인 수행 하지 않음
-
         //TODO else 회원정보 존재할 경우) 자동로그인 시도시 서버 api를 통해 로그인 시도 및 성공/실패 여부 반환 요청 AsyncTask 실행
-        user = new User("test@naver.com", "최성원", "1234", 29, "male"); //test dummy data
-        emailEditText.setText(user.getUserEmail());
+//        emailEditText.setText(user.getUserEmail());
 //        new LoginAsyncTask().execute("target url", user);
     }
 
@@ -130,10 +130,10 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     @Override
     protected void onResume() {
         super.onResume();
-//        deleteUserFromDb();
-        User user = readUserFromDb();
+        user = readUserFromDb();
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         if (user != null) {
+            Log.d("dbuser2", "" + user);
             if (user.getOAuth() == null || (accessToken != null && !accessToken.isExpired())) {
                 //progressBar 표시
                 progressDialog = new ProgressDialog(MainActivity.this);
@@ -204,8 +204,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                  */
                 Intent intent = new Intent();
                 intent.setAction("com.nhnnext.android.action.SIGNUP");
-                UserParcelable parcelUser = new UserParcelable(user);
-                intent.putExtra("user", parcelUser);
                 startActivity(intent);
                 break;
             }
@@ -251,7 +249,9 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         // AddView into the TableLayout using return value
 
         User user = null;
+        int count = 0;
         while (cursor.moveToNext()) {
+            count++;
             user = new User();
             user.setUserEmail(cursor.getString(0));
             user.setUserName(cursor.getString(1));
@@ -259,6 +259,9 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             user.setUserAge(cursor.getInt(3));
             user.setUserGender(cursor.getString(4));
             user.setoAuth(cursor.getString(5));
+            Log.d("dbuser1", "" + user);
+            Log.d("dbuser1", "" + count);
+
         }
         cursor.close();
 
