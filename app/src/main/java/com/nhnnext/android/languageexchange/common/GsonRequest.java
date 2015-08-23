@@ -10,6 +10,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,6 +20,7 @@ import java.util.Map;
 public class GsonRequest<T> extends Request<T> {
     private final Gson gson = new Gson();
     private final Class<T> clazz;
+    private final Type type;
     private final Map<String, String> headers;
     private final Response.Listener<T> listener;
     private Map<String, String> params;
@@ -34,6 +36,16 @@ public class GsonRequest<T> extends Request<T> {
                        Response.Listener<T> listener, Response.ErrorListener errorListener) {
         super(Method.POST, url, errorListener);
         this.clazz = clazz;
+        this.type = null;
+        this.headers = headers;
+        this.listener = listener;
+    }
+
+    public GsonRequest(String url, Type type, Map<String, String> headers,
+                       Response.Listener<T> listener, Response.ErrorListener errorListener) {
+        super(Method.POST, url, errorListener);
+        this.clazz = null;
+        this.type = type;
         this.headers = headers;
         this.listener = listener;
     }
@@ -48,15 +60,29 @@ public class GsonRequest<T> extends Request<T> {
         listener.onResponse(response);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     protected Response<T> parseNetworkResponse(NetworkResponse response) {
         try {
             String json = new String(
                     response.data,
                     HttpHeaderParser.parseCharset(response.headers));
-            return Response.success(
-                    gson.fromJson(json, clazz),
-                    HttpHeaderParser.parseCacheHeaders(response));
+            if (this.clazz != null) {
+                return Response.success(
+                        gson.fromJson(json, clazz),
+                        HttpHeaderParser.parseCacheHeaders(response));
+            } else {
+                return (Response<T>) Response.success(
+                        this.gson.fromJson(json, this.type),
+                        HttpHeaderParser.parseCacheHeaders(response));
+            }
+
+//            String json = new String(
+//                    response.data,
+//                    HttpHeaderParser.parseCharset(response.headers));
+//            return Response.success(
+//                    gson.fromJson(json, clazz),
+//                    HttpHeaderParser.parseCacheHeaders(response));
         } catch (UnsupportedEncodingException e) {
             return Response.error(new ParseError(e));
         } catch (JsonSyntaxException e) {

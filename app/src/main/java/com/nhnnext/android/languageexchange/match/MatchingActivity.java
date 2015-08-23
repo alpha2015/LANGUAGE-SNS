@@ -1,5 +1,7 @@
 package com.nhnnext.android.languageexchange.match;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -12,26 +14,42 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.Volley;
+import com.google.gson.reflect.TypeToken;
 import com.nhnnext.android.languageexchange.Model.MessageInfo;
+import com.nhnnext.android.languageexchange.Model.User;
 import com.nhnnext.android.languageexchange.Model.UserParcelable;
 import com.nhnnext.android.languageexchange.R;
+import com.nhnnext.android.languageexchange.common.FriendListAdapter;
+import com.nhnnext.android.languageexchange.common.GsonRequest;
 import com.nhnnext.android.languageexchange.common.NotiItemAdapter;
 import com.parse.ParseInstallation;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Alpha on 2015. 7. 22..
@@ -42,6 +60,10 @@ public class MatchingActivity extends AppCompatActivity {
     private ListView mRightDrawerList;
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
+    private ListView friendListView;
+    private FriendListAdapter friendListAdapter;
+    private RequestQueue queue;
+    private GsonRequest<ArrayList<User>> searchRequest;
 
     /**
      * The pager widget, which handles animation and allows swiping horizontally to access previous
@@ -62,6 +84,9 @@ public class MatchingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_match);
+
+        queue = Volley.newRequestQueue(this);
+        friendListView = (ListView) findViewById(R.id.list_view1);
 
         messageList = new ArrayList<>(); //메시지리스트 저장을 위한 ArrayList
         messageList.add(new MessageInfo(BitmapFactory.decodeResource(getResources(), R.drawable.sample_image_1), "name1", "hello? my name is name1", new Date()));
@@ -175,7 +200,15 @@ public class MatchingActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.matching_activity_actions, menu);
         MenuItem searchItem = menu.findItem(R.id.action_search);
-        MenuItem friendListItem = menu.findItem(R.id.action_friends_list);
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setQueryHint("Search user");
+        searchView.setOnQueryTextListener(queryTextListener);
+        final MenuItem friendListItem = menu.findItem(R.id.action_friends_list);
+
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setSubmitButtonEnabled(true);
+
 
         // When using the support library, the setOnActionExpandListener() method is
         // static and accepts the MenuItem object as an argument
@@ -184,6 +217,7 @@ public class MatchingActivity extends AppCompatActivity {
             public boolean onMenuItemActionCollapse(MenuItem item) {
                 // Do something when collapsed
                 getMenu().findItem(R.id.action_friends_list).setVisible(true);
+                friendListView.setAdapter(null);
                 return true;  // Return true to collapse action view
             }
 
@@ -281,4 +315,45 @@ public class MatchingActivity extends AppCompatActivity {
         // Handle your other action bar items...
         return super.onOptionsItemSelected(item);
     }
+
+    private SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
+        @SuppressWarnings("unchecked")
+        @Override
+        public boolean onQueryTextSubmit(final String query) {
+            Type collectionType = new TypeToken<ArrayList<User>>(){}.getType();
+            String loginUrl = "http://10.0.3.2:8080/user/search";
+            searchRequest = new GsonRequest<ArrayList<User>>(loginUrl, collectionType, null,
+                    new Response.Listener<ArrayList<User>>() {
+                        @Override
+                        public void onResponse(ArrayList<User> users) {
+                            Log.d("searchresult", "" + users);
+                            friendListAdapter = new FriendListAdapter(MatchingActivity.this, users);
+                            friendListView.setAdapter(friendListAdapter);
+                            friendListView.setTextFilterEnabled(false);
+                            Toast.makeText(getApplicationContext(), "검색 성공", Toast.LENGTH_SHORT).show();
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError volleyError) {
+                    Toast.makeText(getApplicationContext(), "검색 실패", Toast.LENGTH_SHORT).show();
+                }
+            }) {
+                @Override
+                protected Map<String, String> getParams() throws AuthFailureError {
+                    HashMap<String, String> params = new HashMap<>();
+                    params.put("query", query);
+                    return params;
+                }
+            };
+            queue.add(searchRequest);
+            return false;
+        }
+
+        @Override
+        public boolean onQueryTextChange(String newText) {
+            if(newText.equals(""))
+                friendListView.setAdapter(null);
+            return false;
+        }
+    };
 }

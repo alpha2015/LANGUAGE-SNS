@@ -45,6 +45,7 @@
 
     <!-- contentDescription -->
     <string name="matched_user_image">Matched user image</string>
+    <string name="searched_user_image">Searched user image</string>
     <string name="profile_user_image">Profile user image</string>
     <string name="profile_image_delete_button">Profile image delete button</string>
     <string name="app_logo_icon">App logo icon</string>
