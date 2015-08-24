@@ -8,12 +8,15 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.util.Pair;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +24,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -28,22 +32,21 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.login.LoginManager;
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 import com.nhnnext.android.languageexchange.Model.UserParcelable;
 import com.nhnnext.android.languageexchange.R;
 import com.nhnnext.android.languageexchange.common.MySqliteOpenHelper;
-import com.nhnnext.android.languageexchange.common.NetworkUtil;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
+import org.apache.http.Header;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by Alpha on 2015. 7. 22..
@@ -56,6 +59,7 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
     private SQLiteDatabase db;
     private Context mContext;
 
+    private LinearLayout passwordLayout;
     private TextView viewEmail;
     private EditText editName;
     private EditText editPassword;
@@ -72,10 +76,12 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
     public static final int MEDIA_TYPE_VIDEO = 2;
 
     private UserParcelable user;
+    private Uri fileUri;
 
     /**
      * Method newInstance(UserParcelable user)
      * caller activity로부터 전달 받은 user 값 bundle로 저장
+     *
      * @param user 수정할 회원정보
      * @return Fragment_UpdateUserInfo instance
      */
@@ -118,6 +124,10 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
         imageView = (ImageView) view.findViewById(R.id.imageView01);
         imageCancelView = (ImageView) view.findViewById(R.id.imageView02);
         logoutButton = (ImageButton) view.findViewById(R.id.logout_btn);
+        passwordLayout = (LinearLayout) view.findViewById(R.id.update_password_layout);
+
+        if (user.getOauth() != null && user.getOauth().equals("facebook"))
+            passwordLayout.setVisibility(View.GONE);
 
         //각 회원정보에 대한 클릭, 저장 이벤트 등록
         editAge.setOnClickListener(this);
@@ -130,7 +140,7 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
         //DB에서 가져온 user data view에 설정
         viewEmail.setText(user.getEmail());
         editName.setText(user.getName());
-        editPassword.setText("********");
+        editPassword.setText(user.getPassword());
         editAge.setText(Integer.toString(user.getAge()));
         editGender.setText(user.getGenderForKorean());
         editIntro.setText(user.getIntro());
@@ -184,8 +194,12 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
                 break;
             case R.id.setting_save:
                 //TODO App, SERVER DB 저장 구현(Bitmap profileBitmap, user info)
+                if (profileBitmap == null)
+                    profileBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.square_profile_default);
+                user.setImage(profileBitmap);
                 user.setName(editName.getText().toString());
-                user.setPassword(editPassword.getText().toString());
+                if (user.getOauth() == null)
+                    user.setPassword(editPassword.getText().toString());
                 user.setAge(Integer.parseInt(editAge.getText().toString()));
                 if (editGender.getText().equals("남성"))
                     user.setGender("male");
@@ -193,71 +207,37 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
                     user.setGender("female");
                 user.setIntro(editIntro.getText().toString());
 
+                RequestParams params = new RequestParams();
+                ByteArrayOutputStream bos;
+                bos = new ByteArrayOutputStream();
+                user.getImage().compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
+                byte[] bitmapData = bos.toByteArray();
+                ByteArrayInputStream bs = new ByteArrayInputStream(bitmapData);
+                params.put("userImage", bs, user.getEmail() + ".png");
+                params.put("userEmail", user.getEmail());
+                params.put("userName", user.getName());
+                params.put("userPassword", user.getPassword());
+                params.put("userGender", user.getGender());
+                params.put("userAge", "" + user.getAge());
+                params.put("userIntro", user.getIntro());
+                params.put("oAuth", user.getOauth());
 
-                /*
-                    서버에 회원정보 수정 요청
-                 */
-                new Thread(new Runnable() {
-                    public void run() {
-                        URL url = null;       // URL 설정
-                        String result = null;
+                AsyncHttpClient client = new AsyncHttpClient();
+                client.post("http://10.0.3.2:8080/user/update", params, new AsyncHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                        String str = null;
                         try {
-                            url = new URL("http://10.0.3.2:8080/user/update");
-                            HttpURLConnection http = (HttpURLConnection) url.openConnection();
-                            http.setDefaultUseCaches(false);
-                            http.setDoInput(true);  // 읽기 모드 지정
-                            http.setDoOutput(true); // 쓰기 모드 지정
-                            http.setRequestMethod("POST");  // method POST
-                            //Form tag 방식으로 처리
-                            http.setRequestProperty("content-type", "application/x-www-form-urlencoded");
-
-                            List<Pair<String, String>> params = new ArrayList<>();
-                            params.add(new Pair<>("userEmail", user.getEmail()));
-                            params.add(new Pair<>("userName", user.getName()));
-                            params.add(new Pair<>("userPassword", user.getPassword()));
-                            params.add(new Pair<>("userGender", user.getGender()));
-                            params.add(new Pair<>("userAge", "" + user.getAge()));
-                            params.add(new Pair<>("userIntro", user.getIntro()));
-
-                            OutputStreamWriter outStream = new OutputStreamWriter(http.getOutputStream(), "UTF-8");
-                            PrintWriter writer = new PrintWriter(outStream);
-                            writer.write(NetworkUtil.getQuery(params));
-                            writer.flush();
-                            InputStreamReader tmp = new InputStreamReader(http.getInputStream(), "EUC-KR");
-                            BufferedReader reader = new BufferedReader(tmp);
-                            StringBuilder builder = new StringBuilder();
-                            String str;
-                            while ((str = reader.readLine()) != null) {       // 서버에서 라인단위로 보내줄 것이므로 라인단위로 읽는다
-                                builder.append(str + "\n");
-                            }
-                            result = builder.toString();
-
-                            /*
-                               업데이트 실패
-                             */
-                            //TODO 실패사유 Toast로 표시
-
-                            /*
-                                업데이트 성공
-                             */
-                            //TODO 추후 자동로그인을 위해 App DB에 회원정보 UPDATE
-                            if (result.equals("success\n")) {
-                                getActivity().runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Toast.makeText(getActivity().getApplicationContext(), "저장 완료!", Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-                            }
-                        } catch (MalformedURLException e) {
-                            e.printStackTrace();
-                        } catch (ProtocolException e) {
-                            e.printStackTrace();
-                        } catch (IOException e) {
+                            str = new String(responseBody, "UTF-8");
+                        } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();
                         }
                     }
-                }).start();
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                        Log.d("UPDATE", "Http Post Fail");
+                    }
+                });
 
 
                 break;
@@ -265,7 +245,6 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
     }
 
     //TODO Fragment 스터디후 반드시 수정(리팩토링)
-
     /**
      * Class AgePickerDialog
      * 나이 수정을 위한 DialogFragment
@@ -441,48 +420,48 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
         }
     }
 
-//    /**
-//     * Create a file Uri for saving an image or video
-//     */
-//    private static Uri getOutputMediaFileUri(int type) {
-//        return Uri.fromFile(getOutputMediaFile(type));
-//    }
-//
-//    /**
-//     * Create a File for saving an image or video
-//     */
-//    private static File getOutputMediaFile(int type) {
-//        // To be safe, you should check that the SDCard is mounted
-//        // using Environment.getExternalStorageState() before doing this.
-//
-//        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
-//                Environment.DIRECTORY_PICTURES), "MyCameraApp");
-//        // This location works best if you want the created images to be shared
-//        // between applications and persist after your app has been uninstalled.
-//
-//        // Create the storage directory if it does not exist
-//        if (!mediaStorageDir.exists()) {
-//            if (!mediaStorageDir.mkdirs()) {
-//                Log.d("MyCameraApp", "failed to create directory");
-//                return null;
-//            }
-//        }
-//
-//        // Create a media file name
-//        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-//        File mediaFile;
-//        if (type == MEDIA_TYPE_IMAGE) {
-//            mediaFile = new File(mediaStorageDir.getPath() + File.separator +
-//                    "IMG_" + timeStamp + ".jpg");
-//        } else if (type == MEDIA_TYPE_VIDEO) {
-//            mediaFile = new File(mediaStorageDir.getPath() + File.separator +
-//                    "VID_" + timeStamp + ".mp4");
-//        } else {
-//            return null;
-//        }
-//
-//        return mediaFile;
-//    }
+    /**
+     * Create a file Uri for saving an image or video
+     */
+    private static Uri getOutputMediaFileUri(int type) {
+        return Uri.fromFile(getOutputMediaFile(type));
+    }
+
+    /**
+     * Create a File for saving an image or video
+     */
+    private static File getOutputMediaFile(int type) {
+        // To be safe, you should check that the SDCard is mounted
+        // using Environment.getExternalStorageState() before doing this.
+
+        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES), "MyCameraApp");
+        // This location works best if you want the created images to be shared
+        // between applications and persist after your app has been uninstalled.
+
+        // Create the storage directory if it does not exist
+        if (!mediaStorageDir.exists()) {
+            if (!mediaStorageDir.mkdirs()) {
+                Log.d("MyCameraApp", "failed to create directory");
+                return null;
+            }
+        }
+
+        // Create a media file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        File mediaFile;
+        if (type == MEDIA_TYPE_IMAGE) {
+            mediaFile = new File(mediaStorageDir.getAbsolutePath() + File.separator +
+                    "IMG_" + timeStamp + ".jpg");
+        } else if (type == MEDIA_TYPE_VIDEO) {
+            mediaFile = new File(mediaStorageDir.getAbsolutePath() + File.separator +
+                    "VID_" + timeStamp + ".mp4");
+        } else {
+            return null;
+        }
+
+        return mediaFile;
+    }
 
     /**
      * Method checkCameraHardware(Context context)

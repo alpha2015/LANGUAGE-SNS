@@ -128,6 +128,8 @@ public class MatchingActivity extends AppCompatActivity {
         // Fragment 초기화
         user = getIntent().getExtras().getParcelable("user");
 
+        Log.d("testtuser" , "" + user);
+
         // push notification email 등록 installation
         ParseInstallation installation = ParseInstallation.getCurrentInstallation();
         installation.put("email", user.getEmail());
