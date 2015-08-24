@@ -7,17 +7,15 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -77,7 +75,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             @Override
             public void onErrorResponse(VolleyError volleyError) {
                 progressDialog.dismiss();
-                Toast.makeText(getApplicationContext(), "로그인 실패!", Toast.LENGTH_SHORT).show();
+                deleteUserFromDb();
             }
         });
 
@@ -124,7 +122,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 progressDialog = new ProgressDialog(MainActivity.this);
                 progressDialog.setMessage("자동 로그인 중");
                 progressDialog.show();
-
+                Log.d("loginuser", "" + user);
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("userEmail", user.getUserEmail());
                 params.put("userPassword", user.getUserPassword());
@@ -138,9 +136,10 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
     /**
      * Method onClick()
+     *
      * @param v : clicked view
-     * 회원가입 버튼 클릭시) 회원가입 Activity 호출
-     * 로그인 버튼 클릭시) 서버 api를 통해 로그인 시도 및 성공/실패 여부 반환 요청
+     *          회원가입 버튼 클릭시) 회원가입 Activity 호출
+     *          로그인 버튼 클릭시) 서버 api를 통해 로그인 시도 및 성공/실패 여부 반환 요청
      */
     @Override
     public void onClick(View v) {
@@ -207,6 +206,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     /**
      * Method readUserFromDb()
      * db에서 user 정보 조회
+     *
      * @return User : user data from db
      */
     private User readUserFromDb() {
@@ -228,6 +228,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             user.setUserAge(cursor.getInt(3));
             user.setUserGender(cursor.getString(4));
             user.setoAuth(cursor.getString(5));
+            Log.d("loginuser2", "" + user);
         }
         cursor.close();
         db.close();
@@ -237,6 +238,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     /**
      * Method deleteUserFromDb()
      * db에서 user 정보 삭제
+     *
      * @return delete 성공 유무
      */
     private boolean deleteUserFromDb() {
@@ -251,6 +253,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     /**
      * Method saveUserIntoDb(User user)
      * db에 user 정보 저장
+     *
      * @param user
      */
     private void saveUserIntoDb(User user) {
@@ -264,6 +267,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         values.put(MySqliteOpenHelper.KEY_PASSWORD, user.getUserPassword());
         values.put(MySqliteOpenHelper.KEY_AGE, user.getUserAge());
         values.put(MySqliteOpenHelper.KEY_GENDER, user.getUserGender());
+        values.put(MySqliteOpenHelper.KEY_OAUTH, user.getOAuth());
 
         // Insert the new row, returning the primary key value of the new row
         long newRowId = db.insert(MySqliteOpenHelper.USER_TABLE_NAME, null, values);

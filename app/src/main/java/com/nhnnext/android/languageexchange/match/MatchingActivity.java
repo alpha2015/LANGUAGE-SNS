@@ -328,8 +328,8 @@ public class MatchingActivity extends AppCompatActivity {
         public boolean onQueryTextSubmit(final String query) {
             Type collectionType = new TypeToken<ArrayList<User>>() {
             }.getType();
-            String loginUrl = "http://10.0.3.2:8080/user/search";
-            searchRequest = new GsonRequest<ArrayList<User>>(loginUrl, collectionType, null,
+            String searchUrl = "http://10.0.3.2:8080/user/search";
+            searchRequest = new GsonRequest<ArrayList<User>>(searchUrl, collectionType, null,
                     new Response.Listener<ArrayList<User>>() {
                         @Override
                         public void onResponse(ArrayList<User> users) {

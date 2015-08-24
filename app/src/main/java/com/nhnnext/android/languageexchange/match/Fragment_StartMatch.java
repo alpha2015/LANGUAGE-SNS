@@ -8,6 +8,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -84,6 +85,10 @@ public class Fragment_StartMatch extends Fragment implements View.OnClickListene
         practicingBtn.setOnClickListener(this);
 
         user = getShownIndex();
+        if(user.getNativeLanguage() == null)
+            user.setNativeLanguage("Korean");
+        if(user.getPracticingLanguage() == null)
+            user.setPracticingLanguage("English");
 
         return view;
     }
@@ -148,7 +153,13 @@ public class Fragment_StartMatch extends Fragment implements View.OnClickListene
         int id = v.getId();
         switch (id) {
             case R.id.start_match_button:
-                new MatchAsyncTask().execute("target url");
+                Log.d("testtt", user.getNativeLanguage() + "  " + user.getPracticingLanguage());
+                Intent intent = new Intent();
+                intent.setAction("com.nhnnext.android.action.RESULT");
+                intent.putExtra("userNative", user.getNativeLanguage());
+                intent.putExtra("userPracticing", user.getPracticingLanguage());
+                startActivity(intent);
+//                new MatchAsyncTask().execute("target url");
                 break;
 
             //TODO ENUM으로 리팩토링!!!!!

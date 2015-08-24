@@ -137,6 +137,7 @@ public class OauthFragment extends Fragment {
                                                 public void onResponse(User user) {
                                                     deleteUserFromDb();
                                                     saveUserIntoDb(user);
+                                                    Log.d("loginuser1", "" + user);
                                                     Intent intent = new Intent();
                                                     intent.setAction("com.nhnnext.android.action.MATCH");
                                                     UserParcelable parcelUser = new UserParcelable(user);
@@ -161,6 +162,7 @@ public class OauthFragment extends Fragment {
                                                             if (response.equals("success")) {
 //                                                        progressDialog.dismiss();   //progressDialog dismiss
                                                                 deleteUserFromDb();
+                                                                Log.d("loginuser2", "" + user);
                                                                 saveUserIntoDb(user);
                                                                 Intent intent = new Intent();
                                                                 intent.setAction("com.nhnnext.android.action.MATCH");
