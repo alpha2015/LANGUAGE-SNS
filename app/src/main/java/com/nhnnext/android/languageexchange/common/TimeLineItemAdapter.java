@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.NetworkImageView;
 import com.nhnnext.android.languageexchange.Model.User;
 import com.nhnnext.android.languageexchange.R;
 
@@ -19,11 +21,12 @@ import java.util.List;
  */
 public class TimeLineItemAdapter extends RecyclerView.Adapter<TimeLineItemAdapter.ViewHolder> {
     private List<User> users;
+    private ImageLoader mImageLoader;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         //CartView item - User photo, name, update time, intro desc
         public View v;
-        public ImageView mPhoto;
+        public NetworkImageView mPhoto;
         public TextView mName;
         public TextView mTime;
         public TextView mInfo;
@@ -31,7 +34,7 @@ public class TimeLineItemAdapter extends RecyclerView.Adapter<TimeLineItemAdapte
         public ViewHolder(View v) {
             super(v);
             this.v = v;
-            this.mPhoto = (ImageView) v.findViewById(R.id.person_photo);
+            this.mPhoto = (NetworkImageView) v.findViewById(R.id.person_photo);
             this.mName = (TextView) v.findViewById(R.id.person_name);
             this.mTime = (TextView) v.findViewById(R.id.person_update_time);
             this.mInfo = (TextView) v.findViewById(R.id.person_info);
@@ -43,8 +46,9 @@ public class TimeLineItemAdapter extends RecyclerView.Adapter<TimeLineItemAdapte
      * Initialize user list
      * @param users timeline user list
      */
-    public TimeLineItemAdapter(ArrayList<User> users) {
+    public TimeLineItemAdapter(ArrayList<User> users, ImageLoader imageLoader) {
         this.users = users;
+        this.mImageLoader = imageLoader;
     }
 
     // Create new views (invoked by the layout manager)
@@ -61,7 +65,9 @@ public class TimeLineItemAdapter extends RecyclerView.Adapter<TimeLineItemAdapte
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         // user info setting
-        holder.mPhoto.setImageResource(R.drawable.sample_image_1);
+
+//        holder.mPhoto.setImageResource(R.drawable.sample_image_1);
+        holder.mPhoto.setImageUrl(users.get(position).getUserImage(), mImageLoader);
         holder.mTime.setText(users.get(position).getUserUpdateDate());
         holder.mName.setText(users.get(position).getUserName());
         holder.mInfo.setText(users.get(position).getUserIntro());

@@ -22,6 +22,7 @@ import com.nhnnext.android.languageexchange.Model.UserParcelable;
 import com.nhnnext.android.languageexchange.R;
 import com.nhnnext.android.languageexchange.common.FriendListAdapter;
 import com.nhnnext.android.languageexchange.common.GsonRequest;
+import com.nhnnext.android.languageexchange.common.UrlFactory;
 import com.nhnnext.android.languageexchange.common.UserItemAdapter;
 
 import java.lang.reflect.Type;
@@ -61,13 +62,12 @@ public class ShowResultActivity extends Activity {
         queue = Volley.newRequestQueue(this);
         Type collectionType = new TypeToken<ArrayList<User>>() {
         }.getType();
-        String matchUrl = "http://10.0.3.2:8080/user/match";
-        matchRequest = new GsonRequest<ArrayList<User>>(matchUrl, collectionType, null,
+        matchRequest = new GsonRequest<ArrayList<User>>(UrlFactory.MATCH, collectionType, null,
                 new Response.Listener<ArrayList<User>>() {
                     @Override
                     public void onResponse(ArrayList<User> users) {
-                        for(int i = 0; i< users.size();i++)
-                            users.get(0).setUserImage(BitmapFactory.decodeResource(getResources(), R.drawable.sample_image_1));
+//                        for(int i = 0; i< users.size();i++)
+//                            users.get(0).setUserImage(BitmapFactory.decodeResource(getResources(), R.drawable.sample_image_1));
                         userListGridView = (GridView) findViewById(R.id.gridview);
                         userListGridView.setAdapter(new UserItemAdapter(mContext, R.layout.user_list_item, users));
 

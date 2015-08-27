@@ -9,7 +9,7 @@ import android.graphics.Bitmap;
  * 소개 내용, 생성 시간, 수정 시간
  */
 public class User {
-    private Bitmap userImage;
+    private String userImage;
     private String userEmail;
     private String userName;
     private String userPassword;
@@ -36,7 +36,7 @@ public class User {
         this(null, userEmail, userName, userPassword, userAge, userGender, null, null, null, null, null, null);
     }
 
-    public User(Bitmap userImage, String userEmail, String userName, String userPassword, int userAge, String userGender, String userNative, String userPracticing, String oAuth, String userIntro, String userCreateDate, String userUpdateDate) {
+    public User(String userImage, String userEmail, String userName, String userPassword, int userAge, String userGender, String userNative, String userPracticing, String oAuth, String userIntro, String userCreateDate, String userUpdateDate) {
         this.userImage = userImage;
         this.userEmail = userEmail;
         this.userName = userName;
@@ -51,7 +51,11 @@ public class User {
         this.userUpdateDate = userUpdateDate;
     }
 
-    public Bitmap getUserImage() {
+    public User(UserParcelable user){
+        this(user.getImage(), user.getEmail(), user.getName(), user.getPassword(), user.getAge(), user.getGender(), user.getNativeLanguage(), user.getPracticingLanguage(), user.getOauth(), user.getIntro(), user.getUserCreateDate(), user.getUserUpdateDate());
+    }
+
+    public String getUserImage() {
         return userImage;
     }
 
@@ -114,7 +118,7 @@ public class User {
             return null;
     }
 
-    public void setUserImage(Bitmap userImage) {
+    public void setUserImage(String userImage) {
         this.userImage = userImage;
     }
 

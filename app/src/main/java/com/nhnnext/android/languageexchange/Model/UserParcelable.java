@@ -11,7 +11,7 @@ import android.os.Parcelable;
  * 소개 내용, 생성 시간, 수정 시간
  */
 public class UserParcelable implements Parcelable {
-    private Bitmap image;
+    private String image;
     private String email;
     private String name;
     private String password;
@@ -43,7 +43,7 @@ public class UserParcelable implements Parcelable {
         this.userUpdateDate = user.getUserUpdateDate();
     }
 
-    public UserParcelable(Bitmap image, String email, String name, String password, int age, String gender, String nativeLanguage, String practicingLanguage, String oauth, String intro, String userCreateDate, String userUpdateDate) {
+    public UserParcelable(String image, String email, String name, String password, int age, String gender, String nativeLanguage, String practicingLanguage, String oauth, String intro, String userCreateDate, String userUpdateDate) {
         this.image = image;
         this.email = email;
         this.name = name;
@@ -60,7 +60,7 @@ public class UserParcelable implements Parcelable {
     }
 
     public UserParcelable(Parcel source) {
-        image = (Bitmap) source.readValue(Bitmap.class.getClassLoader());
+        image = source.readString();
         email = source.readString();
         name = source.readString();
         password = source.readString();
@@ -81,7 +81,7 @@ public class UserParcelable implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(image);
+        dest.writeString(image);
         dest.writeString(email);
         dest.writeString(name);
         dest.writeString(password);
@@ -108,7 +108,7 @@ public class UserParcelable implements Parcelable {
         }
     };
 
-    public Bitmap getImage() {
+    public String getImage() {
         return image;
     }
 
@@ -171,7 +171,7 @@ public class UserParcelable implements Parcelable {
         return userUpdateDate;
     }
 
-    public void setImage(Bitmap image) {
+    public void setImage(String image) {
         this.image = image;
     }
 

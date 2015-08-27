@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -41,7 +43,9 @@ import com.nhnnext.android.languageexchange.Model.UserParcelable;
 import com.nhnnext.android.languageexchange.R;
 import com.nhnnext.android.languageexchange.common.FriendListAdapter;
 import com.nhnnext.android.languageexchange.common.GsonRequest;
+import com.nhnnext.android.languageexchange.common.MySingleton;
 import com.nhnnext.android.languageexchange.common.NotiItemAdapter;
+import com.nhnnext.android.languageexchange.common.UrlFactory;
 import com.parse.ParseInstallation;
 
 import java.lang.reflect.Type;
@@ -80,11 +84,13 @@ public class MatchingActivity extends AppCompatActivity {
     private UserParcelable user;
     private TabLayout tabLayout;
     private Menu menu;
+    private Context mContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_match);
+        mContext = this;
 
         queue = Volley.newRequestQueue(this);
         friendListView = (ListView) findViewById(R.id.list_view1);
@@ -128,7 +134,7 @@ public class MatchingActivity extends AppCompatActivity {
         // Fragment 초기화
         user = getIntent().getExtras().getParcelable("user");
 
-        Log.d("testtuser" , "" + user);
+        Log.d("testtuserkk" , "" + user);
 
         // push notification email 등록 installation
         ParseInstallation installation = ParseInstallation.getCurrentInstallation();
@@ -164,6 +170,8 @@ public class MatchingActivity extends AppCompatActivity {
         tabLayout.getTabAt(2).setCustomView(tab3);
 
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#4EC89C")));
+
 
     }
 
@@ -330,15 +338,15 @@ public class MatchingActivity extends AppCompatActivity {
         public boolean onQueryTextSubmit(final String query) {
             Type collectionType = new TypeToken<ArrayList<User>>() {
             }.getType();
-            String searchUrl = "http://10.0.3.2:8080/user/search";
-            searchRequest = new GsonRequest<ArrayList<User>>(searchUrl, collectionType, null,
+            searchRequest = new GsonRequest<ArrayList<User>>(UrlFactory.SEARCH_USERS, collectionType, null,
                     new Response.Listener<ArrayList<User>>() {
                         @Override
                         public void onResponse(ArrayList<User> users) {
                             Log.d("searchresult", "" + users);
-                            friendListAdapter = new FriendListAdapter(MatchingActivity.this, users);
+                            friendListAdapter = new FriendListAdapter(MatchingActivity.this, users, MySingleton.getInstance(mContext).getImageLoader());
                             friendListView.setAdapter(friendListAdapter);
                             friendListView.setTextFilterEnabled(false);
+                            friendListView.bringToFront();
 
                             friendListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                 public void onItemClick(AdapterView<?> parent, View v,

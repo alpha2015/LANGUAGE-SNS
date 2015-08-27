@@ -26,6 +26,7 @@ import com.nhnnext.android.languageexchange.Model.User;
 import com.nhnnext.android.languageexchange.Model.UserParcelable;
 import com.nhnnext.android.languageexchange.R;
 import com.nhnnext.android.languageexchange.common.MySqliteOpenHelper;
+import com.nhnnext.android.languageexchange.common.UrlFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -92,8 +93,7 @@ public class SignUpActivity extends FragmentActivity implements View.OnClickList
                 /*
                     서버에 회원가입 요청
                  */
-                String url = "http://10.0.3.2:8080/user";
-                StringRequest myReq = new StringRequest(Request.Method.POST, url,
+                StringRequest myReq = new StringRequest(Request.Method.POST, UrlFactory.SIGN_UP,
                         new Response.Listener<String>() {
                             /*
                                 회원가입 성공
@@ -132,7 +132,6 @@ public class SignUpActivity extends FragmentActivity implements View.OnClickList
                         params.put("userPassword", userForSignUp.getUserPassword());
                         params.put("userGender", userForSignUp.getUserGender());
                         params.put("userAge", "" + userForSignUp.getUserAge());
-                        params.put("oAuth", "");
                         return params;
                     }
                 };
@@ -162,11 +161,13 @@ public class SignUpActivity extends FragmentActivity implements View.OnClickList
 
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
+        values.put(MySqliteOpenHelper.KEY_IMAGE, user.getUserImage());
         values.put(MySqliteOpenHelper.KEY_EMAIL, user.getUserEmail());
         values.put(MySqliteOpenHelper.KEY_NAME, user.getUserName());
         values.put(MySqliteOpenHelper.KEY_PASSWORD, user.getUserPassword());
         values.put(MySqliteOpenHelper.KEY_AGE, user.getUserAge());
         values.put(MySqliteOpenHelper.KEY_GENDER, user.getUserGender());
+        values.put(MySqliteOpenHelper.KEY_OAUTH, user.getOAuth());
 
         // Insert the new row, returning the primary key value of the new row
         long newRowId = db.insert(MySqliteOpenHelper.USER_TABLE_NAME, null, values);

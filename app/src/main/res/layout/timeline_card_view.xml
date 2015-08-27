@@ -21,10 +21,17 @@
             android:background="#E0E0E0"
             android:padding="16dp">
 
-            <ImageView
+            <!--<ImageView-->
+                <!--android:id="@+id/person_photo"-->
+                <!--android:layout_width="50dp"-->
+                <!--android:layout_height="50dp" />-->
+            <com.android.volley.toolbox.NetworkImageView
                 android:id="@+id/person_photo"
                 android:layout_width="50dp"
-                android:layout_height="50dp" />
+                android:layout_height="50dp"
+                android:src="@drawable/square_profile_default"
+                android:scaleType="fitXY"
+                />
 
             <TextView
                 android:id="@+id/person_name"

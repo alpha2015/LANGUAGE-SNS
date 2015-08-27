@@ -26,6 +26,7 @@ import com.nhnnext.android.languageexchange.Model.User;
 import com.nhnnext.android.languageexchange.Model.UserParcelable;
 import com.nhnnext.android.languageexchange.common.GsonRequest;
 import com.nhnnext.android.languageexchange.common.MySqliteOpenHelper;
+import com.nhnnext.android.languageexchange.common.UrlFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -46,7 +47,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     private OauthFragment oauthFragment;
     private ProgressDialog progressDialog;
     private RequestQueue queue;
-    private String loginUrl = "http://10.0.3.2:8080/user/login";
     private GsonRequest<User> loginRequest;
 
 
@@ -58,7 +58,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         mContext = this;
         mDbHelper = new MySqliteOpenHelper(mContext);
 
-        loginRequest = new GsonRequest<>(loginUrl, User.class, null,
+        loginRequest = new GsonRequest<>(UrlFactory.LOGIN, User.class, null,
                 new Response.Listener<User>() {
                     @Override
                     public void onResponse(User user) {
@@ -117,6 +117,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         user = readUserFromDb();
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         if (user != null) {
+            Log.d("loginuser", "" + user);
             if (user.getOAuth() == null || (accessToken != null && !accessToken.isExpired())) {
                 //progressBar 표시
                 progressDialog = new ProgressDialog(MainActivity.this);
@@ -125,8 +126,11 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 Log.d("loginuser", "" + user);
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("userEmail", user.getUserEmail());
-                params.put("userPassword", user.getUserPassword());
-                params.put("oAuth", user.getOAuth());
+                if(user.getOAuth() != null){
+                    params.put("oAuth", user.getOAuth());
+                }else{
+                    params.put("userPassword", user.getUserPassword());
+                }
 
                 loginRequest.setParams(params);
                 queue.add(loginRequest);
@@ -159,8 +163,11 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("userEmail", user.getUserEmail());
-                params.put("userPassword", user.getUserPassword());
-                params.put("oAuth", user.getOAuth());
+                if(user.getOAuth() != null){
+                    params.put("oAuth", user.getOAuth());
+                }else{
+                    params.put("userPassword", user.getUserPassword());
+                }
 
                 loginRequest.setParams(params);
                 queue.add(loginRequest);
@@ -214,7 +221,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         db = mDbHelper.getReadableDatabase();
 
         String[] projection = {
-                "userEmail", "userName", "userPassword", "userAge", "userGender", "oAuth"
+                "userImage", "userEmail", "userName", "userPassword", "userAge", "userGender", "oAuth"
         };
         // Table, Column, WHERE, ARGUMENTS, GROUPING, HAVING, SORTING
         Cursor cursor = db.query(MySqliteOpenHelper.USER_TABLE_NAME, projection, null, null, null, null, null);
@@ -222,13 +229,20 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         User user = null;
         while (cursor.moveToNext()) {
             user = new User();
-            user.setUserEmail(cursor.getString(0));
-            user.setUserName(cursor.getString(1));
-            user.setUserPassword(cursor.getString(2));
-            user.setUserAge(cursor.getInt(3));
-            user.setUserGender(cursor.getString(4));
-            user.setoAuth(cursor.getString(5));
-            Log.d("loginuser2", "" + user);
+            if(cursor.getString(0) != null)
+                user.setUserImage(cursor.getString(0));
+            if(cursor.getString(1) != null)
+                user.setUserEmail(cursor.getString(1));
+            if(cursor.getString(2) != null)
+                user.setUserName(cursor.getString(2));
+            if(cursor.getString(3) != null)
+                user.setUserPassword(cursor.getString(3));
+            if(cursor.getString(4) != null)
+                user.setUserAge(cursor.getInt(4));
+            if(cursor.getString(5) != null)
+                user.setUserGender(cursor.getString(5));
+            if(cursor.getString(6) != null)
+                user.setoAuth(cursor.getString(6));
         }
         cursor.close();
         db.close();
@@ -262,6 +276,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
+        values.put(MySqliteOpenHelper.KEY_IMAGE, user.getUserImage());
         values.put(MySqliteOpenHelper.KEY_EMAIL, user.getUserEmail());
         values.put(MySqliteOpenHelper.KEY_NAME, user.getUserName());
         values.put(MySqliteOpenHelper.KEY_PASSWORD, user.getUserPassword());

@@ -41,7 +41,7 @@ public class UserItemAdapter extends ArrayAdapter<User> {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        holder.image.setImageBitmap(getItem(position).getUserImage());
+//        holder.image.setImageBitmap(getItem(position).getUserImage());
         holder.name.setText("" + getItem(position).getUserName());
         holder.gender.setText(getItem(position).getGenderForKorean());
         holder.age.setText(Integer.toString(getItem(position).getUserAge()));

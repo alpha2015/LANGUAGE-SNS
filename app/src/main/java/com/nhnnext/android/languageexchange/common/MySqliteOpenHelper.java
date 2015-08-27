@@ -25,7 +25,7 @@ public class MySqliteOpenHelper extends SQLiteOpenHelper {
 
     private final String USER_TABLE_CREATE =
             "CREATE TABLE " + USER_TABLE_NAME + " (" +
-                    KEY_IMAGE + " BLOB, " +
+                    KEY_IMAGE + " TEXT, " +
                     KEY_EMAIL + " TEXT, " +
                     KEY_NAME + " TEXT, " +
                     KEY_PASSWORD + " TEXT, " +

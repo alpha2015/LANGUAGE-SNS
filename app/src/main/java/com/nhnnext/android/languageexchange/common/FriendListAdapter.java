@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.NetworkImageView;
 import com.nhnnext.android.languageexchange.Model.User;
 import com.nhnnext.android.languageexchange.R;
 import com.nhnnext.android.languageexchange.match.MatchingActivity;
@@ -25,6 +27,7 @@ public class FriendListAdapter extends BaseAdapter implements Filterable {
     private Typeface typeface;
     private ArrayList<User> friendList;
     private ArrayList<User> filteredList;
+    private ImageLoader mImageLoader;
 
     /**
      * FriendListAdapter(MatchingActivity activity, ArrayList<User> friendList)
@@ -32,10 +35,11 @@ public class FriendListAdapter extends BaseAdapter implements Filterable {
      * @param activity MatchingActivity
      * @param friendList user list
      */
-    public FriendListAdapter(MatchingActivity activity, ArrayList<User> friendList) {
+    public FriendListAdapter(MatchingActivity activity, ArrayList<User> friendList, ImageLoader imageLoader) {
         this.activity = activity;
         this.friendList = friendList;
         this.filteredList = friendList;
+        this.mImageLoader = imageLoader;
 //        typeface = Typeface.createFromAsset(activity.getAssets(), "fonts/vegur_2.otf");
 
         getFilter();
@@ -89,14 +93,14 @@ public class FriendListAdapter extends BaseAdapter implements Filterable {
         final User user = (User) getItem(position);
 
         //TODO 이미지 수정후 제거
-        user.setUserImage(BitmapFactory.decodeResource(activity.getResources(), R.drawable.square_profile_default));
+//        user.setUserImage(BitmapFactory.decodeResource(activity.getResources(), R.drawable.square_profile_default));
 
         if (view == null) {
             LayoutInflater layoutInflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             view = layoutInflater.inflate(R.layout.search_list_item, parent, false);
             holder = new ViewHolder();
 
-            holder.image = (ImageView) view.findViewById(R.id.search_user_image);
+            holder.image = (NetworkImageView) view.findViewById(R.id.search_user_image);
             holder.email = (TextView) view.findViewById(R.id.search_user_email);
             holder.name = (TextView) view.findViewById(R.id.search_user_name);
 //            holder.iconText.setTypeface(typeface, Typeface.BOLD);
@@ -110,7 +114,8 @@ public class FriendListAdapter extends BaseAdapter implements Filterable {
         }
 
         // bind text with view holder content view for efficient use
-        holder.image.setImageResource(R.drawable.square_profile_default);
+//        holder.image.setImageResource(R.drawable.square_profile_default);
+        holder.image.setImageUrl(user.getUserImage(), mImageLoader);
         holder.email.setText(user.getUserEmail());
         holder.name.setText(user.getUserName());
 //        view.setBackgroundResource(R.drawable.friend_list_selector);
@@ -136,7 +141,7 @@ public class FriendListAdapter extends BaseAdapter implements Filterable {
      * Keep reference to children view to avoid unnecessary calls
      */
     private static class ViewHolder {
-        ImageView image;
+        NetworkImageView image;
         TextView email;
         TextView name;
     }

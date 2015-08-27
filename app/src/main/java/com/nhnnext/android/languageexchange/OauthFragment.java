@@ -3,6 +3,7 @@ package com.nhnnext.android.languageexchange;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -34,6 +35,7 @@ import com.nhnnext.android.languageexchange.Model.User;
 import com.nhnnext.android.languageexchange.Model.UserParcelable;
 import com.nhnnext.android.languageexchange.common.GsonRequest;
 import com.nhnnext.android.languageexchange.common.MySqliteOpenHelper;
+import com.nhnnext.android.languageexchange.common.UrlFactory;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -119,6 +121,7 @@ public class OauthFragment extends Fragment {
                                 try {
                                     //User 정보 저장
                                     //facebook 로그인의 경우 비밀번호가 필요없음
+                                    user.setUserImage(UrlFactory.DEFAULT_URL + "img/profile_facebook/default_profile_image.png");
                                     user.setUserEmail(jsonObject.getString("email"));
                                     user.setUserName(jsonObject.getString("name"));
                                     user.setUserGender(jsonObject.getString("gender"));
@@ -130,8 +133,7 @@ public class OauthFragment extends Fragment {
                                     /*
                                         서버에 로그인 요청
                                      */
-                                    String loginUrl = "http://10.0.3.2:8080/user/login";
-                                    loginRequest = new GsonRequest<>(loginUrl, User.class, null,
+                                    loginRequest = new GsonRequest<>(UrlFactory.LOGIN, User.class, null,
                                             new Response.Listener<User>() {
                                                 @Override
                                                 public void onResponse(User user) {
@@ -150,8 +152,7 @@ public class OauthFragment extends Fragment {
                                             /*
                                                서버에 회원가입 요청
                                              */
-                                            String url = "http://10.0.3.2:8080/user";
-                                            StringRequest myReq = new StringRequest(Request.Method.POST, url,
+                                            StringRequest myReq = new StringRequest(Request.Method.POST, UrlFactory.SIGN_UP,
                                                     new Response.Listener<String>() {
                                                         /*
                                                             회원가입 성공
@@ -162,11 +163,14 @@ public class OauthFragment extends Fragment {
                                                             if (response.equals("success")) {
 //                                                        progressDialog.dismiss();   //progressDialog dismiss
                                                                 deleteUserFromDb();
-                                                                Log.d("loginuser2", "" + user);
                                                                 saveUserIntoDb(user);
+                                                                Log.d("testtt1", "" + readUserFromDb());
+
                                                                 Intent intent = new Intent();
                                                                 intent.setAction("com.nhnnext.android.action.MATCH");
                                                                 UserParcelable parcelUser = new UserParcelable(user);
+                                                                Log.d("testtuser", "" + user);
+                                                                Log.d("testtparcel", "" + parcelUser);
                                                                 intent.putExtra("user", parcelUser);
                                                                 startActivity(intent);
                                                             }
@@ -187,7 +191,6 @@ public class OauthFragment extends Fragment {
                                                     Map<String, String> params = new HashMap<>();
                                                     params.put("userEmail", user.getUserEmail());
                                                     params.put("userName", user.getUserName());
-                                                    params.put("userPassword", "");
                                                     params.put("userGender", user.getUserGender());
                                                     params.put("userAge", "" + user.getUserAge());
                                                     params.put("oAuth", user.getOAuth());
@@ -200,7 +203,6 @@ public class OauthFragment extends Fragment {
 
                                     Map<String, String> params = new HashMap<String, String>();
                                     params.put("userEmail", user.getUserEmail());
-                                    params.put("userPassword", user.getUserPassword());
                                     params.put("oAuth", user.getOAuth());
                                     loginRequest.setParams(params);
                                     queue.add(loginRequest);
@@ -252,6 +254,7 @@ public class OauthFragment extends Fragment {
 
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
+        values.put(MySqliteOpenHelper.KEY_IMAGE, user.getUserImage());
         values.put(MySqliteOpenHelper.KEY_EMAIL, user.getUserEmail());
         values.put(MySqliteOpenHelper.KEY_NAME, user.getUserName());
         values.put(MySqliteOpenHelper.KEY_PASSWORD, user.getUserPassword());
@@ -276,5 +279,39 @@ public class OauthFragment extends Fragment {
             result = true;
         db.close();
         return result;
+    }
+
+    private User readUserFromDb() {
+        // Get the data repository in read mode
+        db = mDbHelper.getReadableDatabase();
+
+        String[] projection = {
+                "userImage", "userEmail", "userName", "userPassword", "userAge", "userGender", "oAuth"
+        };
+        // Table, Column, WHERE, ARGUMENTS, GROUPING, HAVING, SORTING
+        Cursor cursor = db.query(MySqliteOpenHelper.USER_TABLE_NAME, projection, null, null, null, null, null);
+
+        User user = null;
+        while (cursor.moveToNext()) {
+            user = new User();
+
+            if(cursor.getString(0) != null)
+                user.setUserImage(cursor.getString(0));
+            if(cursor.getString(1) != null)
+                user.setUserEmail(cursor.getString(1));
+            if(cursor.getString(2) != null)
+            user.setUserName(cursor.getString(2));
+            if(cursor.getString(3) != null)
+            user.setUserPassword(cursor.getString(3));
+            if(cursor.getString(4) != null)
+            user.setUserAge(cursor.getInt(4));
+            if(cursor.getString(5) != null)
+            user.setUserGender(cursor.getString(5));
+            if(cursor.getString(6) != null)
+            user.setoAuth(cursor.getString(6));
+        }
+        cursor.close();
+        db.close();
+        return user;
     }
 }

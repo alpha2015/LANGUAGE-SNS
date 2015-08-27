@@ -2,13 +2,16 @@ package com.nhnnext.android.languageexchange.match;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Network;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -31,13 +34,18 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.NetworkImageView;
 import com.facebook.login.LoginManager;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.nhnnext.android.languageexchange.Model.User;
 import com.nhnnext.android.languageexchange.Model.UserParcelable;
 import com.nhnnext.android.languageexchange.R;
+import com.nhnnext.android.languageexchange.common.MySingleton;
 import com.nhnnext.android.languageexchange.common.MySqliteOpenHelper;
+import com.nhnnext.android.languageexchange.common.UrlFactory;
 
 import org.apache.http.Header;
 
@@ -58,6 +66,8 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
     private MySqliteOpenHelper mDbHelper;
     private SQLiteDatabase db;
     private Context mContext;
+    private ImageLoader mImageLoader;
+    private NetworkImageView mNetworkImageView;
 
     private LinearLayout passwordLayout;
     private TextView viewEmail;
@@ -110,10 +120,15 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         //TODO DB에서 가져온 회원정보 보여주기
+
+        mContext = getActivity();
+        mDbHelper = new MySqliteOpenHelper(mContext);
         user = getShownIndex();
+        Log.d("updateafter", "" + readUserFromDb());
 
         //레이아웃 view
         View view = inflater.inflate(R.layout.fragment_update_userinfo, container, false);
+        mNetworkImageView = (NetworkImageView) view.findViewById(R.id.imageView01);
         viewEmail = (TextView) view.findViewById(R.id.setting_email);
         editName = (EditText) view.findViewById(R.id.setting_edit_name);
         editPassword = (EditText) view.findViewById(R.id.setting_edit_password);
@@ -121,10 +136,16 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
         editGender = (TextView) view.findViewById(R.id.setting_edit_gender);
         saveButton = (Button) view.findViewById(R.id.setting_save);
         editIntro = (TextView) view.findViewById(R.id.setting_edit_intro);
-        imageView = (ImageView) view.findViewById(R.id.imageView01);
+//        imageView = (ImageView) view.findViewById(R.id.imageView01);
         imageCancelView = (ImageView) view.findViewById(R.id.imageView02);
         logoutButton = (ImageButton) view.findViewById(R.id.logout_btn);
         passwordLayout = (LinearLayout) view.findViewById(R.id.update_password_layout);
+
+        mImageLoader = MySingleton.getInstance(mContext).getImageLoader();
+
+        mNetworkImageView.setImageUrl(user.getImage(), mImageLoader);
+
+        Log.d("testtt9", user.getImage());
 
         if (user.getOauth() != null && user.getOauth().equals("facebook"))
             passwordLayout.setVisibility(View.GONE);
@@ -133,7 +154,7 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
         editAge.setOnClickListener(this);
         editGender.setOnClickListener(this);
         saveButton.setOnClickListener(this);
-        imageView.setOnClickListener(this);
+        mNetworkImageView.setOnClickListener(this);
         imageCancelView.setOnClickListener(this);
         logoutButton.setOnClickListener(this);
 
@@ -144,6 +165,8 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
         editAge.setText(Integer.toString(user.getAge()));
         editGender.setText(user.getGenderForKorean());
         editIntro.setText(user.getIntro());
+//        if(user.getImage() == null)
+//            imageView.setImageResource(R.drawable.square_profile_default);
         return view;
     }
 
@@ -173,9 +196,6 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
                 break;
             case R.id.logout_btn:
                 //TODO DB지우기 , oauth면 oauth logout
-                mContext = getActivity();
-                mDbHelper = new MySqliteOpenHelper(mContext);
-
                 deleteUserFromDb();
                 LoginManager.getInstance().logOut();
 
@@ -183,7 +203,7 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
 
                 break;
             case R.id.imageView02:
-                imageView.setImageResource(R.drawable.square_profile_default);
+                mNetworkImageView.setImageResource(R.drawable.square_profile_default);
                 profileBitmap = null;
                 break;
             case R.id.setting_edit_age:
@@ -196,7 +216,7 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
                 //TODO App, SERVER DB 저장 구현(Bitmap profileBitmap, user info)
                 if (profileBitmap == null)
                     profileBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.square_profile_default);
-                user.setImage(profileBitmap);
+//                user.setImage(profileBitmap);
                 user.setName(editName.getText().toString());
                 if (user.getOauth() == null)
                     user.setPassword(editPassword.getText().toString());
@@ -210,7 +230,7 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
                 RequestParams params = new RequestParams();
                 ByteArrayOutputStream bos;
                 bos = new ByteArrayOutputStream();
-                user.getImage().compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
+                profileBitmap.compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
                 byte[] bitmapData = bos.toByteArray();
                 ByteArrayInputStream bs = new ByteArrayInputStream(bitmapData);
                 params.put("userImage", bs, user.getEmail() + ".png");
@@ -219,20 +239,24 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
                 params.put("userPassword", user.getPassword());
                 params.put("userGender", user.getGender());
                 params.put("userAge", "" + user.getAge());
-                params.put("userIntro", user.getIntro());
+                if(!user.getIntro().equals("")) params.put("userIntro", user.getIntro());
                 params.put("oAuth", user.getOauth());
 
                 AsyncHttpClient client = new AsyncHttpClient();
-                client.post("http://10.0.3.2:8080/user/update", params, new AsyncHttpResponseHandler() {
+                client.post(UrlFactory.UPDATE_USER, params, new AsyncHttpResponseHandler() {
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                        String str = null;
+                        Log.d("updateafter", "" + readUserFromDb());
                         try {
-                            str = new String(responseBody, "UTF-8");
+                            user.setImage(new String(responseBody, "UTF-8"));
+                            Log.d("testt0", user.getImage());
+                            saveUserIntoDb(new User(user));
+                            Log.d("testt7", "" + readUserFromDb());
                         } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();
                         }
                     }
+
                     @Override
                     public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
                         Log.d("UPDATE", "Http Post Fail");
@@ -245,6 +269,7 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
     }
 
     //TODO Fragment 스터디후 반드시 수정(리팩토링)
+
     /**
      * Class AgePickerDialog
      * 나이 수정을 위한 DialogFragment
@@ -411,8 +436,8 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
             if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE && !data.equals(null)) {
                 try {
                     profileBitmap = (Bitmap) data.getExtras().get("data");
-                    imageView.setImageBitmap(profileBitmap);
-                    imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+                    mNetworkImageView.setImageBitmap(profileBitmap);
+                    mNetworkImageView.setScaleType(ImageView.ScaleType.FIT_XY);
                 } catch (Exception e) {
                     return;
                 }
@@ -493,6 +518,59 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
             result = true;
         db.close();
         return result;
+    }
+
+    private void saveUserIntoDb(User user) {
+        // Get the data repository in write mode
+        db = mDbHelper.getWritableDatabase();
+
+        // Create a new map of values, where column names are the keys
+        ContentValues values = new ContentValues();
+        values.put(MySqliteOpenHelper.KEY_IMAGE, user.getUserImage());
+        values.put(MySqliteOpenHelper.KEY_EMAIL, user.getUserEmail());
+        values.put(MySqliteOpenHelper.KEY_NAME, user.getUserName());
+        values.put(MySqliteOpenHelper.KEY_PASSWORD, user.getUserPassword());
+        values.put(MySqliteOpenHelper.KEY_AGE, user.getUserAge());
+        values.put(MySqliteOpenHelper.KEY_GENDER, user.getUserGender());
+        values.put(MySqliteOpenHelper.KEY_OAUTH, user.getOAuth());
+
+        // Insert the new row, returning the primary key value of the new row
+        long newRowId = db.insert(MySqliteOpenHelper.USER_TABLE_NAME, null, values);
+        db.close();
+    }
+
+    private User readUserFromDb() {
+        // Get the data repository in read mode
+        db = mDbHelper.getReadableDatabase();
+
+        String[] projection = {
+                "userImage", "userEmail", "userName", "userPassword", "userAge", "userGender", "oAuth"
+        };
+        // Table, Column, WHERE, ARGUMENTS, GROUPING, HAVING, SORTING
+        Cursor cursor = db.query(MySqliteOpenHelper.USER_TABLE_NAME, projection, null, null, null, null, null);
+
+        User user = null;
+        while (cursor.moveToNext()) {
+            user = new User();
+
+            if(cursor.getString(0) != null)
+                user.setUserImage(cursor.getString(0));
+            if(cursor.getString(1) != null)
+                user.setUserEmail(cursor.getString(1));
+            if(cursor.getString(2) != null)
+                user.setUserName(cursor.getString(2));
+            if(cursor.getString(3) != null)
+                user.setUserPassword(cursor.getString(3));
+            if(cursor.getString(4) != null)
+                user.setUserAge(cursor.getInt(4));
+            if(cursor.getString(5) != null)
+                user.setUserGender(cursor.getString(5));
+            if(cursor.getString(6) != null)
+                user.setoAuth(cursor.getString(6));
+        }
+        cursor.close();
+        db.close();
+        return user;
     }
 }
 

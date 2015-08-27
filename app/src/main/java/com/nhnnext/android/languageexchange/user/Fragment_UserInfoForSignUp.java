@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.nhnnext.android.languageexchange.Model.User;
 import com.nhnnext.android.languageexchange.R;
+import com.nhnnext.android.languageexchange.common.UrlFactory;
 
 /**
  * Created by Alpha on 2015. 7. 23..
@@ -60,6 +61,7 @@ public class Fragment_UserInfoForSignUp extends Fragment {
         signUpStep = SignUpStep.EMAIL;
         //입력한 회원정보를 저장할 User instance
         userForSignUp = new User();
+        userForSignUp.setUserImage(UrlFactory.DEFAULT_URL + "img/profile/default_profile_image.png");
         //레이아웃 view
         emailLayout = (LinearLayout) view.findViewById(R.id.sign_up_email_layout);
         nameLayout = (LinearLayout) view.findViewById(R.id.sign_up_name_layout);
@@ -171,6 +173,7 @@ public class Fragment_UserInfoForSignUp extends Fragment {
     private void requestEnableSignUpBtn() {
         SignUpActivity signUpActivity = (SignUpActivity) getActivity();
         signUpActivity.enableSignUp(userForSignUp);
+        Log.d("signupuser", "" + userForSignUp);
     }
 
     /**

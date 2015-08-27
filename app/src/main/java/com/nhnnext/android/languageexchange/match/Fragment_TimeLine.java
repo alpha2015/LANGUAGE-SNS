@@ -14,7 +14,9 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.nhnnext.android.languageexchange.Model.User;
 import com.nhnnext.android.languageexchange.R;
+import com.nhnnext.android.languageexchange.common.MySingleton;
 import com.nhnnext.android.languageexchange.common.TimeLineItemAdapter;
+import com.nhnnext.android.languageexchange.common.UrlFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -53,7 +55,7 @@ public class Fragment_TimeLine extends Fragment {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        mAdapter = new TimeLineItemAdapter(users);
+                        mAdapter = new TimeLineItemAdapter(users, MySingleton.getInstance(getActivity()).getImageLoader());
                         mRecyclerView.setAdapter(mAdapter);
                     }
                 });
@@ -71,7 +73,7 @@ public class Fragment_TimeLine extends Fragment {
         HttpURLConnection connection = null;
         String result = null;
         try {
-            URL url = new URL("http://10.0.3.2:8080/user/timeline");
+            URL url = new URL(UrlFactory.TIMELINE);
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.connect();

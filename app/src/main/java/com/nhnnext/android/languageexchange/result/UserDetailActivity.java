@@ -50,7 +50,7 @@ public class UserDetailActivity extends Activity implements View.OnClickListener
             Activity가 불린 직후의 user값은 변하지 않으므로 onCreate에서 view data 설정
          */
         user = getIntent().getExtras().getParcelable("user");
-        userImage.setImageBitmap(user.getImage());
+//        userImage.setImageBitmap(user.getImage());
         userName.setText(user.getName());
         userGender.setText(user.getGenderForKorean());
         userAge.setText(Integer.toString(user.getAge()));

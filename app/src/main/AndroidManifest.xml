@@ -59,6 +59,7 @@
         <!-- mainActivity lunchMode singTask로 변경 로그아웃, 회원가입에서 로그인 돌아가기시 task 중복 해결 -->
         <activity
             android:name=".MainActivity"
+            android:icon="@drawable/ic_forum_black_36dp"
             android:allowTaskReparenting="false"
             android:alwaysRetainTaskState="false"
             android:clearTaskOnLaunch="false"
