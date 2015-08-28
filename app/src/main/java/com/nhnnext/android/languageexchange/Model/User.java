@@ -1,7 +1,5 @@
 package com.nhnnext.android.languageexchange.Model;
 
-import android.graphics.Bitmap;
-
 /**
  * Created by Alpha on 2015. 8. 3..
  * Class User : 사용자 정보에 대한 model
@@ -51,7 +49,7 @@ public class User {
         this.userUpdateDate = userUpdateDate;
     }
 
-    public User(UserParcelable user){
+    public User(UserParcelable user) {
         this(user.getImage(), user.getEmail(), user.getName(), user.getPassword(), user.getAge(), user.getGender(), user.getNativeLanguage(), user.getPracticingLanguage(), user.getOauth(), user.getIntro(), user.getUserCreateDate(), user.getUserUpdateDate());
     }
 

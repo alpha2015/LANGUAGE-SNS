@@ -3,7 +3,6 @@ package com.nhnnext.android.languageexchange.common;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.graphics.Bitmap;
 
 /**
  * Created by Alpha on 2015. 8. 22..
@@ -36,13 +35,14 @@ public class MySqliteOpenHelper extends SQLiteOpenHelper {
                     KEY_OAUTH + " TEXT, " +
                     KEY_INTRO + " TEXT);";
 
-//    public MySqliteOpenHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
-//        super(context, name, factory, version);
-//    }
+    public MySqliteOpenHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
+        super(context, name, factory, version);
+    }
 
     /**
      * MySqliteOpenHelper(Context context)
      * Initialize context variables
+     *
      * @param context Activity context
      */
     public MySqliteOpenHelper(Context context) {
@@ -58,7 +58,8 @@ public class MySqliteOpenHelper extends SQLiteOpenHelper {
     /**
      * Method onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
      * database upgrade
-     * @param db database
+     *
+     * @param db         database
      * @param oldVersion pre version
      * @param newVersion post version
      */
@@ -71,7 +72,8 @@ public class MySqliteOpenHelper extends SQLiteOpenHelper {
     /**
      * Method onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion)
      * database downgrade
-     * @param db database
+     *
+     * @param db         database
      * @param oldVersion pre version
      * @param newVersion post version
      */

@@ -43,6 +43,8 @@ public class MySingleton {
         if (mInstance == null) {
             mInstance = new MySingleton(context);
         }
+//        if(mCtx != context)
+        //TODO 캐시 문제 해결
         return mInstance;
     }
 

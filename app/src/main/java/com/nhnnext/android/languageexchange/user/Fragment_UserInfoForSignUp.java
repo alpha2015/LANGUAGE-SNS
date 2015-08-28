@@ -30,6 +30,7 @@ public class Fragment_UserInfoForSignUp extends Fragment {
     private enum SignUpStep {
         EMAIL, NAME, PASSWORD, AGE, GENDER
     }
+
     private LinearLayout emailLayout;
     private LinearLayout nameLayout;
     private LinearLayout passwordLayout;

@@ -1,12 +1,14 @@
 package com.nhnnext.android.languageexchange.common;
 
 import android.content.Context;
-import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.BaseAdapter;
+import android.widget.Filter;
+import android.widget.Filterable;
+import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
@@ -24,7 +26,6 @@ public class FriendListAdapter extends BaseAdapter implements Filterable {
 
     private MatchingActivity activity;
     private FriendFilter friendFilter;
-    private Typeface typeface;
     private ArrayList<User> friendList;
     private ArrayList<User> filteredList;
     private ImageLoader mImageLoader;
@@ -32,7 +33,8 @@ public class FriendListAdapter extends BaseAdapter implements Filterable {
     /**
      * FriendListAdapter(MatchingActivity activity, ArrayList<User> friendList)
      * Initialize context variables
-     * @param activity MatchingActivity
+     *
+     * @param activity   MatchingActivity
      * @param friendList user list
      */
     public FriendListAdapter(MatchingActivity activity, ArrayList<User> friendList, ImageLoader imageLoader) {
@@ -40,14 +42,13 @@ public class FriendListAdapter extends BaseAdapter implements Filterable {
         this.friendList = friendList;
         this.filteredList = friendList;
         this.mImageLoader = imageLoader;
-//        typeface = Typeface.createFromAsset(activity.getAssets(), "fonts/vegur_2.otf");
-
         getFilter();
     }
 
     /**
      * Method getCount()
      * Get size of user list
+     *
      * @return userList size
      */
     @Override
@@ -58,6 +59,7 @@ public class FriendListAdapter extends BaseAdapter implements Filterable {
     /**
      * Method getItem(int i)
      * Get specific item from user list
+     *
      * @param i item index
      * @return list item
      */
@@ -69,6 +71,7 @@ public class FriendListAdapter extends BaseAdapter implements Filterable {
     /**
      * Method getItemId(int i)
      * Get user list item id
+     *
      * @param i item index
      * @return current item id
      */
@@ -80,9 +83,10 @@ public class FriendListAdapter extends BaseAdapter implements Filterable {
     /**
      * Method getView(int position, View view, ViewGroup parent)
      * Create list row view
+     *
      * @param position index
-     * @param view current list item view
-     * @param parent parent
+     * @param view     current list item view
+     * @param parent   parent
      * @return view
      */
     @Override
@@ -92,9 +96,6 @@ public class FriendListAdapter extends BaseAdapter implements Filterable {
         final ViewHolder holder;
         final User user = (User) getItem(position);
 
-        //TODO 이미지 수정후 제거
-//        user.setUserImage(BitmapFactory.decodeResource(activity.getResources(), R.drawable.square_profile_default));
-
         if (view == null) {
             LayoutInflater layoutInflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             view = layoutInflater.inflate(R.layout.search_list_item, parent, false);
@@ -103,10 +104,6 @@ public class FriendListAdapter extends BaseAdapter implements Filterable {
             holder.image = (NetworkImageView) view.findViewById(R.id.search_user_image);
             holder.email = (TextView) view.findViewById(R.id.search_user_email);
             holder.name = (TextView) view.findViewById(R.id.search_user_name);
-//            holder.iconText.setTypeface(typeface, Typeface.BOLD);
-//            holder.iconText.setTextColor(activity.getResources().getColor(R.color.white));
-//            holder.name.setTypeface(typeface, Typeface.NORMAL);
-
             view.setTag(holder);
         } else {
             // get view holder back
@@ -114,11 +111,9 @@ public class FriendListAdapter extends BaseAdapter implements Filterable {
         }
 
         // bind text with view holder content view for efficient use
-//        holder.image.setImageResource(R.drawable.square_profile_default);
         holder.image.setImageUrl(user.getUserImage(), mImageLoader);
         holder.email.setText(user.getUserEmail());
         holder.name.setText(user.getUserName());
-//        view.setBackgroundResource(R.drawable.friend_list_selector);
 
         return view;
     }
@@ -126,6 +121,7 @@ public class FriendListAdapter extends BaseAdapter implements Filterable {
     /**
      * Method getFilter()
      * Get custom filter
+     *
      * @return filter
      */
     @Override
@@ -147,6 +143,7 @@ public class FriendListAdapter extends BaseAdapter implements Filterable {
     }
 
     //TODO 제거
+
     /**
      * Custom filter for friend list
      * Filter content in friend list according to the search text
@@ -156,7 +153,7 @@ public class FriendListAdapter extends BaseAdapter implements Filterable {
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
             FilterResults filterResults = new FilterResults();
-            if (constraint!=null && constraint.length()>0) {
+            if (constraint != null && constraint.length() > 0) {
                 ArrayList<User> tempList = new ArrayList<User>();
 
                 // search content in friend list
@@ -178,8 +175,9 @@ public class FriendListAdapter extends BaseAdapter implements Filterable {
 
         /**
          * Notify about filtered list to ui
+         *
          * @param constraint text
-         * @param results filtered result
+         * @param results    filtered result
          */
         @SuppressWarnings("unchecked")
         @Override

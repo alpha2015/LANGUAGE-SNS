@@ -75,6 +75,7 @@ public class OauthFragment extends Fragment {
      * login 성공후 서버 db user 조회
      * user 존재하지 않을 경우) user 정보 server db에 create, app db에 저장, MatchingActivity 호출
      * user 존재할 경우) user 정보 server db에 재갱신, app db에 저장, MatchingActivity 호출
+     *
      * @param inflater
      * @param container
      * @param savedInstanceState
@@ -233,9 +234,10 @@ public class OauthFragment extends Fragment {
     /**
      * Method onActivityResult(int requestCode, int resultCode, Intent data)
      * facebook login activity 호출 결과 등록을 위해 재정의
+     *
      * @param requestCode 요청 코드
-     * @param resultCode 응답 코드
-     * @param data data
+     * @param resultCode  응답 코드
+     * @param data        data
      */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -246,6 +248,7 @@ public class OauthFragment extends Fragment {
     /**
      * Method saveUserIntoDb(User user)
      * db에 user 정보 저장
+     *
      * @param user
      */
     private void saveUserIntoDb(User user) {
@@ -270,6 +273,7 @@ public class OauthFragment extends Fragment {
     /**
      * Method deleteUserFromDb()
      * db에서 user 정보 삭제
+     *
      * @return delete 성공 유무
      */
     private boolean deleteUserFromDb() {
@@ -295,20 +299,20 @@ public class OauthFragment extends Fragment {
         while (cursor.moveToNext()) {
             user = new User();
 
-            if(cursor.getString(0) != null)
+            if (cursor.getString(0) != null)
                 user.setUserImage(cursor.getString(0));
-            if(cursor.getString(1) != null)
+            if (cursor.getString(1) != null)
                 user.setUserEmail(cursor.getString(1));
-            if(cursor.getString(2) != null)
-            user.setUserName(cursor.getString(2));
-            if(cursor.getString(3) != null)
-            user.setUserPassword(cursor.getString(3));
-            if(cursor.getString(4) != null)
-            user.setUserAge(cursor.getInt(4));
-            if(cursor.getString(5) != null)
-            user.setUserGender(cursor.getString(5));
-            if(cursor.getString(6) != null)
-            user.setoAuth(cursor.getString(6));
+            if (cursor.getString(2) != null)
+                user.setUserName(cursor.getString(2));
+            if (cursor.getString(3) != null)
+                user.setUserPassword(cursor.getString(3));
+            if (cursor.getString(4) != null)
+                user.setUserAge(cursor.getInt(4));
+            if (cursor.getString(5) != null)
+                user.setUserGender(cursor.getString(5));
+            if (cursor.getString(6) != null)
+                user.setoAuth(cursor.getString(6));
         }
         cursor.close();
         db.close();

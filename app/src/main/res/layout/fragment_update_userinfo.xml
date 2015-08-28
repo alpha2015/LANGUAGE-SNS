@@ -49,13 +49,6 @@
                 android:clickable="true"
                 android:scaleType="fitXY"
                 />
-            <!--<ImageView-->
-                <!--android:id="@+id/imageView01"-->
-                <!--android:layout_width="70dp"-->
-                <!--android:layout_height="70dp"-->
-                <!--android:contentDescription="@string/profile_user_image"-->
-                <!--android:src="@drawable/square_profile_default"-->
-                <!--android:clickable="true"/>-->
 
             <ImageView
                 android:id="@+id/imageView02"

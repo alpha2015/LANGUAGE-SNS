@@ -32,9 +32,9 @@ import java.util.List;
  */
 public class Fragment_TimeLine extends Fragment {
     private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
+    private TimeLineItemAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    ArrayList<User> users;
+    private ArrayList<User> users;
 
     @Nullable
     @Override
@@ -55,7 +55,7 @@ public class Fragment_TimeLine extends Fragment {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        mAdapter = new TimeLineItemAdapter(users, MySingleton.getInstance(getActivity()).getImageLoader());
+                        mAdapter = new TimeLineItemAdapter(users, MySingleton.getInstance(getActivity()).getImageLoader(), getActivity().getFragmentManager());
                         mRecyclerView.setAdapter(mAdapter);
                     }
                 });
@@ -67,6 +67,7 @@ public class Fragment_TimeLine extends Fragment {
     /**
      * Method loadTimelineListFromNetwork()
      * 가장 최근 업데이트된 사용자 리스트 server로 부터 읽어오기(최대 20개)
+     *
      * @return user list
      */
     private ArrayList<User> loadTimelineListFromNetwork() {

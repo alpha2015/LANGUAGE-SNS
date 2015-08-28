@@ -4,6 +4,7 @@ package com.nhnnext.android.languageexchange.common;
  * Created by Alpha on 2015. 8. 26..
  */
 public class UrlFactory {
+//    public static final String DEFAULT_URL = "http://125.209.198.129/";
 //    public static final String LOGIN = "http://125.209.198.129/user/login";
 //    public static final String SIGN_UP = "http://125.209.198.129/user";
 //    public static final String UPDATE_USER = "http://125.209.198.129/user/update";

@@ -11,7 +11,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Network;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -77,7 +76,6 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
     private static TextView editGender;
     private Button saveButton;
     private TextView editIntro;
-    private ImageView imageView;
     private ImageView imageCancelView;
     private ImageButton logoutButton;
     private Bitmap profileBitmap;
@@ -124,7 +122,6 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
         mContext = getActivity();
         mDbHelper = new MySqliteOpenHelper(mContext);
         user = getShownIndex();
-        Log.d("updateafter", "" + readUserFromDb());
 
         //레이아웃 view
         View view = inflater.inflate(R.layout.fragment_update_userinfo, container, false);
@@ -136,7 +133,6 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
         editGender = (TextView) view.findViewById(R.id.setting_edit_gender);
         saveButton = (Button) view.findViewById(R.id.setting_save);
         editIntro = (TextView) view.findViewById(R.id.setting_edit_intro);
-//        imageView = (ImageView) view.findViewById(R.id.imageView01);
         imageCancelView = (ImageView) view.findViewById(R.id.imageView02);
         logoutButton = (ImageButton) view.findViewById(R.id.logout_btn);
         passwordLayout = (LinearLayout) view.findViewById(R.id.update_password_layout);
@@ -165,8 +161,6 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
         editAge.setText(Integer.toString(user.getAge()));
         editGender.setText(user.getGenderForKorean());
         editIntro.setText(user.getIntro());
-//        if(user.getImage() == null)
-//            imageView.setImageResource(R.drawable.square_profile_default);
         return view;
     }
 
@@ -216,7 +210,6 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
                 //TODO App, SERVER DB 저장 구현(Bitmap profileBitmap, user info)
                 if (profileBitmap == null)
                     profileBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.square_profile_default);
-//                user.setImage(profileBitmap);
                 user.setName(editName.getText().toString());
                 if (user.getOauth() == null)
                     user.setPassword(editPassword.getText().toString());
@@ -239,19 +232,16 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
                 params.put("userPassword", user.getPassword());
                 params.put("userGender", user.getGender());
                 params.put("userAge", "" + user.getAge());
-                if(!user.getIntro().equals("")) params.put("userIntro", user.getIntro());
+                if (!user.getIntro().equals("")) params.put("userIntro", user.getIntro());
                 params.put("oAuth", user.getOauth());
 
                 AsyncHttpClient client = new AsyncHttpClient();
                 client.post(UrlFactory.UPDATE_USER, params, new AsyncHttpResponseHandler() {
                     @Override
                     public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                        Log.d("updateafter", "" + readUserFromDb());
                         try {
                             user.setImage(new String(responseBody, "UTF-8"));
-                            Log.d("testt0", user.getImage());
                             saveUserIntoDb(new User(user));
-                            Log.d("testt7", "" + readUserFromDb());
                         } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();
                         }
@@ -262,8 +252,6 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
                         Log.d("UPDATE", "Http Post Fail");
                     }
                 });
-
-
                 break;
         }
     }
@@ -553,19 +541,19 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
         while (cursor.moveToNext()) {
             user = new User();
 
-            if(cursor.getString(0) != null)
+            if (cursor.getString(0) != null)
                 user.setUserImage(cursor.getString(0));
-            if(cursor.getString(1) != null)
+            if (cursor.getString(1) != null)
                 user.setUserEmail(cursor.getString(1));
-            if(cursor.getString(2) != null)
+            if (cursor.getString(2) != null)
                 user.setUserName(cursor.getString(2));
-            if(cursor.getString(3) != null)
+            if (cursor.getString(3) != null)
                 user.setUserPassword(cursor.getString(3));
-            if(cursor.getString(4) != null)
+            if (cursor.getString(4) != null)
                 user.setUserAge(cursor.getInt(4));
-            if(cursor.getString(5) != null)
+            if (cursor.getString(5) != null)
                 user.setUserGender(cursor.getString(5));
-            if(cursor.getString(6) != null)
+            if (cursor.getString(6) != null)
                 user.setoAuth(cursor.getString(6));
         }
         cursor.close();

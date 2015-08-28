@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -70,9 +69,10 @@ public class SignUpActivity extends FragmentActivity implements View.OnClickList
 
     /**
      * Method onClick()
+     *
      * @param v : clicked view
-     * 로그인 페이지로 돌아가기 버튼) 회원가입 Activity 호출
-     * 회원가입 하기 버튼) 서버 api를 통해 회원가입 시도 및 성공/실패 여부 반환 요청, 성공시 MatchingActivity 호출
+     *          로그인 페이지로 돌아가기 버튼) 회원가입 Activity 호출
+     *          회원가입 하기 버튼) 서버 api를 통해 회원가입 시도 및 성공/실패 여부 반환 요청, 성공시 MatchingActivity 호출
      */
     @Override
     public void onClick(View v) {
@@ -143,6 +143,7 @@ public class SignUpActivity extends FragmentActivity implements View.OnClickList
     /**
      * Method enableSignUp(User userForSignUp)
      * 회원정보 모두 입력시 가입요정 버튼 활성화, fragment user정보 activity로 전달
+     *
      * @param userForSignUp
      */
     protected void enableSignUp(User userForSignUp) {
@@ -153,6 +154,7 @@ public class SignUpActivity extends FragmentActivity implements View.OnClickList
     /**
      * Method saveUserIntoDb(User user)
      * db에 user 정보 저장
+     *
      * @param user
      */
     private void saveUserIntoDb(User user) {
@@ -177,6 +179,7 @@ public class SignUpActivity extends FragmentActivity implements View.OnClickList
     /**
      * Method deleteUserFromDb()
      * db에서 user 정보 삭제
+     *
      * @return delete 성공 유무
      */
     private boolean deleteUserFromDb() {

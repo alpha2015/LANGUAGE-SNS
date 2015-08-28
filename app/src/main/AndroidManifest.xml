@@ -16,8 +16,9 @@
       IMPORTANT: Change "com.parse.starter.permission.C2D_MESSAGE" in the lines below
       to match your app's package name + ".permission.C2D_MESSAGE".
     -->
-    <permission android:protectionLevel="signature"
-        android:name="com.nhnnext.android.languageexchange.permission.C2D_MESSAGE" />
+    <permission
+        android:name="com.nhnnext.android.languageexchange.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
     <uses-permission android:name="com.nhnnext.android.languageexchange.permission.C2D_MESSAGE" />
 
 
@@ -50,6 +51,9 @@
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
+        <meta-data
+            android:name="com.parse.push.notification_icon"
+            android:resource="@drawable/ic_app" />
 
         <!-- 로그인 Activity -->
         <!-- android:exported="false" 인데 intent filter 가 정의 되어 있네요..검토 필요해보여요-->
@@ -59,7 +63,6 @@
         <!-- mainActivity lunchMode singTask로 변경 로그아웃, 회원가입에서 로그인 돌아가기시 task 중복 해결 -->
         <activity
             android:name=".MainActivity"
-            android:icon="@drawable/ic_forum_black_36dp"
             android:allowTaskReparenting="false"
             android:alwaysRetainTaskState="false"
             android:clearTaskOnLaunch="false"
@@ -68,6 +71,7 @@
             android:exported="true"
             android:finishOnTaskLaunch="false"
             android:hardwareAccelerated="false"
+            android:icon="@drawable/ic_app"
             android:label="@string/app_name"
             android:launchMode="standard"
             android:noHistory="false"
@@ -136,8 +140,7 @@
             </intent-filter>
             <meta-data
                 android:name="android.app.searchable"
-                android:resource="@xml/searchable">
-            </meta-data>
+                android:resource="@xml/searchable"></meta-data>
         </activity>
 
         <!-- 매칭 결과 Activity -->
@@ -164,36 +167,17 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".result.UserDetailActivity"
-            android:allowTaskReparenting="false"
-            android:alwaysRetainTaskState="false"
-            android:clearTaskOnLaunch="false"
-            android:enabled="true"
-            android:excludeFromRecents="false"
-            android:exported="false"
-            android:finishOnTaskLaunch="false"
-            android:hardwareAccelerated="false"
-            android:launchMode="standard"
-            android:noHistory="false"
-            android:screenOrientation="unspecified"
-            android:stateNotNeeded="false"
-            android:uiOptions="none">
-            <intent-filter>
-                <action android:name="com.nhnnext.android.action.DETAIL" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-
 
         <service android:name="com.parse.PushService" />
+
         <receiver android:name="com.parse.ParseBroadcastReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.USER_PRESENT" />
             </intent-filter>
         </receiver>
-        <receiver android:name="com.parse.ParsePushBroadcastReceiver"
+        <receiver
+            android:name="com.parse.ParsePushBroadcastReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.parse.push.intent.RECEIVE" />
@@ -201,7 +185,8 @@
                 <action android:name="com.parse.push.intent.OPEN" />
             </intent-filter>
         </receiver>
-        <receiver android:name="com.parse.GcmBroadcastReceiver"
+        <receiver
+            android:name="com.parse.GcmBroadcastReceiver"
             android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />

@@ -41,7 +41,7 @@
     <string name="profile_update">프로필 수정</string>
 
     <string name="request_send_email">이메일 보내기</string>
-    <string name="request_friend">친구요청</string>
+    <string name="send_message">전송</string>
 
     <!-- contentDescription -->
     <string name="matched_user_image">Matched user image</string>
@@ -53,4 +53,7 @@
     <string name="matching_start_button">Matching start button</string>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
+
+    <string name="close_button">닫기</string>
+    <string name="input_message">메시지를 보내세요.</string>
 </resources>

@@ -2,7 +2,6 @@ package com.nhnnext.android.languageexchange.match;
 
 import android.app.SearchManager;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -46,6 +45,7 @@ import com.nhnnext.android.languageexchange.common.GsonRequest;
 import com.nhnnext.android.languageexchange.common.MySingleton;
 import com.nhnnext.android.languageexchange.common.NotiItemAdapter;
 import com.nhnnext.android.languageexchange.common.UrlFactory;
+import com.nhnnext.android.languageexchange.user.Fragment_UserProfileDialog;
 import com.parse.ParseInstallation;
 
 import java.lang.reflect.Type;
@@ -134,7 +134,7 @@ public class MatchingActivity extends AppCompatActivity {
         // Fragment 초기화
         user = getIntent().getExtras().getParcelable("user");
 
-        Log.d("testtuserkk" , "" + user);
+        Log.d("testtuserkk", "" + user);
 
         // push notification email 등록 installation
         ParseInstallation installation = ParseInstallation.getCurrentInstallation();
@@ -171,7 +171,6 @@ public class MatchingActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#4EC89C")));
-
 
     }
 
@@ -351,12 +350,14 @@ public class MatchingActivity extends AppCompatActivity {
                             friendListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                 public void onItemClick(AdapterView<?> parent, View v,
                                                         int position, long id) {
-                                    Intent intent = new Intent();
-                                    intent.setAction("com.nhnnext.android.action.DETAIL");
+//                                    Intent intent = new Intent();
+//                                    intent.setAction("com.nhnnext.android.action.DETAIL");
                                     //상세보기 activity 호출시 해당 유저 정보 parcelable instance로 전달
                                     UserParcelable parcelUser = new UserParcelable((User) friendListView.getAdapter().getItem(position));
-                                    intent.putExtra("user", parcelUser);
-                                    startActivity(intent);
+//                                    intent.putExtra("user", parcelUser);
+//                                    startActivity(intent);
+
+                                    Fragment_UserProfileDialog.newInstance(parcelUser).show(getFragmentManager(), "dialog");
                                 }
                             });
 

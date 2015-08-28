@@ -27,3 +27,8 @@
            2) 새로가입 한 유저나 소개글 업데이트한 유저정보 보여주는 timeline fragment 추가(cross 매칭된 유저만 보여줌)
   * 변경사유 : 1) 불필요한 fragment merge
              2) 기획 내용 추가
+
+### 8.28 일자
+* 사용자 정보 상세보기 Activity
+  * 변경후 : UserProfileDialog로 변경
+  * 변경사유 : 1) Activity로 분리하기에 전달 정보가 작음, 타 activity에 dialog 형식으로 보여주도록 기획 변경
