@@ -18,7 +18,7 @@ import com.nhnnext.android.languageexchange.Model.User;
 import com.nhnnext.android.languageexchange.Model.UserParcelable;
 import com.nhnnext.android.languageexchange.R;
 import com.nhnnext.android.languageexchange.common.GsonRequest;
-import com.nhnnext.android.languageexchange.common.MySingleton;
+import com.nhnnext.android.languageexchange.common.ImageLoadHelper;
 import com.nhnnext.android.languageexchange.common.UrlFactory;
 import com.nhnnext.android.languageexchange.common.UserItemAdapter;
 import com.nhnnext.android.languageexchange.user.Fragment_UserProfileDialog;
@@ -62,7 +62,7 @@ public class ShowResultActivity extends Activity {
                     @Override
                     public void onResponse(ArrayList<User> users) {
                         userListGridView = (GridView) findViewById(R.id.gridview);
-                        userListGridView.setAdapter(new UserItemAdapter(mContext, R.layout.user_list_item, users, MySingleton.getInstance(mContext).getImageLoader()));
+                        userListGridView.setAdapter(new UserItemAdapter(mContext, R.layout.user_list_item, users, ImageLoadHelper.getInstance(mContext).getImageLoader()));
 
                         userListGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             public void onItemClick(AdapterView<?> parent, View v,

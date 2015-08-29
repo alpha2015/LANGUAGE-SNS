@@ -42,7 +42,7 @@ import com.nhnnext.android.languageexchange.Model.UserParcelable;
 import com.nhnnext.android.languageexchange.R;
 import com.nhnnext.android.languageexchange.common.FriendListAdapter;
 import com.nhnnext.android.languageexchange.common.GsonRequest;
-import com.nhnnext.android.languageexchange.common.MySingleton;
+import com.nhnnext.android.languageexchange.common.ImageLoadHelper;
 import com.nhnnext.android.languageexchange.common.NotiItemAdapter;
 import com.nhnnext.android.languageexchange.common.UrlFactory;
 import com.nhnnext.android.languageexchange.user.Fragment_UserProfileDialog;
@@ -134,7 +134,6 @@ public class MatchingActivity extends AppCompatActivity {
         // Fragment 초기화
         user = getIntent().getExtras().getParcelable("user");
 
-        Log.d("testtuserkk", "" + user);
 
         // push notification email 등록 installation
         ParseInstallation installation = ParseInstallation.getCurrentInstallation();
@@ -279,18 +278,6 @@ public class MatchingActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        //TODO 변경된 회원정보 DB 저장
-    }
-
-
     /**
      * Class DrawerItemClickListener : push notification list item 선택 이벤트 listener
      */
@@ -341,8 +328,7 @@ public class MatchingActivity extends AppCompatActivity {
                     new Response.Listener<ArrayList<User>>() {
                         @Override
                         public void onResponse(ArrayList<User> users) {
-                            Log.d("searchresult", "" + users);
-                            friendListAdapter = new FriendListAdapter(MatchingActivity.this, users, MySingleton.getInstance(mContext).getImageLoader());
+                            friendListAdapter = new FriendListAdapter(MatchingActivity.this, users, ImageLoadHelper.getInstance(mContext).getImageLoader());
                             friendListView.setAdapter(friendListAdapter);
                             friendListView.setTextFilterEnabled(false);
                             friendListView.bringToFront();
@@ -350,13 +336,7 @@ public class MatchingActivity extends AppCompatActivity {
                             friendListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                 public void onItemClick(AdapterView<?> parent, View v,
                                                         int position, long id) {
-//                                    Intent intent = new Intent();
-//                                    intent.setAction("com.nhnnext.android.action.DETAIL");
-                                    //상세보기 activity 호출시 해당 유저 정보 parcelable instance로 전달
                                     UserParcelable parcelUser = new UserParcelable((User) friendListView.getAdapter().getItem(position));
-//                                    intent.putExtra("user", parcelUser);
-//                                    startActivity(intent);
-
                                     Fragment_UserProfileDialog.newInstance(parcelUser).show(getFragmentManager(), "dialog");
                                 }
                             });

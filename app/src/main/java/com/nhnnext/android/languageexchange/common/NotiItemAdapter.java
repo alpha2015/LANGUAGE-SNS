@@ -24,9 +24,10 @@ public class NotiItemAdapter extends ArrayAdapter<MessageInfo> {
     /**
      * NotiItemAdapter(Context context, int resource, List<MessageInfo> objects)
      * Initialize context variables
-     * @param context Activity context
+     *
+     * @param context  Activity context
      * @param resource notification item layout
-     * @param objects message info list
+     * @param objects  message info list
      */
     public NotiItemAdapter(Context context, int resource, List<MessageInfo> objects) {
         super(context, resource, objects);

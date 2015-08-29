@@ -13,8 +13,8 @@
         <FrameLayout
             android:id="@+id/fragment_container_signup"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_marginTop="100dp"
+            android:layout_height="220dp"
+            android:layout_marginTop="90dp"
             android:background="#15000000" />
 
         <Button
@@ -27,7 +27,6 @@
             android:text="@string/sign_up_request"
             android:textColor="#FFFFFF"
             android:visibility="gone" />
-
     </LinearLayout>
 
     <RelativeLayout

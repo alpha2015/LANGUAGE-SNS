@@ -12,39 +12,36 @@ import com.android.volley.toolbox.Volley;
 /**
  * Created by Alpha on 2015. 8. 26..
  */
-public class MySingleton {
-    private static MySingleton mInstance;
+public class ImageLoadHelper {
+    private static ImageLoadHelper mInstance;
     private RequestQueue mRequestQueue;
     private ImageLoader mImageLoader;
     private static Context mCtx;
+    private ImageLoader.ImageCache imageCache;
 
-    private MySingleton(Context context) {
+    private ImageLoadHelper(Context context) {
         mCtx = context;
         mRequestQueue = getRequestQueue();
+        imageCache = new ImageLoader.ImageCache() {
+            private final LruCache<String, Bitmap>
+                    cache = new LruCache<String, Bitmap>(20);
 
-        mImageLoader = new ImageLoader(mRequestQueue,
-                new ImageLoader.ImageCache() {
-                    private final LruCache<String, Bitmap>
-                            cache = new LruCache<String, Bitmap>(20);
+            @Override
+            public Bitmap getBitmap(String url) {
+                return cache.get(url.substring(url.indexOf("http")));
+            }
 
-                    @Override
-                    public Bitmap getBitmap(String url) {
-                        return cache.get(url);
-                    }
-
-                    @Override
-                    public void putBitmap(String url, Bitmap bitmap) {
-                        cache.put(url, bitmap);
-                    }
-                });
+            @Override
+            public void putBitmap(String url, Bitmap bitmap) {
+                cache.put(url.substring(url.indexOf("http")), bitmap);
+            }
+        };
+        mImageLoader = new ImageLoader(mRequestQueue, imageCache);
     }
 
-    public static synchronized MySingleton getInstance(Context context) {
-        if (mInstance == null) {
-            mInstance = new MySingleton(context);
-        }
-//        if(mCtx != context)
-        //TODO 캐시 문제 해결
+    public static synchronized ImageLoadHelper getInstance(Context context) {
+        if (mCtx != context)
+            mInstance = new ImageLoadHelper(context);
         return mInstance;
     }
 
@@ -63,5 +60,9 @@ public class MySingleton {
 
     public ImageLoader getImageLoader() {
         return mImageLoader;
+    }
+
+    public void imageUpdate(String url, Bitmap bitmap) {
+        imageCache.putBitmap(url, bitmap);
     }
 }

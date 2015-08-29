@@ -18,7 +18,7 @@ import android.widget.TextView;
 import com.android.volley.toolbox.NetworkImageView;
 import com.nhnnext.android.languageexchange.Model.UserParcelable;
 import com.nhnnext.android.languageexchange.R;
-import com.nhnnext.android.languageexchange.common.MySingleton;
+import com.nhnnext.android.languageexchange.common.ImageLoadHelper;
 import com.parse.ParseInstallation;
 import com.parse.ParsePush;
 import com.parse.ParseQuery;
@@ -65,7 +65,7 @@ public class Fragment_UserProfileDialog extends DialogFragment implements View.O
         user = getShownIndex();
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.fragment_result_user_detail, null);
-        ((NetworkImageView) view.findViewById(R.id.mached_user_image_view)).setImageUrl(user.getImage(), MySingleton.getInstance(getActivity()).getImageLoader());
+        ((NetworkImageView) view.findViewById(R.id.mached_user_image_view)).setImageUrl(user.getImage(), ImageLoadHelper.getInstance(getActivity()).getImageLoader());
         ((TextView) view.findViewById(R.id.mached_user_name_view)).setText(user.getName());
         ((TextView) view.findViewById(R.id.mached_user_email_view)).setText(user.getEmail());
         ((TextView) view.findViewById(R.id.mached_user_gender_view)).setText(user.getGenderForKorean());
@@ -100,13 +100,12 @@ public class Fragment_UserProfileDialog extends DialogFragment implements View.O
 
                 break;
             case R.id.request_send_message:
-                //TODO 페이스북 친구 요청이나 타 메신저 친구 요청 기능 구현
-
-                //TODO 대상 유저에게 PUSH MESSAGE 보내기
+                //대상 유저에게 PUSH MESSAGE 보내기
                 ParsePush push = new ParsePush();
                 ParseQuery pushQuery = ParseInstallation.getQuery();
                 pushQuery.whereEqualTo("email", user.getEmail());
                 //TODO oAuth까지 같은사람
+                //TODO 페이스북 친구 요청이나 타 메신저 친구 요청 기능 구현
                 push.setQuery(pushQuery); // Set our Installation query
                 push.setMessage(messageView.getText() + "\n by ???");
                 push.sendInBackground();

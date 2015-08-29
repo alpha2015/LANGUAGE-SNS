@@ -11,6 +11,7 @@ public class UrlFactory {
 //    public static final String SEARCH_USERS = "http://125.209.198.129/user/search";
 //    public static final String TIMELINE = "http://125.209.198.129/user/timeline";
 //    public static final String MATCH = "http://125.209.198.129/user/match";
+//    public static final String USER_CHECK = "http://125.209.198.129/user/check";
 
 
     public static final String DEFAULT_URL = "http://10.0.3.2:8080/";
@@ -20,4 +21,5 @@ public class UrlFactory {
     public static final String SEARCH_USERS = "http://10.0.3.2:8080/user/search";
     public static final String TIMELINE = "http://10.0.3.2:8080/user/timeline";
     public static final String MATCH = "http://10.0.3.2:8080/user/match";
+    public static final String USER_CHECK = "http://10.0.3.2:8080/user/check";
 }

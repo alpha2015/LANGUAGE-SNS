@@ -12,9 +12,6 @@ import com.parse.Parse;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-/**
- * Created by Alpha on 2015. 8. 10..
- */
 public class MyApplication extends Application {
     @Override
     public void onCreate() {

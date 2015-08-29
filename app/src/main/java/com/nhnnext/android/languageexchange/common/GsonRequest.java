@@ -11,7 +11,6 @@ import com.google.gson.JsonSyntaxException;
 
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -29,10 +28,11 @@ public class GsonRequest<T> extends Request<T> {
     /**
      * GsonRequest(String url, Class<T> clazz, Map<String, String> headers, Response.Listener<T> listener, Response.ErrorListener errorListener)
      * Initialize context variables
-     * @param url URL of the request to make
-     * @param clazz Relevant class object, for Gson's reflection
-     * @param headers Map of request headers
-     * @param listener Response listener
+     *
+     * @param url           URL of the request to make
+     * @param clazz         Relevant class object, for Gson's reflection
+     * @param headers       Map of request headers
+     * @param listener      Response listener
      * @param errorListener error listener
      */
     public GsonRequest(String url, Class<T> clazz, Map<String, String> headers,
@@ -47,10 +47,31 @@ public class GsonRequest<T> extends Request<T> {
     /**
      * GsonRequest(String url, Type type, Map<String, String> headers, Response.Listener<T> listener, Response.ErrorListener errorListener)
      * Initialize context variables
-     * @param url URL of the request to make
-     * @param type Relevant type object, for Gson's reflection
-     * @param headers Map of request headers
-     * @param listener Response listener
+     *
+     * @param method        Method type
+     * @param url           URL of the request to make
+     * @param type          Relevant type object, for Gson's reflection
+     * @param headers       Map of request headers
+     * @param listener      Response listener
+     * @param errorListener error listener
+     */
+    public GsonRequest(int method, String url, Type type, Map<String, String> headers,
+                       Response.Listener<T> listener, Response.ErrorListener errorListener) {
+        super(method, url, errorListener);
+        this.clazz = null;
+        this.type = type;
+        this.headers = headers;
+        this.listener = listener;
+    }
+
+    /**
+     * GsonRequest(String url, Type type, Map<String, String> headers, Response.Listener<T> listener, Response.ErrorListener errorListener)
+     * Initialize context variables
+     *
+     * @param url           URL of the request to make
+     * @param type          Relevant type object, for Gson's reflection
+     * @param headers       Map of request headers
+     * @param listener      Response listener
      * @param errorListener error listener
      */
     public GsonRequest(String url, Type type, Map<String, String> headers,
@@ -65,6 +86,7 @@ public class GsonRequest<T> extends Request<T> {
     /**
      * Method getHeaders()
      * http headers getter mothod
+     *
      * @return http headers
      * @throws AuthFailureError
      */
@@ -81,6 +103,7 @@ public class GsonRequest<T> extends Request<T> {
     /**
      * Method parseNetworkResponse(NetworkResponse response)
      * http response parser
+     *
      * @param response http response
      * @return gson object
      */
@@ -109,6 +132,7 @@ public class GsonRequest<T> extends Request<T> {
 
     /**
      * Method getParams()
+     *
      * @return request params getter for user information
      * @throws AuthFailureError
      */
@@ -120,13 +144,14 @@ public class GsonRequest<T> extends Request<T> {
     /**
      * Method setParams(Map<String, String> params)
      * request params setter for user information
+     *
      * @param params
      */
     public void setParams(Map<String, String> params) {
         this.params = params;
-        if(this.params.get("userPassword") == null)
+        if (this.params.get("userPassword") == null)
             this.params.put("userPassword", "");
-        if(this.params.get("oAuth") == null)
+        if (this.params.get("oAuth") == null)
             this.params.put("oAuth", "");
     }
 }

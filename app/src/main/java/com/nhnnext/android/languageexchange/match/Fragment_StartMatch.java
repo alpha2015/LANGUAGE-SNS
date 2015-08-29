@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,11 +24,8 @@ import com.nhnnext.android.languageexchange.R;
  * Class Fragment_StartMatch : 매칭시작 fragment
  */
 public class Fragment_StartMatch extends Fragment implements View.OnClickListener {
-    //TODO 서버 DB를 통해 설정된 default native, practicing 언어 가져오기
-    //TODO 선택할 수 있는 언어 종류 저장 할 DB 설계
-    //TODO App DB, Server DB에 변경된 언어 저장.
-    //TODO "모국어와 배우고자하는 언어를 다르게 선택해주세요." 메시지
-
+    //User data로 부터 native, practicing 언어 가져오기
+    //App DB, Server DB에 변경된 언어 저장.
     private Button nativeBtn;
     private Button practicingBtn;
     private TextView selectedNative;
@@ -129,13 +125,6 @@ public class Fragment_StartMatch extends Fragment implements View.OnClickListene
         builder.show();
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        //TODO Fragment 전환후 바뀐 native, practicing language에 따라 TextView text 변환
-        //TODO Fragment 라이프 사이클 스터디후 해당 위치에 view 변경하는게 맞는지 검토
-    }
-
     /**
      * Method onClick(View v)
      *
@@ -146,19 +135,16 @@ public class Fragment_StartMatch extends Fragment implements View.OnClickListene
      */
     @Override
     public void onClick(View v) {
-        //TODO 매칭 시작 버튼 클릭시 서버 DB 접근 유저리스트 가져오기
-        //TODO 매칭 유저리스트 정상적으로 받았을시 결과보기 버튼 이벤트 처리
+        //매칭 시작 버튼 클릭시 서버 DB 접근 유저리스트 가져오기
+        //TODO 추후 ENUM으로 리팩토링
         int id = v.getId();
         switch (id) {
             case R.id.start_match_button:
-                Log.d("testtt", user.getNativeLanguage() + "  " + user.getPracticingLanguage());
                 Intent intent = new Intent();
                 intent.setAction("com.nhnnext.android.action.RESULT");
                 intent.putExtra("user", user);
                 startActivity(intent);
                 break;
-
-            //TODO ENUM으로 리팩토링!!!!!
             case R.id.native_language:
                 dialogType = 1;
                 if (user.getNativeLanguage() == null)
@@ -174,8 +160,6 @@ public class Fragment_StartMatch extends Fragment implements View.OnClickListene
                 else
                     dialogLanguageSelectOption(4);
                 break;
-
-            //TODO ENUM으로 리팩토링!!!!!
             case R.id.practicing_language:
                 dialogType = 2;
                 if (user.getPracticingLanguage() == null)

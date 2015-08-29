@@ -2,18 +2,15 @@ package com.nhnnext.android.languageexchange.match;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -33,8 +30,10 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
+import com.android.volley.toolbox.Volley;
 import com.facebook.login.LoginManager;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -42,7 +41,8 @@ import com.loopj.android.http.RequestParams;
 import com.nhnnext.android.languageexchange.Model.User;
 import com.nhnnext.android.languageexchange.Model.UserParcelable;
 import com.nhnnext.android.languageexchange.R;
-import com.nhnnext.android.languageexchange.common.MySingleton;
+import com.nhnnext.android.languageexchange.common.DbUtil;
+import com.nhnnext.android.languageexchange.common.ImageLoadHelper;
 import com.nhnnext.android.languageexchange.common.MySqliteOpenHelper;
 import com.nhnnext.android.languageexchange.common.UrlFactory;
 
@@ -50,10 +50,7 @@ import org.apache.http.Header;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.UnsupportedEncodingException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  * Created by Alpha on 2015. 7. 22..
@@ -85,6 +82,13 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
 
     private UserParcelable user;
     private Uri fileUri;
+    private RequestQueue queue;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        queue = Volley.newRequestQueue(getActivity());
+    }
 
     /**
      * Method newInstance(UserParcelable user)
@@ -95,7 +99,6 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
      */
     public static Fragment_UpdateUserInfo newInstance(UserParcelable user) {
         Fragment_UpdateUserInfo f = new Fragment_UpdateUserInfo();
-
         // Supply index input as an argument.
         Bundle args = new Bundle();
         args.putParcelable("user", user);
@@ -137,11 +140,9 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
         logoutButton = (ImageButton) view.findViewById(R.id.logout_btn);
         passwordLayout = (LinearLayout) view.findViewById(R.id.update_password_layout);
 
-        mImageLoader = MySingleton.getInstance(mContext).getImageLoader();
+        mImageLoader = ImageLoadHelper.getInstance(mContext).getImageLoader();
 
         mNetworkImageView.setImageUrl(user.getImage(), mImageLoader);
-
-        Log.d("testtt9", user.getImage());
 
         if (user.getOauth() != null && user.getOauth().equals("facebook"))
             passwordLayout.setVisibility(View.GONE);
@@ -190,7 +191,7 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
                 break;
             case R.id.logout_btn:
                 //TODO DB지우기 , oauth면 oauth logout
-                deleteUserFromDb();
+                DbUtil.deleteUserFromDb(mDbHelper);
                 LoginManager.getInstance().logOut();
 
                 getActivity().finish();
@@ -241,7 +242,8 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
                     public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
                         try {
                             user.setImage(new String(responseBody, "UTF-8"));
-                            saveUserIntoDb(new User(user));
+                            DbUtil.saveUserIntoDb(new User(user), mDbHelper);
+                            ImageLoadHelper.getInstance(mContext).imageUpdate(user.getImage(), profileBitmap);
                         } catch (UnsupportedEncodingException e) {
                             e.printStackTrace();
                         }
@@ -434,49 +436,6 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
     }
 
     /**
-     * Create a file Uri for saving an image or video
-     */
-    private static Uri getOutputMediaFileUri(int type) {
-        return Uri.fromFile(getOutputMediaFile(type));
-    }
-
-    /**
-     * Create a File for saving an image or video
-     */
-    private static File getOutputMediaFile(int type) {
-        // To be safe, you should check that the SDCard is mounted
-        // using Environment.getExternalStorageState() before doing this.
-
-        File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES), "MyCameraApp");
-        // This location works best if you want the created images to be shared
-        // between applications and persist after your app has been uninstalled.
-
-        // Create the storage directory if it does not exist
-        if (!mediaStorageDir.exists()) {
-            if (!mediaStorageDir.mkdirs()) {
-                Log.d("MyCameraApp", "failed to create directory");
-                return null;
-            }
-        }
-
-        // Create a media file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        File mediaFile;
-        if (type == MEDIA_TYPE_IMAGE) {
-            mediaFile = new File(mediaStorageDir.getAbsolutePath() + File.separator +
-                    "IMG_" + timeStamp + ".jpg");
-        } else if (type == MEDIA_TYPE_VIDEO) {
-            mediaFile = new File(mediaStorageDir.getAbsolutePath() + File.separator +
-                    "VID_" + timeStamp + ".mp4");
-        } else {
-            return null;
-        }
-
-        return mediaFile;
-    }
-
-    /**
      * Method checkCameraHardware(Context context)
      * Check if this device has a camera
      *
@@ -491,74 +450,6 @@ public class Fragment_UpdateUserInfo extends Fragment implements View.OnClickLis
             // no camera on this device
             return false;
         }
-    }
-
-    /**
-     * Method deleteUserFromDb()
-     * db에서 user 정보 삭제
-     *
-     * @return delete 성공 유무
-     */
-    private boolean deleteUserFromDb() {
-        boolean result = false;
-        db = mDbHelper.getWritableDatabase();
-        if (db.delete(MySqliteOpenHelper.USER_TABLE_NAME, null, null) > 0)
-            result = true;
-        db.close();
-        return result;
-    }
-
-    private void saveUserIntoDb(User user) {
-        // Get the data repository in write mode
-        db = mDbHelper.getWritableDatabase();
-
-        // Create a new map of values, where column names are the keys
-        ContentValues values = new ContentValues();
-        values.put(MySqliteOpenHelper.KEY_IMAGE, user.getUserImage());
-        values.put(MySqliteOpenHelper.KEY_EMAIL, user.getUserEmail());
-        values.put(MySqliteOpenHelper.KEY_NAME, user.getUserName());
-        values.put(MySqliteOpenHelper.KEY_PASSWORD, user.getUserPassword());
-        values.put(MySqliteOpenHelper.KEY_AGE, user.getUserAge());
-        values.put(MySqliteOpenHelper.KEY_GENDER, user.getUserGender());
-        values.put(MySqliteOpenHelper.KEY_OAUTH, user.getOAuth());
-
-        // Insert the new row, returning the primary key value of the new row
-        long newRowId = db.insert(MySqliteOpenHelper.USER_TABLE_NAME, null, values);
-        db.close();
-    }
-
-    private User readUserFromDb() {
-        // Get the data repository in read mode
-        db = mDbHelper.getReadableDatabase();
-
-        String[] projection = {
-                "userImage", "userEmail", "userName", "userPassword", "userAge", "userGender", "oAuth"
-        };
-        // Table, Column, WHERE, ARGUMENTS, GROUPING, HAVING, SORTING
-        Cursor cursor = db.query(MySqliteOpenHelper.USER_TABLE_NAME, projection, null, null, null, null, null);
-
-        User user = null;
-        while (cursor.moveToNext()) {
-            user = new User();
-
-            if (cursor.getString(0) != null)
-                user.setUserImage(cursor.getString(0));
-            if (cursor.getString(1) != null)
-                user.setUserEmail(cursor.getString(1));
-            if (cursor.getString(2) != null)
-                user.setUserName(cursor.getString(2));
-            if (cursor.getString(3) != null)
-                user.setUserPassword(cursor.getString(3));
-            if (cursor.getString(4) != null)
-                user.setUserAge(cursor.getInt(4));
-            if (cursor.getString(5) != null)
-                user.setUserGender(cursor.getString(5));
-            if (cursor.getString(6) != null)
-                user.setoAuth(cursor.getString(6));
-        }
-        cursor.close();
-        db.close();
-        return user;
     }
 }
 

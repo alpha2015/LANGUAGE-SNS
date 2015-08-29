@@ -11,16 +11,25 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.nhnnext.android.languageexchange.Model.User;
 import com.nhnnext.android.languageexchange.R;
 import com.nhnnext.android.languageexchange.common.UrlFactory;
+import com.nhnnext.android.languageexchange.common.ValidationUtil;
 
 /**
  * Created by Alpha on 2015. 7. 23..
@@ -28,7 +37,7 @@ import com.nhnnext.android.languageexchange.common.UrlFactory;
  */
 public class Fragment_UserInfoForSignUp extends Fragment {
     private enum SignUpStep {
-        EMAIL, NAME, PASSWORD, AGE, GENDER
+        EMAIL, NAME, PASSWORD, AGE, GENDER, CONFIRM
     }
 
     private LinearLayout emailLayout;
@@ -50,8 +59,17 @@ public class Fragment_UserInfoForSignUp extends Fragment {
     private TextView writtenAgeEditText;
     private TextView writtenGenderEditText;
     private Button continueButton;
+    private ImageButton preStateButton;
     private SignUpStep signUpStep;
     private User userForSignUp;
+    private String userEmail;
+    private RequestQueue queue;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        queue = Volley.newRequestQueue(getActivity());
+    }
 
     @Nullable
     @Override
@@ -79,6 +97,7 @@ public class Fragment_UserInfoForSignUp extends Fragment {
         maleRadioButton = (RadioButton) view.findViewById(R.id.gender_male);
         femaleRadioButton = (RadioButton) view.findViewById(R.id.gender_female);
         continueButton = (Button) view.findViewById(R.id.sign_up_continue_btn);
+        preStateButton = (ImageButton) view.findViewById(R.id.sign_up_pre_state_btn);
 
         writtenEmailEditText = (TextView) view.findViewById(R.id.sign_up_email_written);
         writtenNameEditText = (TextView) view.findViewById(R.id.sign_up_name_written);
@@ -98,26 +117,49 @@ public class Fragment_UserInfoForSignUp extends Fragment {
         emailEditText.addTextChangedListener(textBarWatcher);
         nameEditText.addTextChangedListener(textBarWatcher);
         passwordEditText.addTextChangedListener(textBarWatcher);
+        preStateButton.setVisibility(View.INVISIBLE);
 
         //다음단계를 위한 계속 버튼 이벤트 등록 - 각각의 회원정보 입력시 추가 회원정보 입력을 위한 VIEW VISIBLE
         //Step : 이메일 -> 이름 -> 비밀번호 -> 나이 -> 성별
+
         continueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //단계별 회원정보 입력 EditText view visible 설정
-                //TODO 각 입력 단계별 회원정보 유효성 체크(필수)
+                //각 입력 단계별 회원정보 유효성 체크
                 switch (signUpStep) {
 
                     case EMAIL:
-                        //TODO 이메일의 경우 네트워크 통신을 하여 서버 DB에 존재 여부 확인
-                        //TODO if 서버 DB에 해당 email 존재할 경우) toast 알림
-
+                        //이메일의 경우 네트워크 통신을 하여 서버 DB에 존재 여부 확인
+                        //if 서버 DB에 해당 email 존재할 경우) toast 알림
                         //else 서버 DB에 해당 Email 존재 하지 않을 경우) 이름 정보 입력을 위한 view 활성화
-                        userForSignUp.setUserEmail(emailEditText.getText().toString());
-                        emailLayout.setVisibility(View.GONE);
-                        nameLayout.setVisibility(View.VISIBLE);
-                        signUpStep = SignUpStep.NAME;
-                        continueButton.setVisibility(View.GONE);
+                        userEmail = emailEditText.getText().toString();
+                        if (ValidationUtil.checkEmail(userEmail)) {
+                            StringRequest userCheckReq = new StringRequest(Request.Method.GET, UrlFactory.USER_CHECK + "?userEmail=" + userEmail,
+                                    new Response.Listener<String>() {
+                                        @Override
+                                        public void onResponse(String response) {
+                                            // Display the first 500 characters of the response string.
+                                            if (response.equals("success")) {
+                                                userForSignUp.setUserEmail(userEmail);
+                                                emailLayout.setVisibility(View.GONE);
+                                                nameLayout.setVisibility(View.VISIBLE);
+                                                signUpStep = SignUpStep.NAME;
+                                                continueButton.setVisibility(View.GONE);
+                                            }
+                                            if (response.equals("fail"))
+                                                Toast.makeText(getActivity().getApplicationContext(), "이미 존재하는 이메일 입니다.", Toast.LENGTH_SHORT).show();
+                                        }
+                                    }, new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    Toast.makeText(getActivity().getApplicationContext(), "네트워크 설정을 확인해주세요.", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                            queue.add(userCheckReq);
+                        } else {
+                            Toast.makeText(getActivity().getApplicationContext(), "이메일 형식이 올바르지 않습니다.", Toast.LENGTH_SHORT).show();
+                        }
                         break;
 
                     case NAME:
@@ -129,14 +171,19 @@ public class Fragment_UserInfoForSignUp extends Fragment {
                         break;
 
                     case PASSWORD:
-                        passwordLayout.setVisibility(View.GONE);
-                        ageLayout.setVisibility(View.VISIBLE);
-                        agePicker.setWrapSelectorWheel(false);
-                        agePicker.setMinValue(0);
-                        agePicker.setMaxValue(99);
-                        agePicker.setValue(20);
-                        userForSignUp.setUserPassword(passwordEditText.getText().toString());
-                        signUpStep = SignUpStep.AGE;
+                        String userPassword = passwordEditText.getText().toString();
+                        if (ValidationUtil.checkPassword(userPassword)) {
+                            userForSignUp.setUserPassword(userPassword);
+                            passwordLayout.setVisibility(View.GONE);
+                            ageLayout.setVisibility(View.VISIBLE);
+                            agePicker.setWrapSelectorWheel(false);
+                            agePicker.setMinValue(0);
+                            agePicker.setMaxValue(99);
+                            agePicker.setValue(20);
+                            signUpStep = SignUpStep.AGE;
+                        } else {
+                            Toast.makeText(getActivity().getApplicationContext(), "비밀번호 형식이 올바르지 않습니다.", Toast.LENGTH_SHORT).show();
+                        }
                         break;
 
                     case AGE:
@@ -160,8 +207,53 @@ public class Fragment_UserInfoForSignUp extends Fragment {
                         writtenAgeEditText.setText(Integer.toString(userForSignUp.getUserAge()));
                         writtenGenderEditText.setText(userForSignUp.getGenderForKorean());
                         completeLayout.setVisibility(View.VISIBLE);
+                        signUpStep = SignUpStep.CONFIRM;
+                        break;
+                    default:
                         break;
                 }
+                preStateButton.setVisibility(View.VISIBLE);
+            }
+        });
+
+        preStateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch (signUpStep) {
+                    case EMAIL:
+                        //DO NOTHING
+                        break;
+                    case NAME:
+                        signUpStep = SignUpStep.EMAIL;
+                        emailLayout.setVisibility(View.VISIBLE);
+                        nameLayout.setVisibility(View.GONE);
+                        preStateButton.setVisibility(View.INVISIBLE);
+                        break;
+                    case PASSWORD:
+                        signUpStep = SignUpStep.EMAIL;
+                        passwordLayout.setVisibility(View.GONE);
+                        continueButton.performClick();
+                        break;
+                    case AGE:
+                        signUpStep = SignUpStep.NAME;
+                        ageLayout.setVisibility(View.GONE);
+                        continueButton.performClick();
+                        break;
+                    case GENDER:
+                        signUpStep = SignUpStep.PASSWORD;
+                        genderLayout.setVisibility(View.GONE);
+                        continueButton.performClick();
+                        break;
+                    case CONFIRM:
+                        signUpStep = SignUpStep.AGE;
+                        completeLayout.setVisibility(View.GONE);
+                        ((SignUpActivity) getActivity()).disableSignUp();
+                        continueButton.performClick();
+                        break;
+                    default:
+                        break;
+                }
+                continueButton.setVisibility(View.VISIBLE);
             }
         });
         return view;
@@ -174,7 +266,6 @@ public class Fragment_UserInfoForSignUp extends Fragment {
     private void requestEnableSignUpBtn() {
         SignUpActivity signUpActivity = (SignUpActivity) getActivity();
         signUpActivity.enableSignUp(userForSignUp);
-        Log.d("signupuser", "" + userForSignUp);
     }
 
     /**

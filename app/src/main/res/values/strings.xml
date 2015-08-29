@@ -22,13 +22,13 @@
     <string name="sign_up_name_top_message">이름은 무엇인가요?</string>
     <string name="sign_up_name_bottom_message">서로의 이름으로 친근하게 다가가세요.</string>
     <string name="sign_up_password_top_message">비밀번호 만들기</string>
-    <string name="sign_up_password_bottom_message">숫자, 영문, 특수기호를 조합한 여섯 자리 이상의 비밀번호를 입력하세요.</string>
+    <string name="sign_up_password_bottom_message">숫자, 영문, 특수기호로 여섯 자리 이상의 비밀번호를 입력하세요.</string>
     <string name="sign_up_age_top_message">나이를 알려주세요</string>
     <string name="sign_up_age_bottom_message">비슷한 또래의 친구들을 사귀어 보세요.</string>
     <string name="sign_up_gender_top_message">성별을 알려주세요</string>
     <string name="sign_up_gender_bottom_message">설정에서 나중에 변경할 수 있습니다.</string>
     <string name="sign_up_alert_message">다시 한번 확인하세요.</string>
-
+    <string name="sign_up_pre_state">이전으로</string>
 
     <string name="gender">성별</string>
     <string name="male">남성</string>

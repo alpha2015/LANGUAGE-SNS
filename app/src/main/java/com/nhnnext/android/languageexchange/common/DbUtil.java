@@ -16,7 +16,7 @@ public class DbUtil {
      *
      * @param user
      */
-    private void saveUserIntoDb(User user, MySqliteOpenHelper mDbHelper) {
+    public static void saveUserIntoDb(User user, MySqliteOpenHelper mDbHelper) {
         // Get the data repository in write mode
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
@@ -41,7 +41,7 @@ public class DbUtil {
      *
      * @return delete 성공 유무
      */
-    private boolean deleteUserFromDb(MySqliteOpenHelper mDbHelper) {
+    public static boolean deleteUserFromDb(MySqliteOpenHelper mDbHelper) {
         boolean result = false;
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         if (db.delete(MySqliteOpenHelper.USER_TABLE_NAME, null, null) > 0)
@@ -50,7 +50,7 @@ public class DbUtil {
         return result;
     }
 
-    private User readUserFromDb(MySqliteOpenHelper mDbHelper) {
+    public static User readUserFromDb(MySqliteOpenHelper mDbHelper) {
         // Get the data repository in read mode
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
 

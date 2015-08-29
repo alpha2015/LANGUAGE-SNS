@@ -25,7 +25,6 @@ public class TimeLineItemAdapter extends RecyclerView.Adapter<TimeLineItemAdapte
     private List<User> users;
     private ImageLoader mImageLoader;
     private FragmentManager mFragmentManager;
-//    private final View.OnClickListener mOnClickListener = new MyOnClickListener();
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         //CartView item - User photo, name, update time, intro desc
@@ -79,7 +78,7 @@ public class TimeLineItemAdapter extends RecyclerView.Adapter<TimeLineItemAdapte
     public void onBindViewHolder(ViewHolder holder, int position) {
         // user info setting
         holder.mPhoto.setImageUrl(users.get(position).getUserImage(), mImageLoader);
-        holder.mTime.setText(users.get(position).getUserUpdateDate().substring(0,10));
+        holder.mTime.setText(users.get(position).getUserUpdateDate().substring(0, 10));
         holder.mName.setText(users.get(position).getUserName());
         holder.mInfo.setText(users.get(position).getUserIntro());
 

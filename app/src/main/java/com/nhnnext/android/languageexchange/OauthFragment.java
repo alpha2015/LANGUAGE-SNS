@@ -1,9 +1,7 @@
 package com.nhnnext.android.languageexchange;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -33,6 +31,7 @@ import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.nhnnext.android.languageexchange.Model.User;
 import com.nhnnext.android.languageexchange.Model.UserParcelable;
+import com.nhnnext.android.languageexchange.common.DbUtil;
 import com.nhnnext.android.languageexchange.common.GsonRequest;
 import com.nhnnext.android.languageexchange.common.MySqliteOpenHelper;
 import com.nhnnext.android.languageexchange.common.UrlFactory;
@@ -112,12 +111,6 @@ public class OauthFragment extends Fragment {
 
                                 //if) 등록되지 않은 사용자라면 서버 DB로 저장하며 가입시킨다.
                                 user = new User();
-                                try {
-                                    //TODO oauth user id 필요한지 검토
-                                    jsonObject.getInt("id");
-                                } catch (JSONException e) {
-                                    Log.d("oauth", "bring ID from jsonObject error");
-                                }
 
                                 try {
                                     //User 정보 저장
@@ -138,9 +131,8 @@ public class OauthFragment extends Fragment {
                                             new Response.Listener<User>() {
                                                 @Override
                                                 public void onResponse(User user) {
-                                                    deleteUserFromDb();
-                                                    saveUserIntoDb(user);
-                                                    Log.d("loginuser1", "" + user);
+                                                    DbUtil.deleteUserFromDb(mDbHelper);
+                                                    DbUtil.saveUserIntoDb(user, mDbHelper);
                                                     Intent intent = new Intent();
                                                     intent.setAction("com.nhnnext.android.action.MATCH");
                                                     UserParcelable parcelUser = new UserParcelable(user);
@@ -162,16 +154,12 @@ public class OauthFragment extends Fragment {
                                                         public void onResponse(String response) {
                                                             // Display the first 500 characters of the response string.
                                                             if (response.equals("success")) {
-//                                                        progressDialog.dismiss();   //progressDialog dismiss
-                                                                deleteUserFromDb();
-                                                                saveUserIntoDb(user);
-                                                                Log.d("testtt1", "" + readUserFromDb());
+                                                                DbUtil.deleteUserFromDb(mDbHelper);
+                                                                DbUtil.saveUserIntoDb(user, mDbHelper);
 
                                                                 Intent intent = new Intent();
                                                                 intent.setAction("com.nhnnext.android.action.MATCH");
                                                                 UserParcelable parcelUser = new UserParcelable(user);
-                                                                Log.d("testtuser", "" + user);
-                                                                Log.d("testtparcel", "" + parcelUser);
                                                                 intent.putExtra("user", parcelUser);
                                                                 startActivity(intent);
                                                             }
@@ -182,9 +170,8 @@ public class OauthFragment extends Fragment {
                                                  */
                                                 @Override
                                                 public void onErrorResponse(VolleyError error) {
-//                                            progressDialog.dismiss();
                                                     // 가입 실패 Toast로 표시
-                                                    Toast.makeText(getActivity().getApplicationContext(), "가입 실패!", Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(getActivity().getApplicationContext(), "네트워크 설정을 확인해주세요.", Toast.LENGTH_SHORT).show();
                                                 }
                                             }) {
                                                 @Override
@@ -243,79 +230,5 @@ public class OauthFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
-    }
-
-    /**
-     * Method saveUserIntoDb(User user)
-     * db에 user 정보 저장
-     *
-     * @param user
-     */
-    private void saveUserIntoDb(User user) {
-        // Get the data repository in write mode
-        db = mDbHelper.getWritableDatabase();
-
-        // Create a new map of values, where column names are the keys
-        ContentValues values = new ContentValues();
-        values.put(MySqliteOpenHelper.KEY_IMAGE, user.getUserImage());
-        values.put(MySqliteOpenHelper.KEY_EMAIL, user.getUserEmail());
-        values.put(MySqliteOpenHelper.KEY_NAME, user.getUserName());
-        values.put(MySqliteOpenHelper.KEY_PASSWORD, user.getUserPassword());
-        values.put(MySqliteOpenHelper.KEY_AGE, user.getUserAge());
-        values.put(MySqliteOpenHelper.KEY_GENDER, user.getUserGender());
-        values.put(MySqliteOpenHelper.KEY_OAUTH, user.getOAuth());
-
-        // Insert the new row, returning the primary key value of the new row
-        long newRowId = db.insert(MySqliteOpenHelper.USER_TABLE_NAME, null, values);
-        db.close();
-    }
-
-    /**
-     * Method deleteUserFromDb()
-     * db에서 user 정보 삭제
-     *
-     * @return delete 성공 유무
-     */
-    private boolean deleteUserFromDb() {
-        boolean result = false;
-        db = mDbHelper.getWritableDatabase();
-        if (db.delete(MySqliteOpenHelper.USER_TABLE_NAME, null, null) > 0)
-            result = true;
-        db.close();
-        return result;
-    }
-
-    private User readUserFromDb() {
-        // Get the data repository in read mode
-        db = mDbHelper.getReadableDatabase();
-
-        String[] projection = {
-                "userImage", "userEmail", "userName", "userPassword", "userAge", "userGender", "oAuth"
-        };
-        // Table, Column, WHERE, ARGUMENTS, GROUPING, HAVING, SORTING
-        Cursor cursor = db.query(MySqliteOpenHelper.USER_TABLE_NAME, projection, null, null, null, null, null);
-
-        User user = null;
-        while (cursor.moveToNext()) {
-            user = new User();
-
-            if (cursor.getString(0) != null)
-                user.setUserImage(cursor.getString(0));
-            if (cursor.getString(1) != null)
-                user.setUserEmail(cursor.getString(1));
-            if (cursor.getString(2) != null)
-                user.setUserName(cursor.getString(2));
-            if (cursor.getString(3) != null)
-                user.setUserPassword(cursor.getString(3));
-            if (cursor.getString(4) != null)
-                user.setUserAge(cursor.getInt(4));
-            if (cursor.getString(5) != null)
-                user.setUserGender(cursor.getString(5));
-            if (cursor.getString(6) != null)
-                user.setoAuth(cursor.getString(6));
-        }
-        cursor.close();
-        db.close();
-        return user;
     }
 }

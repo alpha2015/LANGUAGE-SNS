@@ -3,7 +3,6 @@ package com.nhnnext.android.languageexchange.user;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
@@ -24,6 +23,7 @@ import com.android.volley.toolbox.Volley;
 import com.nhnnext.android.languageexchange.Model.User;
 import com.nhnnext.android.languageexchange.Model.UserParcelable;
 import com.nhnnext.android.languageexchange.R;
+import com.nhnnext.android.languageexchange.common.DbUtil;
 import com.nhnnext.android.languageexchange.common.MySqliteOpenHelper;
 import com.nhnnext.android.languageexchange.common.UrlFactory;
 
@@ -103,8 +103,8 @@ public class SignUpActivity extends FragmentActivity implements View.OnClickList
                                 // Display the first 500 characters of the response string.
                                 if (response.equals("success")) {
                                     progressDialog.dismiss();   //progressDialog dismiss
-                                    deleteUserFromDb();
-                                    saveUserIntoDb(userForSignUp);
+                                    DbUtil.deleteUserFromDb(mDbHelper);
+                                    DbUtil.saveUserIntoDb(userForSignUp, mDbHelper);
                                     Intent intent = new Intent();
                                     intent.setAction("com.nhnnext.android.action.MATCH");
                                     UserParcelable parcelUser = new UserParcelable(userForSignUp);
@@ -152,43 +152,11 @@ public class SignUpActivity extends FragmentActivity implements View.OnClickList
     }
 
     /**
-     * Method saveUserIntoDb(User user)
-     * db에 user 정보 저장
-     *
-     * @param user
+     * Method disableSignUp()
+     * 회원가입 요정 버튼 비활성화
      */
-    private void saveUserIntoDb(User user) {
-        // Get the data repository in write mode
-        db = mDbHelper.getWritableDatabase();
-
-        // Create a new map of values, where column names are the keys
-        ContentValues values = new ContentValues();
-        values.put(MySqliteOpenHelper.KEY_IMAGE, user.getUserImage());
-        values.put(MySqliteOpenHelper.KEY_EMAIL, user.getUserEmail());
-        values.put(MySqliteOpenHelper.KEY_NAME, user.getUserName());
-        values.put(MySqliteOpenHelper.KEY_PASSWORD, user.getUserPassword());
-        values.put(MySqliteOpenHelper.KEY_AGE, user.getUserAge());
-        values.put(MySqliteOpenHelper.KEY_GENDER, user.getUserGender());
-        values.put(MySqliteOpenHelper.KEY_OAUTH, user.getOAuth());
-
-        // Insert the new row, returning the primary key value of the new row
-        long newRowId = db.insert(MySqliteOpenHelper.USER_TABLE_NAME, null, values);
-        db.close();
-    }
-
-    /**
-     * Method deleteUserFromDb()
-     * db에서 user 정보 삭제
-     *
-     * @return delete 성공 유무
-     */
-    private boolean deleteUserFromDb() {
-        boolean result = false;
-        db = mDbHelper.getWritableDatabase();
-        if (db.delete(MySqliteOpenHelper.USER_TABLE_NAME, null, null) > 0)
-            result = true;
-        db.close();
-        return result;
+    protected void disableSignUp() {
+        requestButton.setVisibility(View.GONE);
     }
 }
 
