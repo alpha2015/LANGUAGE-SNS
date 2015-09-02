@@ -3,10 +3,10 @@ package com.nhnnext.android.languageexchange.match;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.res.Configuration;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Message;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -31,6 +31,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -50,7 +51,6 @@ import com.parse.ParseInstallation;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,6 +70,7 @@ public class MatchingActivity extends AppCompatActivity {
     private FriendListAdapter friendListAdapter;
     private RequestQueue queue;
     private GsonRequest<ArrayList<User>> searchRequest;
+    private GsonRequest<ArrayList<MessageInfo>> messageRequest;
 
     /**
      * The pager widget, which handles animation and allows swiping horizontally to access previous
@@ -96,19 +97,20 @@ public class MatchingActivity extends AppCompatActivity {
         friendListView = (ListView) findViewById(R.id.list_view1);
 
         messageList = new ArrayList<>(); //메시지리스트 저장을 위한 ArrayList
-        messageList.add(new MessageInfo(BitmapFactory.decodeResource(getResources(), R.drawable.sample_image_1), "name1", "hello? my name is name1", new Date()));
-        messageList.add(new MessageInfo(BitmapFactory.decodeResource(getResources(), R.drawable.sample_image_2), "name2", "hello? my name is name2", new Date()));
-        messageList.add(new MessageInfo(BitmapFactory.decodeResource(getResources(), R.drawable.sample_image_3), "name3", "hello? my name is name3", new Date()));
-        messageList.add(new MessageInfo(BitmapFactory.decodeResource(getResources(), R.drawable.sample_image_4), "name4", "hello? my name is name4", new Date()));
-        messageList.add(new MessageInfo(BitmapFactory.decodeResource(getResources(), R.drawable.sample_image_5), "name5", "hello? my name is name5", new Date()));
-        messageList.add(new MessageInfo(BitmapFactory.decodeResource(getResources(), R.drawable.sample_image_6), "name6", "hello? my name is name6", new Date()));
+//        messageList.add(new MessageInfo(BitmapFactory.decodeResource(getResources(), R.drawable.sample_image_1), null, null, "name1", "hello? my name is name1", new Date()));
+//        messageList.add(new MessageInfo(BitmapFactory.decodeResource(getResources(), R.drawable.sample_image_2), null, null, "name2", "hello? my name is name2", new Date()));
+//        messageList.add(new MessageInfo(BitmapFactory.decodeResource(getResources(), R.drawable.sample_image_3), null, null, "name3", "hello? my name is name3", new Date()));
+//        messageList.add(new MessageInfo(BitmapFactory.decodeResource(getResources(), R.drawable.sample_image_4), null, null, "name4", "hello? my name is name4", new Date()));
+//        messageList.add(new MessageInfo(BitmapFactory.decodeResource(getResources(), R.drawable.sample_image_5), null, null, "name5", "hello? my name is name5", new Date()));
+//        messageList.add(new MessageInfo(BitmapFactory.decodeResource(getResources(), R.drawable.sample_image_6), null, null, "name6", "hello? my name is name6", new Date()));
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mRightDrawerList = (ListView) findViewById(R.id.right_drawer);
 
         // Set the adapter for the list view
-        mRightDrawerList.setAdapter(new NotiItemAdapter(this,
-                R.layout.notification_list_item, messageList));
+        //TODO PUSH NOTI 서버 DB로 부터 불러오기
+//        mRightDrawerList.setAdapter(new NotiItemAdapter(this,
+//                R.layout.notification_list_item, messageList));
 
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
                 R.string.drawer_open, R.string.drawer_close) {
@@ -128,30 +130,23 @@ public class MatchingActivity extends AppCompatActivity {
 
         // Set the drawer toggle as the DrawerListener
         mDrawerLayout.setDrawerListener(mDrawerToggle);
-
-
         // Instantiate a ViewPager and a PagerAdapter.
         // Fragment 초기화
         user = getIntent().getExtras().getParcelable("user");
-
-
         // push notification email 등록 installation
         ParseInstallation installation = ParseInstallation.getCurrentInstallation();
         installation.put("email", user.getEmail());
         installation.saveInBackground();
 
-
         mPager = (ViewPager) findViewById(R.id.pager);
-
         mPagerAdapter = new MatchScreenSlidePagerAdapter(getSupportFragmentManager());
         //언어 선택 Fragment
-        mPagerAdapter.addFragment(new Fragment_TimeLine());
+        mPagerAdapter.addFragment(Fragment_TimeLine.newInstance(user));
         //매칭 시작 Fragment
         mPagerAdapter.addFragment(Fragment_StartMatch.newInstance(user));
         //개인정보 수정 Fragment
         mPagerAdapter.addFragment(Fragment_UpdateUserInfo.newInstance(user));
         mPager.setAdapter(mPagerAdapter);
-
         tabLayout = (TabLayout) findViewById(R.id.tab);
         tabLayout.setupWithViewPager(mPager);
 
@@ -179,7 +174,27 @@ public class MatchingActivity extends AppCompatActivity {
         // If the nav drawer is open, hide action items related to the content view
         boolean drawerOpen = mDrawerLayout.isDrawerOpen(mRightDrawerList);
         menu.findItem(R.id.action_search).setVisible(!drawerOpen);
-
+        if (drawerOpen) {
+            Type collectionType = new TypeToken<ArrayList<MessageInfo>>() {
+            }.getType();
+            String url = UrlFactory.RECEIVE_MESSAGE + "?receiverEmail=" + user.getEmail();
+            if (user.getOauth() != null) url = url + "&receiverOAuth=" + user.getOauth();
+            messageRequest = new GsonRequest<ArrayList<MessageInfo>>(Request.Method.GET, url, collectionType, null,
+                    new Response.Listener<ArrayList<MessageInfo>>() {
+                        @Override
+                        public void onResponse(ArrayList<MessageInfo> messages) {
+                            mRightDrawerList.setAdapter(new NotiItemAdapter(mContext,
+                                    R.layout.notification_list_item, messages, ImageLoadHelper.getInstance(mContext).getImageLoader()));
+                            Log.d("messagetest", "" + messages);
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError volleyError) {
+                    Toast.makeText(getApplicationContext(), "네트워크 설정을 확인해주세요.", Toast.LENGTH_SHORT).show();
+                }
+            });
+            queue.add(messageRequest);
+        }
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -243,7 +258,6 @@ public class MatchingActivity extends AppCompatActivity {
                     mDrawerLayout.openDrawer(mRightDrawerList);
                 } else {
                     mDrawerLayout.closeDrawer(mRightDrawerList);
-
                 }
                 return false;
             }
@@ -332,21 +346,20 @@ public class MatchingActivity extends AppCompatActivity {
                             friendListView.setAdapter(friendListAdapter);
                             friendListView.setTextFilterEnabled(false);
                             friendListView.bringToFront();
-
                             friendListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                 public void onItemClick(AdapterView<?> parent, View v,
                                                         int position, long id) {
                                     UserParcelable parcelUser = new UserParcelable((User) friendListView.getAdapter().getItem(position));
-                                    Fragment_UserProfileDialog.newInstance(parcelUser).show(getFragmentManager(), "dialog");
+                                    Fragment_UserProfileDialog.newInstance(parcelUser, user).show(getFragmentManager(), "dialog");
                                 }
                             });
-
-                            Toast.makeText(getApplicationContext(), "검색 성공", Toast.LENGTH_SHORT).show();
+                            if(users.size() == 0)
+                                Toast.makeText(getApplicationContext(), "사용자를 찾을 수 없습니다.", Toast.LENGTH_SHORT).show();
                         }
                     }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError volleyError) {
-                    Toast.makeText(getApplicationContext(), "검색 실패", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "네트워크 설정을 확인해주세요.", Toast.LENGTH_SHORT).show();
                 }
             }) {
                 @Override

@@ -11,25 +11,22 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:background="#E0E0E0"
-        android:orientation="vertical"
         >
 
-        <ImageView
+        <!--<ImageView-->
+            <!--android:id="@+id/noti_user_image"-->
+            <!--android:layout_width="50dp"-->
+            <!--android:layout_height="0dp"-->
+            <!--android:layout_weight="1"/>-->
+
+        <com.android.volley.toolbox.NetworkImageView
             android:id="@+id/noti_user_image"
-            android:layout_width="50dp"
-            android:layout_height="0dp"
-            android:layout_weight="1"/>
-
-        <TextView
-            android:id="@+id/noti_user_name"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:text="이름"
-            android:gravity="center_vertical"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/square_profile_default"
+            android:layout_gravity="center_vertical"
+            android:scaleType="fitXY"
+            />
     </LinearLayout>
 
     <LinearLayout
@@ -38,19 +35,28 @@
         android:paddingLeft="10dp"
         android:orientation="vertical"
         android:background="#E0E0E0"
+        android:gravity="center_vertical"
         >
+
+        <TextView
+            android:id="@+id/noti_user_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="이름"
+            android:gravity="center_vertical"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/noti_message"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:text="info" />
 
         <TextView
             android:id="@+id/notin_user_send_time"
             android:layout_width="match_parent"
-            android:layout_height="30dp"
+            android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:text="10분전" />
     </LinearLayout>

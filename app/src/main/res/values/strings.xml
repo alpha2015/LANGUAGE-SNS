@@ -56,4 +56,5 @@
 
     <string name="close_button">닫기</string>
     <string name="input_message">메시지를 보내세요.</string>
+    <string name="no_matched_user">매칭된 사용자가 없습니다.</string>
 </resources>

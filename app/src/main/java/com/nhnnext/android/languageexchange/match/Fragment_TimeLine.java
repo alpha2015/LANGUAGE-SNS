@@ -17,6 +17,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.reflect.TypeToken;
 import com.nhnnext.android.languageexchange.Model.User;
+import com.nhnnext.android.languageexchange.Model.UserParcelable;
 import com.nhnnext.android.languageexchange.R;
 import com.nhnnext.android.languageexchange.common.GsonRequest;
 import com.nhnnext.android.languageexchange.common.ImageLoadHelper;
@@ -44,6 +45,34 @@ public class Fragment_TimeLine extends Fragment {
     }
 
     /**
+     * Method newInstance(UserParcelable user)
+     * caller activity로부터 전달 받은 user 값 bundle로 저장
+     *
+     * @param user 매칭할 언어 정보를 담고 있는 user data
+     * @return Fragment_TimeLine instance
+     */
+    public static Fragment_TimeLine newInstance(UserParcelable user) {
+        Fragment_TimeLine f = new Fragment_TimeLine();
+
+        // Supply index input as an argument.
+        Bundle args = new Bundle();
+        args.putParcelable("user", user);
+        f.setArguments(args);
+
+        return f;
+    }
+
+    /**
+     * Method getShownIndex()
+     * user data getter
+     *
+     * @return activity로부터 전달 받은 data 값
+     */
+    private UserParcelable getShownIndex() {
+        return getArguments().getParcelable("user");
+    }
+
+    /**
      * Method onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
      * 가장 최근 업데이트된 사용자 리스트 server로 부터 읽어오기(최대 20개)
      *
@@ -66,7 +95,7 @@ public class Fragment_TimeLine extends Fragment {
                 new Response.Listener<ArrayList<User>>() {
                     @Override
                     public void onResponse(ArrayList<User> users) {
-                        mAdapter = new TimeLineItemAdapter(users, ImageLoadHelper.getInstance(getActivity()).getImageLoader(), getActivity().getFragmentManager());
+                        mAdapter = new TimeLineItemAdapter(users, getShownIndex(), ImageLoadHelper.getInstance(getActivity()).getImageLoader(), getActivity().getFragmentManager());
                         mRecyclerView.setAdapter(mAdapter);
                     }
                 }, new Response.ErrorListener() {

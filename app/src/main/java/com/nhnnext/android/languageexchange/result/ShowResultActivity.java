@@ -3,6 +3,7 @@ package com.nhnnext.android.languageexchange.result;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -68,10 +69,17 @@ public class ShowResultActivity extends Activity {
                             public void onItemClick(AdapterView<?> parent, View v,
                                                     int position, long id) {
                                 UserParcelable parcelUser = new UserParcelable((User) userListGridView.getAdapter().getItem(position));
-                                Fragment_UserProfileDialog.newInstance(parcelUser).show(getFragmentManager(), "dialog");
+                                //params reveiver, sender
+                                Fragment_UserProfileDialog.newInstance(parcelUser, user).show(getFragmentManager(), "dialog");
                             }
                         });
-                        Toast.makeText(getApplicationContext(), "검색 성공", Toast.LENGTH_SHORT).show();
+                        if (users.size() == 0) {
+                            userListGridView.setVisibility(View.GONE);
+                            findViewById(R.id.no_matched_user).setVisibility(View.VISIBLE);
+                        } else {
+                            userListGridView.setVisibility(View.VISIBLE);
+                            findViewById(R.id.no_matched_user).setVisibility(View.GONE);
+                        }
                     }
                 }, new Response.ErrorListener() {
             @Override

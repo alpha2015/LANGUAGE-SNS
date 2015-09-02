@@ -23,6 +23,7 @@ import java.util.List;
  */
 public class TimeLineItemAdapter extends RecyclerView.Adapter<TimeLineItemAdapter.ViewHolder> {
     private List<User> users;
+    private UserParcelable myData;
     private ImageLoader mImageLoader;
     private FragmentManager mFragmentManager;
 
@@ -47,7 +48,7 @@ public class TimeLineItemAdapter extends RecyclerView.Adapter<TimeLineItemAdapte
         @Override
         public void onClick(View view) {
             UserParcelable parcelUser = new UserParcelable(users.get(getPosition()));
-            Fragment_UserProfileDialog.newInstance(parcelUser).show(mFragmentManager, "dialog");
+            Fragment_UserProfileDialog.newInstance(parcelUser, myData).show(mFragmentManager, "dialog");
         }
 
     }
@@ -58,8 +59,9 @@ public class TimeLineItemAdapter extends RecyclerView.Adapter<TimeLineItemAdapte
      *
      * @param users timeline user list
      */
-    public TimeLineItemAdapter(ArrayList<User> users, ImageLoader imageLoader, FragmentManager fragmentManager) {
+    public TimeLineItemAdapter(ArrayList<User> users, UserParcelable user, ImageLoader imageLoader, FragmentManager fragmentManager) {
         this.users = users;
+        this.myData = user;
         this.mImageLoader = imageLoader;
         this.mFragmentManager = fragmentManager;
     }
@@ -81,7 +83,6 @@ public class TimeLineItemAdapter extends RecyclerView.Adapter<TimeLineItemAdapte
         holder.mTime.setText(users.get(position).getUserUpdateDate().substring(0, 10));
         holder.mName.setText(users.get(position).getUserName());
         holder.mInfo.setText(users.get(position).getUserIntro());
-
     }
 
     // return user list count
